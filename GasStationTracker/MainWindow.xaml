@@ -1,0 +1,71 @@
+﻿<Window x:Class="GasStationTracker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GasStationTracker"
+        mc:Ignorable="d"
+        Title="Gas Station Simulator Tracker" Height="720" Width="1280">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.3*"></RowDefinition>
+            <RowDefinition Height="8*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Image Source="/Assets/GasStationLogo.png" Name="Logo" Grid.Row="1"/>
+        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="6*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <!--<Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" HorizontalAlignment="Stretch">Cash</Button>
+                <Button Grid.Column="1" HorizontalAlignment="Stretch">Money spent on fuel</Button>
+                <Button Grid.Column="2" HorizontalAlignment="Stretch">Money earned on fuel</Button>
+                <Button Grid.Column="3" HorizontalAlignment="Stretch">Popularity</Button>
+            </Grid>-->
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
+            <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Cash}">
+                <DataGrid.Columns >
+                    <DataGridTextColumn Binding="{Binding Path=Date}"/>
+                    <DataGridTextColumn Binding="{Binding Path=Value}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <DockPanel Grid.Row="2" LastChildFill="True">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Button x:Name="StartStop" Content="Start tracking" Grid.Row="0" Click="StartStopTracking"></Button>
+                <Button Content="Raw data" Grid.Row="1"></Button>
+                <Button Content="Live Graphs" Grid.Row="2"></Button>
+                <Button Content="Tools" Grid.Row="3"></Button>
+            </Grid>
+        </DockPanel>
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Made by GramBezEndu" Grid.Row="0"></TextBlock>
+            <TextBlock Text="Tested on game version: 1.0.1.37938"  Grid.Row="1"></TextBlock>
+        </Grid>
+        <TextBox x:Name="Logs" Grid.Row="3" Grid.Column="1" Background="LightGray" IsReadOnly="True"></TextBox>
+    </Grid>
+</Window>
