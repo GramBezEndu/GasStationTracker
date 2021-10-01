@@ -86,7 +86,6 @@ namespace GasStationTracker
             serializer.Formatting = Formatting.Indented;
 
             settings.TraceWriter = traceWriter;
-            //settings.Converters.Add(new SingleValueConverter());
 
             DataContext = this;
             records = new RecordCollection(DataTable);
@@ -212,6 +211,27 @@ namespace GasStationTracker
                 string result = JsonConvert.SerializeObject(Records, settings);
                 sw.Write(result);
             }
+        }
+
+        private void RawDataClick(object sender, RoutedEventArgs e)
+        {
+            DataTable.Visibility = Visibility.Visible;
+            LiveGraphs.Visibility = Visibility.Collapsed;
+            Settings.Visibility = Visibility.Collapsed;
+        }
+
+        private void LiveGraphsClick(object sender, RoutedEventArgs e)
+        {
+            LiveGraphs.Visibility = Visibility.Visible;
+            DataTable.Visibility = Visibility.Collapsed;
+            Settings.Visibility = Visibility.Collapsed;
+        }
+
+        private void SettingsClick(object sender, RoutedEventArgs e)
+        {
+            Settings.Visibility = Visibility.Visible;
+            LiveGraphs.Visibility = Visibility.Collapsed;
+            DataTable.Visibility = Visibility.Collapsed;
         }
     }
 }

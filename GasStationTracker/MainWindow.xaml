@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:local="clr-namespace:GasStationTracker"
         mc:Ignorable="d"
         Title="Gas Station Simulator Tracker" Height="720" Width="1280">
@@ -23,18 +24,6 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="6*"></RowDefinition>
             </Grid.RowDefinitions>
-            <!--<Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" HorizontalAlignment="Stretch">Cash</Button>
-                <Button Grid.Column="1" HorizontalAlignment="Stretch">Money spent on fuel</Button>
-                <Button Grid.Column="2" HorizontalAlignment="Stretch">Money earned on fuel</Button>
-                <Button Grid.Column="3" HorizontalAlignment="Stretch">Popularity</Button>
-            </Grid>-->
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
             <DataGrid x:Name="DataTable" AutoGenerateColumns="False" ItemsSource="{Binding Records}">
@@ -43,6 +32,21 @@
                     <DataGridTextColumn Header="IGT" Binding="{Binding Path=IGT}"/>
                 </DataGrid.Columns>
             </DataGrid>
+            <Grid x:Name="LiveGraphs" Visibility="Collapsed">
+                <Grid.DataContext>
+                    <local:GraphViewModel/>
+                </Grid.DataContext>
+                <oxy:Plot Title="{Binding Title}">
+                    <oxy:Plot.Axes>
+                        <oxy:DateTimeAxis Position="Bottom"/>
+                        <oxy:LinearAxis Position="Left"/>
+                    </oxy:Plot.Axes>
+                    <oxy:Plot.Series>
+                        <oxy:LineSeries ItemsSource="{Binding Points}"/>
+                    </oxy:Plot.Series>
+                </oxy:Plot>
+            </Grid>
+            <Image x:Name="Settings" Visibility="Collapsed" Opacity="0.25" Source="/Assets/GasStationLogo.png"/>
         </Grid>
         <DockPanel Grid.Row="2" LastChildFill="True">
             <Grid>
@@ -53,9 +57,9 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Button x:Name="StartStop" Content="Start tracking" Grid.Row="0" Click="StartStopTracking"></Button>
-                <Button Content="Raw data" Grid.Row="1"></Button>
-                <Button Content="Live Graphs" Grid.Row="2"></Button>
-                <Button Content="Tools" Grid.Row="3"></Button>
+                <Button Click="RawDataClick" Content="Raw data" Grid.Row="1"></Button>
+                <Button Click="LiveGraphsClick" Content="Live Graphs" Grid.Row="2"></Button>
+                <Button Click="SettingsClick" Content="Settings" Grid.Row="3"></Button>
             </Grid>
         </DockPanel>
         <Grid Grid.Row="3">
