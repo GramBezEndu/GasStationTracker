@@ -37,10 +37,10 @@
             </Grid>-->
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
-            <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Cash}">
+            <DataGrid x:Name="DataTable" AutoGenerateColumns="False" ItemsSource="{Binding Records}">
                 <DataGrid.Columns >
-                    <DataGridTextColumn Binding="{Binding Path=Date}"/>
-                    <DataGridTextColumn Binding="{Binding Path=Value}"/>
+                    <DataGridTextColumn Header="Date" Binding="{Binding Path=Date}"/>
+                    <DataGridTextColumn Header="IGT" Binding="{Binding Path=IGT}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

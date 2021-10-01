@@ -4,15 +4,22 @@ using System.Text;
 
 namespace GasStationTracker
 {
-    public class ValueRecord<T>
+    public class SingleValue
     {
-        public DateTime Date { get; set; }
         public string Name { get; set; }
+
+        public virtual Type Type { get; }
+    }
+
+    public class SingleValue<T> : SingleValue
+    {
         public T Value { get; set; }
+
+        public override Type Type { get { return typeof(T); } }
 
         public override string ToString()
         {
-            return String.Format("{0} {1} {2}", Date, Name, Value);
+            return String.Format("{0} {1}", Name, Value);
         }
     }
 }
