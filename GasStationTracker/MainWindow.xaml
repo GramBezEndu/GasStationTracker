@@ -36,17 +36,36 @@
                 <Grid.DataContext>
                     <local:GraphViewModel/>
                 </Grid.DataContext>
-                <oxy:Plot Title="{Binding Title}">
+                <oxy:Plot x:Name="FirstPlot" Title="{Binding Title}">
                     <oxy:Plot.Axes>
                         <oxy:DateTimeAxis Position="Bottom"/>
                         <oxy:LinearAxis Position="Left"/>
                     </oxy:Plot.Axes>
                     <oxy:Plot.Series>
                         <oxy:LineSeries ItemsSource="{Binding Points}"/>
+                        <oxy:LineSeries ItemsSource="{Binding Points2}"/>
                     </oxy:Plot.Series>
                 </oxy:Plot>
             </Grid>
-            <Image x:Name="Settings" Visibility="Collapsed" Opacity="0.25" Source="/Assets/GasStationLogo.png"/>
+            <Grid x:Name="Settings" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.Background>
+                    <SolidColorBrush Color="LightGray" Opacity="0.4"/>
+                </Grid.Background>
+                <Label Grid.Row="0">Settings</Label>
+                <Image Opacity="0.15" Grid.Row="1" Source="/Assets/GasStationLogo.png"/>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <CheckBox Grid.Row="0" IsEnabled="False" IsChecked="False">Backup save files on quit</CheckBox>
+                    <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="True">Add Herobrine</CheckBox>
+                </Grid>
+            </Grid>
         </Grid>
         <DockPanel Grid.Row="2" LastChildFill="True">
             <Grid>
@@ -70,6 +89,6 @@
             <TextBlock Text="Made by GramBezEndu" Grid.Row="0"></TextBlock>
             <TextBlock Text="Tested on game version: 1.0.1.37938"  Grid.Row="1"></TextBlock>
         </Grid>
-        <TextBox x:Name="Logs" Grid.Row="3" Grid.Column="1" Background="LightGray" IsReadOnly="True"></TextBox>
+        <TextBox x:Name="Logs" Text="LOGS:&#x0a;" Grid.Row="3" Grid.Column="1" Background="LightGray" IsReadOnly="True"></TextBox>
     </Grid>
 </Window>

@@ -1,26 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Memory;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
+using OxyPlot;
 
 namespace GasStationTracker
 {
@@ -30,20 +14,19 @@ namespace GasStationTracker
     public partial class MainWindow : Window
     {
         public int intervalMinutes = 0;
-        public int intervalSeconds = 5;
+        public int intervalSeconds = 10;
 
         string fileName = "Data.json";
 
-        ITraceWriter traceWriter = new MemoryTraceWriter();
-        JsonSerializer serializer = new JsonSerializer();
         JsonSerializerSettings settings = new JsonSerializerSettings 
         {
             NullValueHandling = NullValueHandling.Ignore,
             DateFormatHandling = DateFormatHandling.MicrosoftDateFormat,
-            Formatting = Formatting.Indented,
+            Formatting = Formatting.None,
             TypeNameHandling = TypeNameHandling.Auto,
         };
 
+        public PlotModel Plot { get; private set; } = new PlotModel();
         public RecordCollection Records { get => records; private set => records = value; }
         private RecordCollection records;
         System.Windows.Threading.DispatcherTimer dispatcherTimer;
@@ -81,21 +64,14 @@ namespace GasStationTracker
         {
             InitializeComponent();
 
-            serializer.DateFormatHandling = DateFormatHandling.MicrosoftDateFormat;
-            serializer.NullValueHandling = NullValueHandling.Ignore;
-            serializer.Formatting = Formatting.Indented;
-
-            settings.TraceWriter = traceWriter;
-
             DataContext = this;
-            records = new RecordCollection(DataTable);
+            records = new RecordCollection(DataTable, Plot);
             memoryHandler = new Mem();
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, intervalMinutes, intervalSeconds);
             dispatcherTimer.Start();
             Load();
-            Log("LOGS:");
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -148,8 +124,8 @@ namespace GasStationTracker
         {
             var cash = CreateFloatRecord("Cash", "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,11C");
             var popularity = CreateIntRecord("Popularity", "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x888");
-            var moneySpentOnFuel = CreateFloatRecord("Money Earned On Fuel", "GSS2-Win64-Shipping.exe+0x0408A2B8,0x0,0x110,0x6B0,0xD8");
-            var moneyEarnedOnFuel = CreateFloatRecord("Money Spent On Fuel", "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x790");
+            var moneySpentOnFuel = CreateFloatRecord("Money Spent On Fuel", "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x580,0x1A0,0xE0,0xD8");
+            var moneyEarnedOnFuel = CreateFloatRecord("Money Earned On Fuel", "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x790");
             var currentFuelCapacity = CreateFloatRecord("Current Fuel Capacity", "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,0x114");
 
             var record = new Record()
