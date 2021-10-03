@@ -44,14 +44,25 @@ namespace GasStationTracker
             for (int i = 0; i < record.SingleRecords.Count; i++)
             {
                 SingleValue singleValue = record.SingleRecords[i];
-                if (singleValue != null && singleValue.Name == "Cash")
+                if (singleValue != null)
                 {
                     if (!Plot.Series.Any(x => x.Title == singleValue.Name))
                     {
-                        Plot.Series.Add(new LineSeries() 
+                        if (singleValue.Name == "Cash")
                         {
-                            Title = singleValue.Name 
-                        });
+                            Plot.Series.Add(new LineSeries()
+                            {
+                                Title = singleValue.Name
+                            });
+                        }
+                        else
+                        {
+                            Plot.Series.Add(new LineSeries()
+                            {
+                                Title = singleValue.Name,
+                                IsVisible = false,
+                            });
+                        }
                     }
                     var series = Plot.Series.First(x => x.Title == singleValue.Name);
                     (series as LineSeries).Points.Add(new DataPoint(DateTimeAxis.ToDouble(record.Date), Convert.ToDouble(singleValue.Value)));

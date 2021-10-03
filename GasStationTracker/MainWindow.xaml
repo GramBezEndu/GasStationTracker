@@ -51,11 +51,11 @@
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0">Cash</Button>
-                    <Button Grid.Column="1">Popularity</Button>
-                    <Button Grid.Column="2">Money earned on fuel</Button>
-                    <Button Grid.Column="3">Money spent on fuel</Button>
-                    <Button Grid.Column="4">Current Fuel</Button>
+                    <Button Grid.Column="0" Click="CashGraphClick">Cash</Button>
+                    <Button Grid.Column="1" Click="PopularityGraphClick">Popularity</Button>
+                    <Button Grid.Column="2" Click="MoneyEarnedOnFuelClick">Money earned on fuel</Button>
+                    <Button Grid.Column="3" Click="MoneySpentOnFuelClick">Money spent on fuel</Button>
+                    <Button Grid.Column="4" Click="CurrentFuelClick">Current Fuel</Button>
                 </Grid>
                 <oxy:PlotView x:Name="Graph" Background="Transparent" Grid.Row="1" Model="{Binding Plot}"></oxy:PlotView>
             </Grid>

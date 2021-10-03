@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using Memory;
 using Newtonsoft.Json;
 using OxyPlot;
 using OxyPlot.Axes;
+using OxyPlot.Series;
 
 namespace GasStationTracker
 {
@@ -33,11 +35,16 @@ namespace GasStationTracker
         private RecordCollection records;
         System.Windows.Threading.DispatcherTimer dispatcherTimer;
         Mem memoryHandler;
-        bool isTracking = false;
 
         #region GssData
         const string processName = "GSS2-Win64-Shipping";
+        const string cashDisplay = "Cash";
+        const string popularityDisplay = "Popularity";
+        const string moneySpentFuelDisplay = "Money Spent On Fuel";
+        const string moneyEarnedFuelDisplay = "Money Earned On Fuel";
+        const string currentFuelDisplay = "Current Fuel Capacity";
         int gameProcessId;
+        bool isTracking = false;
 
         public bool IsTracking
         {
@@ -148,11 +155,11 @@ namespace GasStationTracker
 
         public void GetData()
         {
-            var cash = CreateFloatRecord("Cash", "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,11C");
-            var popularity = CreateIntRecord("Popularity", "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x888");
-            var moneySpentOnFuel = CreateFloatRecord("Money Spent On Fuel", "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x580,0x1A0,0xE0,0xD8");
-            var moneyEarnedOnFuel = CreateFloatRecord("Money Earned On Fuel", "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x790");
-            var currentFuelCapacity = CreateFloatRecord("Current Fuel Capacity", "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,0x114");
+            var cash = CreateFloatRecord(MainWindow.cashDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,11C");
+            var popularity = CreateIntRecord(MainWindow.popularityDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x888");
+            var moneySpentOnFuel = CreateFloatRecord(MainWindow.moneySpentFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x580,0x1A0,0xE0,0xD8");
+            var moneyEarnedOnFuel = CreateFloatRecord(MainWindow.moneyEarnedFuelDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x790");
+            var currentFuelCapacity = CreateFloatRecord(MainWindow.currentFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,0x114");
 
             var record = new Record()
             {
@@ -232,6 +239,25 @@ namespace GasStationTracker
             return true;
         }
 
+        private void UpdateGraphLineSeries(string currentFilter)
+        {
+            ElementCollection<Series> series = Plot.Series;
+            foreach (var serie in series)
+            {
+                serie.IsVisible = false;
+            }
+            var currentSerie = series.FirstOrDefault(x => x.Title == currentFilter);
+            if (currentSerie != null)
+            {
+                if (currentSerie.IsVisible == false)
+                {
+                    currentSerie.IsVisible = true;
+                    Plot.InvalidatePlot(true);
+                }
+            }
+        }
+
+        #region Buttons
         private void RawDataClick(object sender, RoutedEventArgs e)
         {
             DataTable.Visibility = Visibility.Visible;
@@ -252,5 +278,31 @@ namespace GasStationTracker
             LiveGraphs.Visibility = Visibility.Collapsed;
             DataTable.Visibility = Visibility.Collapsed;
         }
+
+        private void CashGraphClick(object sender, RoutedEventArgs e)
+        {
+            UpdateGraphLineSeries(MainWindow.cashDisplay);
+        }
+
+        private void PopularityGraphClick(object sender, RoutedEventArgs e)
+        {
+            UpdateGraphLineSeries(MainWindow.popularityDisplay);
+        }
+
+        private void MoneyEarnedOnFuelClick(object sender, RoutedEventArgs e)
+        {
+            UpdateGraphLineSeries(MainWindow.moneyEarnedFuelDisplay);
+        }
+
+        private void MoneySpentOnFuelClick(object sender, RoutedEventArgs e)
+        {
+            UpdateGraphLineSeries(MainWindow.moneySpentFuelDisplay);
+        }
+
+        private void CurrentFuelClick(object sender, RoutedEventArgs e)
+        {
+            UpdateGraphLineSeries(MainWindow.currentFuelDisplay);
+        }
+        #endregion
     }
 }
