@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using Memory;
@@ -72,14 +73,23 @@ namespace GasStationTracker
             dispatcherTimer.Interval = new TimeSpan(0, intervalMinutes, intervalSeconds);
             dispatcherTimer.Start();
             Load();
+            Graph.Model = Plot;
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             if (IsTracking && gameProcessId != 0)
             {
-                GetData();
-                Save();
+                if (IsRunning(gameProcessId))
+                {
+                    GetData();
+                    Save();
+                }
+                else
+                {
+                    Log("Process with ID: " + gameProcessId + " is no longer running. Did the game crash again?");
+                    IsTracking = false;
+                }
             }
         }
 
@@ -87,31 +97,41 @@ namespace GasStationTracker
         {
             if (IsTracking && gameProcessId != 0)
             {
-                memoryHandler.CloseProcess();
-                IsTracking = false;
+                CloseProcess();
             }
             else
             {
-                gameProcessId = memoryHandler.GetProcIdFromName(processName);
-                if (gameProcessId != 0)
-                {
-                    Log("Process ID: " + gameProcessId);
-                    //Need to recreate process (required by library code)
-                    memoryHandler.mProc = new Proc();
-                    if (memoryHandler.OpenProcess(gameProcessId))
-                    {
-                        IsTracking = true;
+                OpenProcess();
+            }
+        }
 
-                    }
-                    else
-                    {
-                        Log("Could not attach to process " + processName);
-                    }
+        private void CloseProcess()
+        {
+            memoryHandler.CloseProcess();
+            IsTracking = false;
+        }
+
+        private void OpenProcess()
+        {
+            gameProcessId = memoryHandler.GetProcIdFromName(processName);
+            if (gameProcessId != 0)
+            {
+                Log("Process ID: " + gameProcessId);
+                //Need to recreate process (required by library code)
+                memoryHandler.mProc = new Proc();
+                if (memoryHandler.OpenProcess(gameProcessId))
+                {
+                    IsTracking = true;
+
                 }
                 else
                 {
-                    Log("Could not find process " + processName);
+                    Log("Could not attach to process " + processName);
                 }
+            }
+            else
+            {
+                Log("Could not find process " + processName);
             }
         }
 
@@ -187,6 +207,23 @@ namespace GasStationTracker
                 string result = JsonConvert.SerializeObject(Records, settings);
                 sw.Write(result);
             }
+        }
+
+        public static bool IsRunning(int id)
+        {
+            try 
+            {
+                Process.GetProcessById(id);
+            }
+            catch (InvalidOperationException) 
+            { 
+                return false; 
+            }
+            catch (ArgumentException) 
+            { 
+                return false; 
+            }
+            return true;
         }
 
         private void RawDataClick(object sender, RoutedEventArgs e)

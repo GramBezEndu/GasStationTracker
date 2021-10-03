@@ -11,6 +11,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace GasStationTracker
 {
@@ -42,16 +43,19 @@ namespace GasStationTracker
         {
             for (int i = 0; i < record.SingleRecords.Count; i++)
             {
-                SingleValue value = record.SingleRecords[i];
-                if (value != null)
+                SingleValue singleValue = record.SingleRecords[i];
+                if (singleValue != null)
                 {
-                    //if (!Plot.ContainsKey(value.Name))
-                    //{
-                    //    Plot[value.Name] = new PlotModel();
-                    //    Plot[value.Name].Series.Add(new LineSeries());
-                    //}
-                    //(Plot[value.Name].Series[0] as LineSeries).Points.Add(new DataPoint(DateTimeAxis.ToDouble(record.Date), 11));
-                    //Plot[value.Name].InvalidatePlot(true);
+                    //var x = record.GetValue<T>(singleValue.Name);
+                    if (!Plot.Series.Any(x => x.Title == singleValue.Name))
+                    {
+                        Plot.Series.Add(new LineSeries() 
+                        {
+                            Title = singleValue.Name 
+                        });
+                    }
+                    var series = Plot.Series.First(x => x.Title == singleValue.Name);
+                    (series as LineSeries).Points.Add(new DataPoint(DateTimeAxis.ToDouble(record.Date), 11));
                 }
             }
         }

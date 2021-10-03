@@ -36,16 +36,7 @@
                 <Grid.DataContext>
                     <local:GraphViewModel/>
                 </Grid.DataContext>
-                <oxy:Plot x:Name="FirstPlot" Title="{Binding Title}">
-                    <oxy:Plot.Axes>
-                        <oxy:DateTimeAxis Position="Bottom"/>
-                        <oxy:LinearAxis Position="Left"/>
-                    </oxy:Plot.Axes>
-                    <oxy:Plot.Series>
-                        <oxy:LineSeries ItemsSource="{Binding Points}"/>
-                        <oxy:LineSeries ItemsSource="{Binding Points2}"/>
-                    </oxy:Plot.Series>
-                </oxy:Plot>
+                <oxy:PlotView x:Name="Graph" Model="{Binding Plot}"></oxy:PlotView>
             </Grid>
             <Grid x:Name="Settings" Visibility="Collapsed">
                 <Grid.RowDefinitions>
