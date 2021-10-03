@@ -8,18 +8,8 @@ namespace GasStationTracker
     {
         public string Name { get; set; }
 
-        public virtual Type Type { get; }
-    }
+        public Type Type { get { return Value.GetType(); } }
 
-    public class SingleValue<T> : SingleValue
-    {
-        public T Value { get; set; }
-
-        public override Type Type { get { return typeof(T); } }
-
-        public override string ToString()
-        {
-            return String.Format("{0} {1}", Name, Value);
-        }
+        public object Value { get; set; }
     }
 }

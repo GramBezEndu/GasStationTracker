@@ -44,9 +44,8 @@ namespace GasStationTracker
             for (int i = 0; i < record.SingleRecords.Count; i++)
             {
                 SingleValue singleValue = record.SingleRecords[i];
-                if (singleValue != null)
+                if (singleValue != null && singleValue.Name == "Cash")
                 {
-                    //var x = record.GetValue<T>(singleValue.Name);
                     if (!Plot.Series.Any(x => x.Title == singleValue.Name))
                     {
                         Plot.Series.Add(new LineSeries() 
@@ -55,7 +54,7 @@ namespace GasStationTracker
                         });
                     }
                     var series = Plot.Series.First(x => x.Title == singleValue.Name);
-                    (series as LineSeries).Points.Add(new DataPoint(DateTimeAxis.ToDouble(record.Date), 11));
+                    (series as LineSeries).Points.Add(new DataPoint(DateTimeAxis.ToDouble(record.Date), Convert.ToDouble(singleValue.Value)));
                 }
             }
         }

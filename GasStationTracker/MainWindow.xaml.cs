@@ -6,6 +6,7 @@ using System.Windows;
 using Memory;
 using Newtonsoft.Json;
 using OxyPlot;
+using OxyPlot.Axes;
 
 namespace GasStationTracker
 {
@@ -73,6 +74,10 @@ namespace GasStationTracker
             dispatcherTimer.Interval = new TimeSpan(0, intervalMinutes, intervalSeconds);
             dispatcherTimer.Start();
             Load();
+            Plot.Axes.Add(new DateTimeAxis()
+            {
+                Position = AxisPosition.Bottom,
+            });
             Graph.Model = Plot;
         }
 
@@ -83,11 +88,12 @@ namespace GasStationTracker
                 if (IsRunning(gameProcessId))
                 {
                     GetData();
+                    Plot.InvalidatePlot(true);
                     Save();
                 }
                 else
                 {
-                    Log("Process with ID: " + gameProcessId + " is no longer running. Did the game crash again?");
+                    Log("Process with ID: " + gameProcessId + " is no longer running. Did the game crash?");
                     IsTracking = false;
                 }
             }
@@ -164,10 +170,10 @@ namespace GasStationTracker
             Records.Add(record);
         }
 
-        private SingleValue<int> CreateIntRecord(string name, string pointerPath)
+        private SingleValue CreateIntRecord(string name, string pointerPath)
         {
             int value = memoryHandler.ReadInt(pointerPath);
-            var valueRecord = new SingleValue<int>()
+            var valueRecord = new SingleValue()
             {
                 Name = name,
                 Value = value,
@@ -175,10 +181,10 @@ namespace GasStationTracker
             return valueRecord;
         }
 
-        private SingleValue<float> CreateFloatRecord(string name, string pointerPath)
+        private SingleValue CreateFloatRecord(string name, string pointerPath)
         {
             float value = memoryHandler.ReadFloat(pointerPath);
-            var valueRecord = new SingleValue<float>()
+            var valueRecord = new SingleValue()
             {
                 Name = name,
                 Value = value,

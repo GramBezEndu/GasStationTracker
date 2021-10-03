@@ -10,13 +10,9 @@ namespace GasStationTracker
         public InGameTime IGT { get; set; }
         public List<SingleValue> SingleRecords { get; set; } = new List<SingleValue>();
 
-        public T GetValue<T>(string name)
+        public object GetValue(string name)
         {
-            T result;
-            SingleValue<T> setting = (SingleValue<T>)Convert.ChangeType(
-                                 SingleRecords.Find(s => s.Name.Equals(name)), typeof(SingleValue<T>), null);
-            result = setting.Value;
-            return result;
+            return SingleRecords.Find(s => s.Name.Equals(name)).Value;
         }
     }
 }
