@@ -30,6 +30,7 @@ namespace GasStationTracker
             TypeNameHandling = TypeNameHandling.Auto,
         };
 
+        public SessionStatistics SessionStats { get; private set; } = new SessionStatistics();
         public PlotModel Plot { get; private set; } = new PlotModel();
         public RecordCollection Records { get => records; private set => records = value; }
         private RecordCollection records;
@@ -38,8 +39,8 @@ namespace GasStationTracker
 
         #region GssData
         const string processName = "GSS2-Win64-Shipping";
-        const string cashDisplay = "Cash";
-        const string popularityDisplay = "Popularity";
+        public static string CashDisplay = "Cash";
+        public static string PopularityDisplay = "Popularity";
         const string moneySpentFuelDisplay = "Money Spent On Fuel";
         const string moneyEarnedFuelDisplay = "Money Earned On Fuel";
         const string currentFuelDisplay = "Current Fuel Capacity";
@@ -57,6 +58,7 @@ namespace GasStationTracker
                     {
                         StartStop.Content = "Stop tracking";
                         Log("Attatched to process " + processName);
+                        SessionStats.StartTime = DateTime.Now;
                     }
                     else
                     {
@@ -74,7 +76,8 @@ namespace GasStationTracker
             InitializeComponent();
 
             DataContext = this;
-            records = new RecordCollection(DataTable, Plot);
+            Records = new RecordCollection(DataTable, Plot);
+            SessionStats.Records = Records;
             memoryHandler = new Mem();
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
@@ -96,6 +99,7 @@ namespace GasStationTracker
                 {
                     GetData();
                     Plot.InvalidatePlot(true);
+                    SessionStats?.Update();
                     Save();
                 }
                 else
@@ -155,8 +159,8 @@ namespace GasStationTracker
 
         public void GetData()
         {
-            var cash = CreateFloatRecord(MainWindow.cashDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,11C");
-            var popularity = CreateIntRecord(MainWindow.popularityDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x888");
+            var cash = CreateFloatRecord(MainWindow.CashDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,11C");
+            var popularity = CreateIntRecord(MainWindow.PopularityDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x888");
             var moneySpentOnFuel = CreateFloatRecord(MainWindow.moneySpentFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x580,0x1A0,0xE0,0xD8");
             var moneyEarnedOnFuel = CreateFloatRecord(MainWindow.moneyEarnedFuelDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x790");
             var currentFuelCapacity = CreateFloatRecord(MainWindow.currentFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,0x114");
@@ -258,11 +262,20 @@ namespace GasStationTracker
         }
 
         #region Buttons
+        private void SessionStatsClick(object sender, RoutedEventArgs e)
+        {
+            SessionStatistics.Visibility = Visibility.Visible;
+            DataTable.Visibility = Visibility.Collapsed;
+            LiveGraphs.Visibility = Visibility.Collapsed;
+            Settings.Visibility = Visibility.Collapsed;
+        }
+
         private void RawDataClick(object sender, RoutedEventArgs e)
         {
             DataTable.Visibility = Visibility.Visible;
             LiveGraphs.Visibility = Visibility.Collapsed;
             Settings.Visibility = Visibility.Collapsed;
+            SessionStatistics.Visibility = Visibility.Collapsed;
         }
 
         private void LiveGraphsClick(object sender, RoutedEventArgs e)
@@ -270,6 +283,7 @@ namespace GasStationTracker
             LiveGraphs.Visibility = Visibility.Visible;
             DataTable.Visibility = Visibility.Collapsed;
             Settings.Visibility = Visibility.Collapsed;
+            SessionStatistics.Visibility = Visibility.Collapsed;
         }
 
         private void SettingsClick(object sender, RoutedEventArgs e)
@@ -277,16 +291,17 @@ namespace GasStationTracker
             Settings.Visibility = Visibility.Visible;
             LiveGraphs.Visibility = Visibility.Collapsed;
             DataTable.Visibility = Visibility.Collapsed;
+            SessionStatistics.Visibility = Visibility.Collapsed;
         }
 
         private void CashGraphClick(object sender, RoutedEventArgs e)
         {
-            UpdateGraphLineSeries(MainWindow.cashDisplay);
+            UpdateGraphLineSeries(MainWindow.CashDisplay);
         }
 
         private void PopularityGraphClick(object sender, RoutedEventArgs e)
         {
-            UpdateGraphLineSeries(MainWindow.popularityDisplay);
+            UpdateGraphLineSeries(MainWindow.PopularityDisplay);
         }
 
         private void MoneyEarnedOnFuelClick(object sender, RoutedEventArgs e)

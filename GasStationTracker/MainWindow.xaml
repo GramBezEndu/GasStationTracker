@@ -32,6 +32,34 @@
                     <DataGridTextColumn Header="IGT" Binding="{Binding Path=IGT}"/>
                 </DataGrid.Columns>
             </DataGrid>
+            <Grid x:Name="SessionStatistics" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.Background>
+                    <SolidColorBrush Color="LightGray" Opacity="0.3"/>
+                </Grid.Background>
+                <Label Grid.Row="0" FontWeight="Bold">Session stats</Label>
+                <Image Grid.Row="1" Opacity="0.15" Source="/Assets/GasStationLogo.png"/>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0">Session time:</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SessionStats.SessionTime}"></TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0">Cash earned:</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionStats.CashEarned}"></TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="0">Popularity earned:</TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SessionStats.PopularityGained}"></TextBlock>
+                </Grid>
+            </Grid>
             <Grid x:Name="LiveGraphs" Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -67,7 +95,7 @@
                 <Grid.Background>
                     <SolidColorBrush Color="LightGray" Opacity="0.3"/>
                 </Grid.Background>
-                <Label Grid.Row="0">Settings</Label>
+                <Label Grid.Row="0" FontWeight="Bold">Settings</Label>
                 <Image Opacity="0.15" Grid.Row="1" Source="/Assets/GasStationLogo.png"/>
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
@@ -86,11 +114,13 @@
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Button x:Name="StartStop" Content="Start tracking" Grid.Row="0" Click="StartStopTracking"></Button>
                 <Button Click="RawDataClick" Content="Raw data" Grid.Row="1"></Button>
-                <Button Click="LiveGraphsClick" Content="Live Graphs" Grid.Row="2"></Button>
-                <Button Click="SettingsClick" Content="Settings" Grid.Row="3"></Button>
+                <Button Click="SessionStatsClick" Content="Session stats" Grid.Row="2"></Button>
+                <Button Click="LiveGraphsClick" Content="Live Graphs" Grid.Row="3"></Button>
+                <Button Click="SettingsClick" Content="Settings" Grid.Row="4"></Button>
             </Grid>
         </DockPanel>
         <Grid Grid.Row="3">
