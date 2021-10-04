@@ -42,12 +42,6 @@
                 </Grid.Background>
                 <Label Grid.Row="0" FontWeight="Bold">Session stats</Label>
                 <Image Grid.Row="1" Opacity="0.15" Source="/Assets/GasStationLogo.png"/>
-                <!--<DataGrid>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Key"/>
-                        <DataGridTextColumn Header="Value"/>
-                    </DataGrid.Columns>
-                </DataGrid>-->
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
@@ -59,11 +53,11 @@
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0">Session time: </TextBlock>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SessionStats.SessionTime, StringFormat=hh\\:mm\\:ss}"></TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.SessionTime, StringFormat=hh\\:mm\\:ss}"></TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="0">Cash earned: </TextBlock>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionStats.CashEarned}"></TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.CashEarned}"></TextBlock>
                     <TextBlock Grid.Row="2" Grid.Column="0">Popularity earned: </TextBlock>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SessionStats.PopularityGained}"></TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.PopularityGained}"></TextBlock>
                 </Grid>
             </Grid>
             <Grid x:Name="LiveGraphs" Visibility="Collapsed">
@@ -136,7 +130,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <TextBlock Text="Made by GramBezEndu" Grid.Row="0"></TextBlock>
-            <TextBlock Text="Version: ..." Grid.Row="1"></TextBlock>
+            <TextBlock Text="Version: 0.1.0" Grid.Row="1"></TextBlock>
             <TextBlock Text="Tested on game version: 1.0.1.37938"  Grid.Row="2"></TextBlock>
         </Grid>
         <TextBox x:Name="Logs" Text="LOGS:&#x0a;" Grid.Row="3" Grid.Column="1" Background="LightGray" IsReadOnly="True"></TextBox>

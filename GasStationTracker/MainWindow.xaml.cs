@@ -18,7 +18,7 @@ namespace GasStationTracker
     public partial class MainWindow : Window
     {
         public int intervalMinutes = 0;
-        public int intervalSeconds = 10;
+        public int intervalSeconds = 5;
 
         string fileName = "Data.json";
 
@@ -88,6 +88,10 @@ namespace GasStationTracker
             Plot.Axes.Add(new DateTimeAxis()
             {
                 Position = AxisPosition.Bottom,
+            });
+            Plot.Axes.Add(new LinearAxis()
+            {
+                Position = AxisPosition.Left,
             });
             Graph.Model = Plot;
         }
@@ -210,9 +214,12 @@ namespace GasStationTracker
             {
                 string content = File.ReadAllText(fileName);
                 var records = JsonConvert.DeserializeObject<RecordCollection>(content, settings);
-                foreach (var rec in records)
+                if (records != null)
                 {
-                    Records.Add(rec);
+                    foreach (var rec in records)
+                    {
+                        Records.Add(rec);
+                    }
                 }
             }
         }
@@ -257,8 +264,23 @@ namespace GasStationTracker
                 if (currentSerie.IsVisible == false)
                 {
                     currentSerie.IsVisible = true;
+                    AutoScaleGraph(this.Plot, this.Records);
                     Plot.InvalidatePlot(true);
                 }
+            }
+        }
+
+        public static void AutoScaleGraph(PlotModel model, RecordCollection records)
+        {
+            IEnumerable<Record> orderedByDate = records.OrderBy(x => x.Date);
+            //IEnumerable<Record> orderedByValue = records.OrderBy(x => x.Date);
+            if (orderedByDate.Count() >= 1 && model.Axes.Count() >= 1)
+            {
+                model.Axes[0].Reset();
+                model.Axes[0].Minimum = DateTimeAxis.ToDouble(orderedByDate.ElementAt(0).Date);
+                model.Axes[0].Maximum = DateTimeAxis.ToDouble(orderedByDate.Last().Date + new TimeSpan(0, 0, 60));
+                model.Axes[1].Reset();
+                //model.Axes[1].Minimum = LinearAxis.ToDouble()
             }
         }
 
@@ -298,26 +320,36 @@ namespace GasStationTracker
         private void CashGraphClick(object sender, RoutedEventArgs e)
         {
             UpdateGraphLineSeries(MainWindow.CashDisplay);
+            AutoScaleGraph(Plot, Records);
+            Plot.InvalidatePlot(true);
         }
 
         private void PopularityGraphClick(object sender, RoutedEventArgs e)
         {
             UpdateGraphLineSeries(MainWindow.PopularityDisplay);
+            AutoScaleGraph(Plot, Records);
+            Plot.InvalidatePlot(true);
         }
 
         private void MoneyEarnedOnFuelClick(object sender, RoutedEventArgs e)
         {
             UpdateGraphLineSeries(MainWindow.moneyEarnedFuelDisplay);
+            AutoScaleGraph(Plot, Records);
+            Plot.InvalidatePlot(true);
         }
 
         private void MoneySpentOnFuelClick(object sender, RoutedEventArgs e)
         {
             UpdateGraphLineSeries(MainWindow.moneySpentFuelDisplay);
+            AutoScaleGraph(Plot, Records);
+            Plot.InvalidatePlot(true);
         }
 
         private void CurrentFuelClick(object sender, RoutedEventArgs e)
         {
             UpdateGraphLineSeries(MainWindow.currentFuelDisplay);
+            AutoScaleGraph(Plot, Records);
+            Plot.InvalidatePlot(true);
         }
         #endregion
     }

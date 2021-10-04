@@ -35,7 +35,10 @@ namespace GasStationTracker
             if (DataGridBinding != null)
                 PrepareDataGrid(item);
             if (Plot != null)
+            {
                 UpdateGraphs(item);
+                MainWindow.AutoScaleGraph(Plot, this);
+            }
             base.InsertItem(index, item);
         }
 
