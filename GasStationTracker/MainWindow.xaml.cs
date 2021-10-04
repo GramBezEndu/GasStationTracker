@@ -63,7 +63,8 @@ namespace GasStationTracker
                     else
                     {
                         StartStop.Content = "Start tracking";
-                        Log("Closed process " + processName);
+                        Log("Process was closed " + processName);
+                        SessionStats.EndSession();
                     }
                     isTracking = value;
                 }
@@ -95,7 +96,7 @@ namespace GasStationTracker
         {
             if (IsTracking && gameProcessId != 0)
             {
-                if (IsRunning(gameProcessId))
+                if (memoryHandler.GetProcIdFromName(processName) != 0)
                 {
                     GetData();
                     Plot.InvalidatePlot(true);

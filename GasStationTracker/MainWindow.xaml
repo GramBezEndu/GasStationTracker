@@ -59,7 +59,7 @@
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0">Session time: </TextBlock>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SessionStats.SessionTime, StringFormat=HH:mm:ss}"></TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SessionStats.SessionTime, StringFormat=hh\\:mm\\:ss}"></TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="0">Cash earned: </TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionStats.CashEarned}"></TextBlock>
                     <TextBlock Grid.Row="2" Grid.Column="0">Popularity earned: </TextBlock>

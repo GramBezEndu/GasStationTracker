@@ -11,11 +11,22 @@ namespace GasStationTracker
     {
         public RecordCollection Records { get; set; }
 
-        public DateTime StartTime { get; set; }
-
-        public float CashEarned 
+        public DateTime StartTime
         {
-            get => cashEarned; 
+            get => startTime;
+            set
+            {
+                if (startTime != value)
+                {
+                    startTime = value;
+                    sessionEnded = false;
+                }
+            }
+        }
+
+        public float CashEarned
+        {
+            get => cashEarned;
             private set
             {
                 if (value != cashEarned)
@@ -26,8 +37,8 @@ namespace GasStationTracker
             }
         }
 
-        public int PopularityGained 
-        { 
+        public int PopularityGained
+        {
             get => popularityGained;
             private set
             {
@@ -36,14 +47,19 @@ namespace GasStationTracker
                     popularityGained = value;
                     NotifyPropertyChanged();
                 }
-            }    
+            }
         }
 
-        public TimeSpan SessionTime
-        {
-            get
+        public TimeSpan SessionTime 
+        { 
+            get => sessionTime;
+            private set
             {
-                return DateTime.Now - StartTime;
+                if (value != sessionTime)
+                {
+                    sessionTime = value;
+                    NotifyPropertyChanged();
+                }
             }
         }
 
@@ -56,6 +72,9 @@ namespace GasStationTracker
         private Record firstRecord;
         private float cashEarned;
         private int popularityGained;
+        private bool sessionEnded = false;
+        private DateTime startTime;
+        private TimeSpan sessionTime;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -77,13 +96,22 @@ namespace GasStationTracker
 
         public void Update()
         {
-            UpdateFirstRecord();
-            if (FirstRecord == null)
+            if (!sessionEnded)
             {
-                return;
+                UpdateFirstRecord();
+                if (FirstRecord == null)
+                {
+                    return;
+                }
+                CashEarned = (float)(Convert.ToDouble(GetLastRecord().GetValue(MainWindow.CashDisplay)) - Convert.ToDouble(FirstRecord.GetValue(MainWindow.CashDisplay)));
+                PopularityGained = (int)GetLastRecord().GetValue(MainWindow.PopularityDisplay) - (int)FirstRecord.GetValue(MainWindow.PopularityDisplay);
+                SessionTime = DateTime.Now - StartTime;
             }
-            CashEarned = (float)(Convert.ToDouble(GetLastRecord().GetValue(MainWindow.CashDisplay)) - Convert.ToDouble(FirstRecord.GetValue(MainWindow.CashDisplay)));
-            PopularityGained = (int)GetLastRecord().GetValue(MainWindow.PopularityDisplay) - (int)FirstRecord.GetValue(MainWindow.PopularityDisplay);
+        }
+
+        public void EndSession()
+        {
+            sessionEnded = true;
         }
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
