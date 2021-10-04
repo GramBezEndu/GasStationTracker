@@ -27,7 +27,7 @@
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
             <DataGrid x:Name="DataTable" AutoGenerateColumns="False" ItemsSource="{Binding Records}">
-                <DataGrid.Columns >
+                <DataGrid.Columns>
                     <DataGridTextColumn Header="Date" Binding="{Binding Path=Date}"/>
                     <DataGridTextColumn Header="IGT" Binding="{Binding Path=IGT}"/>
                 </DataGrid.Columns>
@@ -42,6 +42,12 @@
                 </Grid.Background>
                 <Label Grid.Row="0" FontWeight="Bold">Session stats</Label>
                 <Image Grid.Row="1" Opacity="0.15" Source="/Assets/GasStationLogo.png"/>
+                <!--<DataGrid>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Key"/>
+                        <DataGridTextColumn Header="Value"/>
+                    </DataGrid.Columns>
+                </DataGrid>-->
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
@@ -52,11 +58,11 @@
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0">Session time:</TextBlock>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SessionStats.SessionTime}"></TextBlock>
-                    <TextBlock Grid.Row="1" Grid.Column="0">Cash earned:</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="0">Session time: </TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SessionStats.SessionTime, StringFormat=HH:mm:ss}"></TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0">Cash earned: </TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SessionStats.CashEarned}"></TextBlock>
-                    <TextBlock Grid.Row="2" Grid.Column="0">Popularity earned:</TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="0">Popularity earned: </TextBlock>
                     <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SessionStats.PopularityGained}"></TextBlock>
                 </Grid>
             </Grid>
