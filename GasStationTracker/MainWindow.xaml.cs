@@ -102,10 +102,17 @@ namespace GasStationTracker
             {
                 if (memoryHandler.GetProcIdFromName(processName) != 0)
                 {
-                    GetData();
-                    Plot.InvalidatePlot(true);
-                    SessionStats?.Update();
-                    Save();
+                    if (InGame())
+                    {
+                        GetData();
+                        Plot.InvalidatePlot(true);
+                        SessionStats?.Update();
+                        Save();
+                    }
+                    else
+                    {
+                        Log("In Game Flag is set to false. Load your save file to start tracking.");
+                    }
                 }
                 else
                 {
@@ -144,7 +151,8 @@ namespace GasStationTracker
                 if (memoryHandler.OpenProcess(gameProcessId))
                 {
                     IsTracking = true;
-
+                    if (!InGame())
+                        Log("In Game Flag is set to false. Load your save file to start tracking.");
                 }
                 else
                 {
@@ -249,6 +257,15 @@ namespace GasStationTracker
                 return false; 
             }
             return true;
+        }
+
+        public bool InGame()
+        {
+            var value = memoryHandler.ReadByte("GSS2-Win64-Shipping.exe+0x3FD4A06");
+            if (value == 0)
+                return false;
+            else
+                return true;
         }
 
         private void UpdateGraphLineSeries(string currentFilter)
