@@ -177,11 +177,12 @@ namespace GasStationTracker
             var moneySpentOnFuel = CreateFloatRecord(MainWindow.moneySpentFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x580,0x1A0,0xE0,0xD8");
             var moneyEarnedOnFuel = CreateFloatRecord(MainWindow.moneyEarnedFuelDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x790");
             var currentFuelCapacity = CreateFloatRecord(MainWindow.currentFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,0x114");
+            var igt = memoryHandler.ReadFloat("GSS2-Win64-Shipping.exe+0x04115790,0x130,0x2E4");
 
             var record = new Record()
             {
                 Date = DateTime.Now,
-                IGT = new InGameTime(),
+                IGT = new InGameTime(igt),
                 SingleRecords = new List<SingleValue>()
                 {
                     cash,

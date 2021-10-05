@@ -55,7 +55,7 @@
                     <TextBlock Grid.Row="0" Grid.Column="0">Session time: </TextBlock>
                     <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.SessionTime, StringFormat=hh\\:mm\\:ss}"></TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="0">Cash earned: </TextBlock>
-                    <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.CashEarned}"></TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.CashEarned, StringFormat={}{0:F2}}"></TextBlock>
                     <TextBlock Grid.Row="2" Grid.Column="0">Popularity earned: </TextBlock>
                     <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.PopularityGained}"></TextBlock>
                 </Grid>
