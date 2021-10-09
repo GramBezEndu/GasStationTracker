@@ -7,6 +7,46 @@
         xmlns:local="clr-namespace:GasStationTracker"
         mc:Ignorable="d"
         Title="Gas Station Simulator Tracker" Height="720" Width="1280">
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="RoundButton">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="10" />
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style x:Key="ToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Content" Value="EDIT"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="border"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="contentPresenter"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                  Focusable="False"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  Margin="{TemplateBinding Padding}"
+                                                  RecognizesAccessKey="True"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Content" Value="Done"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -52,40 +92,13 @@
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0">Session time: </TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="0">Session time:</TextBlock>
                     <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.SessionTime, StringFormat=hh\\:mm\\:ss}"></TextBlock>
-                    <TextBlock Grid.Row="1" Grid.Column="0">Cash earned: </TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0">Cash earned:</TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.CashEarned, StringFormat={}{0:F2}}"></TextBlock>
-                    <TextBlock Grid.Row="2" Grid.Column="0">Popularity earned: </TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="0">Popularity earned:</TextBlock>
                     <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.PopularityGained}"></TextBlock>
                 </Grid>
-            </Grid>
-            <Grid x:Name="LiveGraphs" Visibility="Collapsed">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.Background>
-                    <SolidColorBrush Color="LightGray" Opacity="0.3"/>
-                </Grid.Background>
-                <Grid.DataContext>
-                    <local:GraphViewModel/>
-                </Grid.DataContext>
-                <Grid Grid.Row="0" VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Click="CashGraphClick">Cash</Button>
-                    <Button Grid.Column="1" Click="PopularityGraphClick">Popularity</Button>
-                    <Button Grid.Column="2" Click="MoneyEarnedOnFuelClick">Money earned on fuel</Button>
-                    <Button Grid.Column="3" Click="MoneySpentOnFuelClick">Money spent on fuel</Button>
-                    <Button Grid.Column="4" Click="CurrentFuelClick">Current Fuel</Button>
-                </Grid>
-                <oxy:PlotView x:Name="Graph" Background="Transparent" Grid.Row="1" Model="{Binding Plot}"></oxy:PlotView>
             </Grid>
             <Grid x:Name="Settings" Visibility="Collapsed">
                 <Grid.RowDefinitions>
@@ -105,6 +118,44 @@
                     <CheckBox Grid.Row="0" IsEnabled="False" IsChecked="False">Backup save files on quit</CheckBox>
                     <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="True">Add Herobrine</CheckBox>
                 </Grid>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="3">
+            <Grid x:Name="LiveGraphs" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.DataContext>
+                    <local:GraphViewModel/>
+                </Grid.DataContext>
+                <Grid Background="LightGray" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <ToggleButton Click="GraphViewClick" Grid.Row="0" Grid.Column="0" Style="{DynamicResource ToggleButtonStyle}">View</ToggleButton>
+                    <ToggleButton Grid.Row="0" Grid.Column="1">Export</ToggleButton>
+                    <Grid x:Name="ViewSettings" Grid.Row="1" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Click="CashGraphClick">Cash</Button>
+                        <Button Grid.Column="1" Click="PopularityGraphClick">Popularity</Button>
+                        <Button Grid.Column="2" Click="MoneyEarnedOnFuelClick">Money earned on fuel</Button>
+                        <Button Grid.Column="3" Click="MoneySpentOnFuelClick">Money spent on fuel</Button>
+                        <Button Grid.Column="4" Click="CurrentFuelClick">Current Fuel</Button>
+                    </Grid>
+                </Grid>
+                <oxy:PlotView x:Name="Graph" Background="Transparent" Grid.Row="1" Model="{Binding Plot}"></oxy:PlotView>
             </Grid>
         </Grid>
         <DockPanel Grid.Row="2" LastChildFill="True">
