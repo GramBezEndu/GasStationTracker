@@ -370,13 +370,6 @@ namespace GasStationTracker
             Plot.InvalidatePlot(true);
         }
 
-        private void GraphViewClick(object sender, RoutedEventArgs e)
-        {
-            if (ViewSettings.Visibility == Visibility.Visible)
-                ViewSettings.Visibility = Visibility.Collapsed;
-            else
-                ViewSettings.Visibility = Visibility.Visible;
-        }
         #endregion
     }
 }

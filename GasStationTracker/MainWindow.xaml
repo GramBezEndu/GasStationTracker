@@ -138,22 +138,30 @@
                         <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <ToggleButton Click="GraphViewClick" Grid.Row="0" Grid.Column="0" Style="{DynamicResource ToggleButtonStyle}">View</ToggleButton>
-                    <ToggleButton Grid.Row="0" Grid.Column="1">Export</ToggleButton>
-                    <Grid x:Name="ViewSettings" Grid.Row="1" Grid.ColumnSpan="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Click="CashGraphClick">Cash</Button>
-                        <Button Grid.Column="1" Click="PopularityGraphClick">Popularity</Button>
-                        <Button Grid.Column="2" Click="MoneyEarnedOnFuelClick">Money earned on fuel</Button>
-                        <Button Grid.Column="3" Click="MoneySpentOnFuelClick">Money spent on fuel</Button>
-                        <Button Grid.Column="4" Click="CurrentFuelClick">Current Fuel</Button>
-                    </Grid>
+                    <Expander x:Name="expander" Grid.ColumnSpan="2" ExpandDirection="Down" IsExpanded="False" HorizontalAlignment="Stretch">
+                        <Expander.Header>
+                            <TextBlock TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center" Text="View" FontWeight="Bold"/>
+                        </Expander.Header>
+                        <Popup Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=expander}"
+                   Width="{Binding ActualWidth, ElementName=expander}"
+                   Placement="Bottom"
+                   IsOpen="{Binding IsExpanded, ElementName=expander}">
+                            <Grid x:Name="ViewSettings" Grid.Row="1" Grid.ColumnSpan="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Click="CashGraphClick">Cash</Button>
+                                <Button Grid.Column="1" Click="PopularityGraphClick">Popularity</Button>
+                                <Button Grid.Column="2" Click="MoneyEarnedOnFuelClick">Money earned on fuel</Button>
+                                <Button Grid.Column="3" Click="MoneySpentOnFuelClick">Money spent on fuel</Button>
+                                <Button Grid.Column="4" Click="CurrentFuelClick">Current Fuel</Button>
+                            </Grid>
+                        </Popup>
+                    </Expander>
                 </Grid>
                 <oxy:PlotView x:Name="Graph" Background="Transparent" Grid.Row="1" Model="{Binding Plot}"></oxy:PlotView>
             </Grid>
