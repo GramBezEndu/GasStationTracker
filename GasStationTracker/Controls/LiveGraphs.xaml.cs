@@ -49,7 +49,7 @@ namespace GasStationTracker.Controls
             if (checkbox.IsChecked == true)
             {
                 UncheckAllExcept(checkbox.Name);
-                Graph.Model.UpdateGraphLineSeries(checkbox.Name);
+                Graph.Model.UpdateGraphLineSeries(checkbox.Content.ToString());
             }
             else
             {
