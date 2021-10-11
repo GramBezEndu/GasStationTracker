@@ -77,7 +77,7 @@ namespace GasStationTracker
             InitializeComponent();
 
             DataContext = this;
-            Records = new RecordCollection(DataTable, Plot);
+            Records = new RecordCollection(RawData.DataTable, Plot);
             SessionStats.Records = Records;
             memoryHandler = new Mem();
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
@@ -93,7 +93,7 @@ namespace GasStationTracker
             {
                 Position = AxisPosition.Left,
             });
-            Graph.Model = Plot;
+            LiveGraphs.Graph.Model = Plot;
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -306,14 +306,14 @@ namespace GasStationTracker
         private void SessionStatsClick(object sender, RoutedEventArgs e)
         {
             SessionStatistics.Visibility = Visibility.Visible;
-            DataTable.Visibility = Visibility.Collapsed;
+            RawData.Visibility = Visibility.Collapsed;
             LiveGraphs.Visibility = Visibility.Collapsed;
             Settings.Visibility = Visibility.Collapsed;
         }
 
         private void RawDataClick(object sender, RoutedEventArgs e)
         {
-            DataTable.Visibility = Visibility.Visible;
+            RawData.Visibility = Visibility.Visible;
             LiveGraphs.Visibility = Visibility.Collapsed;
             Settings.Visibility = Visibility.Collapsed;
             SessionStatistics.Visibility = Visibility.Collapsed;
@@ -322,7 +322,7 @@ namespace GasStationTracker
         private void LiveGraphsClick(object sender, RoutedEventArgs e)
         {
             LiveGraphs.Visibility = Visibility.Visible;
-            DataTable.Visibility = Visibility.Collapsed;
+            RawData.Visibility = Visibility.Collapsed;
             Settings.Visibility = Visibility.Collapsed;
             SessionStatistics.Visibility = Visibility.Collapsed;
         }
@@ -331,7 +331,7 @@ namespace GasStationTracker
         {
             Settings.Visibility = Visibility.Visible;
             LiveGraphs.Visibility = Visibility.Collapsed;
-            DataTable.Visibility = Visibility.Collapsed;
+            RawData.Visibility = Visibility.Collapsed;
             SessionStatistics.Visibility = Visibility.Collapsed;
         }
 

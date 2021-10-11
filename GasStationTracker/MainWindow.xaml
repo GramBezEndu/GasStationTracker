@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:oxy="http://oxyplot.org/wpf"
-        xmlns:local="clr-namespace:GasStationTracker"
+        xmlns:local="clr-namespace:GasStationTracker" xmlns:controls="clr-namespace:GasStationTracker.Controls"
         mc:Ignorable="d"
         Title="Gas Station Simulator Tracker" Height="720" Width="1280">
     <Window.Resources>
@@ -66,105 +66,12 @@
             </Grid.RowDefinitions>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
-            <DataGrid x:Name="DataTable" AutoGenerateColumns="False" ItemsSource="{Binding Records}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Date" Binding="{Binding Path=Date}"/>
-                    <DataGridTextColumn Header="IGT" Binding="{Binding Path=IGT}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-            <Grid x:Name="SessionStatistics" Visibility="Collapsed">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.Background>
-                    <SolidColorBrush Color="LightGray" Opacity="0.3"/>
-                </Grid.Background>
-                <Label Grid.Row="0" FontWeight="Bold">Session stats</Label>
-                <Image Grid.Row="1" Opacity="0.15" Source="/Assets/GasStationLogo.png"/>
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0">Session time:</TextBlock>
-                    <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.SessionTime, StringFormat=hh\\:mm\\:ss}"></TextBlock>
-                    <TextBlock Grid.Row="1" Grid.Column="0">Cash earned:</TextBlock>
-                    <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.CashEarned, StringFormat={}{0:F2}}"></TextBlock>
-                    <TextBlock Grid.Row="2" Grid.Column="0">Popularity earned:</TextBlock>
-                    <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.PopularityGained}"></TextBlock>
-                </Grid>
-            </Grid>
-            <Grid x:Name="Settings" Visibility="Collapsed">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.Background>
-                    <SolidColorBrush Color="LightGray" Opacity="0.3"/>
-                </Grid.Background>
-                <Label Grid.Row="0" FontWeight="Bold">Settings</Label>
-                <Image Opacity="0.15" Grid.Row="1" Source="/Assets/GasStationLogo.png"/>
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <CheckBox Grid.Row="0" IsEnabled="False" IsChecked="False">Backup save files on quit</CheckBox>
-                    <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="True">Add Herobrine</CheckBox>
-                </Grid>
-            </Grid>
+            <controls:RawData x:Name="RawData"></controls:RawData>
+            <controls:SessionStatistics x:Name="SessionStatistics" Visibility="Collapsed"></controls:SessionStatistics>
+            <controls:Settings x:Name="Settings" Visibility="Collapsed"></controls:Settings>
         </Grid>
         <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="3">
-            <Grid x:Name="LiveGraphs" Visibility="Collapsed">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.DataContext>
-                    <local:GraphViewModel/>
-                </Grid.DataContext>
-                <Grid Background="LightGray" Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Expander x:Name="expander" Grid.ColumnSpan="2" ExpandDirection="Down" IsExpanded="False" HorizontalAlignment="Stretch">
-                        <Expander.Header>
-                            <TextBlock TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center" Text="View" FontWeight="Bold"/>
-                        </Expander.Header>
-                        <Popup Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=expander}"
-                   Width="{Binding ActualWidth, ElementName=expander}"
-                   Placement="Bottom"
-                   IsOpen="{Binding IsExpanded, ElementName=expander}">
-                            <Grid x:Name="ViewSettings" Grid.Row="1" Grid.ColumnSpan="2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0" Click="CashGraphClick">Cash</Button>
-                                <Button Grid.Column="1" Click="PopularityGraphClick">Popularity</Button>
-                                <Button Grid.Column="2" Click="MoneyEarnedOnFuelClick">Money earned on fuel</Button>
-                                <Button Grid.Column="3" Click="MoneySpentOnFuelClick">Money spent on fuel</Button>
-                                <Button Grid.Column="4" Click="CurrentFuelClick">Current Fuel</Button>
-                            </Grid>
-                        </Popup>
-                    </Expander>
-                </Grid>
-                <oxy:PlotView x:Name="Graph" Background="Transparent" Grid.Row="1" Model="{Binding Plot}"></oxy:PlotView>
-            </Grid>
+            <controls:LiveGraphs x:Name="LiveGraphs" Visibility="Collapsed"></controls:LiveGraphs>
         </Grid>
         <DockPanel Grid.Row="2" LastChildFill="True">
             <Grid>
