@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Navigation;
 using Memory;
 using Newtonsoft.Json;
 using OxyPlot;
@@ -18,12 +17,30 @@ namespace GasStationTracker
     /// </summary>
     public partial class MainWindow : Window
     {
-        public int intervalMinutes = 0;
-        public int intervalSeconds = 5;
+        public SessionStatistics SessionStats { get; private set; } = new SessionStatistics();
 
-        string fileName = "Data.json";
+        public PlotModel Plot { get; private set; } = new PlotModel();
 
-        JsonSerializerSettings settings = new JsonSerializerSettings 
+        public RecordCollection Records { get => records; private set => records = value; }
+
+        public string Version
+        {
+            get
+            {
+                Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                return String.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+            }
+        }
+
+        private RecordCollection records;
+
+        private readonly int intervalMinutes = 0;
+
+        private readonly int intervalSeconds = 5;
+
+        private readonly string fileName = "Data.json";
+
+        private readonly JsonSerializerSettings settings = new JsonSerializerSettings 
         {
             NullValueHandling = NullValueHandling.Ignore,
             DateFormatHandling = DateFormatHandling.MicrosoftDateFormat,
@@ -31,22 +48,20 @@ namespace GasStationTracker
             TypeNameHandling = TypeNameHandling.Auto,
         };
 
-        public SessionStatistics SessionStats { get; private set; } = new SessionStatistics();
-        public PlotModel Plot { get; private set; } = new PlotModel();
-        public RecordCollection Records { get => records; private set => records = value; }
-        private RecordCollection records;
-        System.Windows.Threading.DispatcherTimer dispatcherTimer;
-        Mem memoryHandler;
+        private readonly System.Windows.Threading.DispatcherTimer dispatcherTimer;
+
+        private readonly Mem memoryHandler;
 
         #region GssData
-        const string processName = "GSS2-Win64-Shipping";
-        public static string CashDisplay = "Cash";
-        public static string PopularityDisplay = "Popularity";
-        const string moneySpentFuelDisplay = "Money Spent On Fuel";
-        const string moneyEarnedFuelDisplay = "Money Earned On Fuel";
-        const string currentFuelDisplay = "Current Fuel Capacity";
-        int gameProcessId;
-        bool isTracking = false;
+        public static readonly string CashDisplay = "Cash";
+
+        public static readonly string PopularityDisplay = "Popularity";
+
+        public static readonly string MoneySpentOnFuelDisplay = "Money Spent On Fuel";
+
+        public static readonly string MoneyEarnedOnFuelDisplay = "Money Earned On Fuel";
+
+        public static readonly string CurrentFuelDisplay = "Current Fuel Capacity";
 
         public bool IsTracking
         {
@@ -71,6 +86,12 @@ namespace GasStationTracker
                 }
             }
         }
+
+        private int gameProcessId;
+
+        private bool isTracking = false;
+
+        private readonly string processName = "GSS2-Win64-Shipping";
         #endregion
 
         public MainWindow()
@@ -175,9 +196,9 @@ namespace GasStationTracker
         {
             var cash = CreateFloatRecord(MainWindow.CashDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,11C");
             var popularity = CreateIntRecord(MainWindow.PopularityDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x888");
-            var moneySpentOnFuel = CreateFloatRecord(MainWindow.moneySpentFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x580,0x1A0,0xE0,0xD8");
-            var moneyEarnedOnFuel = CreateFloatRecord(MainWindow.moneyEarnedFuelDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x790");
-            var currentFuelCapacity = CreateFloatRecord(MainWindow.currentFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,0x114");
+            var moneySpentOnFuel = CreateFloatRecord(MainWindow.MoneySpentOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x580,0x1A0,0xE0,0xD8");
+            var moneyEarnedOnFuel = CreateFloatRecord(MainWindow.MoneyEarnedOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x790");
+            var currentFuelCapacity = CreateFloatRecord(MainWindow.CurrentFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,0x114");
             var igt = memoryHandler.ReadFloat("GSS2-Win64-Shipping.exe+0x04115790,0x130,0x2E4");
 
             var record = new Record()
@@ -292,7 +313,6 @@ namespace GasStationTracker
         public static void AutoScaleGraph(PlotModel model, RecordCollection records)
         {
             IEnumerable<Record> orderedByDate = records.OrderBy(x => x.Date);
-            //IEnumerable<Record> orderedByValue = records.OrderBy(x => x.Date);
             if (orderedByDate.Count() >= 1 && model.Axes.Count() >= 1)
             {
                 model.Axes[0].Reset();
@@ -352,38 +372,24 @@ namespace GasStationTracker
 
         private void MoneyEarnedOnFuelClick(object sender, RoutedEventArgs e)
         {
-            UpdateGraphLineSeries(MainWindow.moneyEarnedFuelDisplay);
+            UpdateGraphLineSeries(MainWindow.MoneyEarnedOnFuelDisplay);
             AutoScaleGraph(Plot, Records);
             Plot.InvalidatePlot(true);
         }
 
         private void MoneySpentOnFuelClick(object sender, RoutedEventArgs e)
         {
-            UpdateGraphLineSeries(MainWindow.moneySpentFuelDisplay);
+            UpdateGraphLineSeries(MainWindow.MoneySpentOnFuelDisplay);
             AutoScaleGraph(Plot, Records);
             Plot.InvalidatePlot(true);
         }
 
         private void CurrentFuelClick(object sender, RoutedEventArgs e)
         {
-            UpdateGraphLineSeries(MainWindow.currentFuelDisplay);
+            UpdateGraphLineSeries(MainWindow.CurrentFuelDisplay);
             AutoScaleGraph(Plot, Records);
             Plot.InvalidatePlot(true);
         }
-
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            // for .NET Core you need to add UseShellExecute = true
-            // see https://docs.microsoft.com/dotnet/api/system.diagnostics.processstartinfo.useshellexecute#property-value
-            var destinationurl = e.Uri.AbsoluteUri;
-            var sInfo = new System.Diagnostics.ProcessStartInfo(destinationurl)
-            {
-                UseShellExecute = true,
-            };
-            System.Diagnostics.Process.Start(sInfo);
-            e.Handled = true;
-        }
-
         #endregion
     }
 }

@@ -12,8 +12,8 @@ namespace GasStationTracker.Controls
         {
             if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
             {
-                userControl.Width = double.NaN; ;
-                userControl.Height = double.NaN; ;
+                userControl.Width = double.NaN;
+                userControl.Height = double.NaN;
             }
         }
     }

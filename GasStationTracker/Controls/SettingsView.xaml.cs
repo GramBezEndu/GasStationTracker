@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,11 +14,11 @@ using System.Windows.Shapes;
 namespace GasStationTracker.Controls
 {
     /// <summary>
-    /// Interaction logic for Settings.xaml
+    /// Interaction logic for SettingsView.xaml
     /// </summary>
-    public partial class Settings : UserControl
+    public partial class SettingsView : UserControl
     {
-        public Settings()
+        public SettingsView()
         {
             InitializeComponent();
             this.ResetSize();

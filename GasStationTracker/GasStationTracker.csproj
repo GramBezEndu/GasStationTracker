@@ -12,6 +12,12 @@
   <AllowUnsafeBlocks>true</AllowUnsafeBlocks>   
 </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <Deterministic>false</Deterministic>
+</PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>

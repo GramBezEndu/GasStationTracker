@@ -18,10 +18,17 @@ namespace GasStationTracker.Controls
     /// </summary>
     public partial class LiveGraphs : UserControl
     {
+        public List<string> TimingMethods { get; set; } = new List<string>()
+        {
+            "IGT",
+            "Real Time",
+        };
+
         public LiveGraphs()
         {
             InitializeComponent();
             this.ResetSize();
+            TimingMethodsList.ItemsSource = TimingMethods;
         }
     }
 }

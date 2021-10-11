@@ -31,29 +31,41 @@
                    Width="{Binding ActualWidth, ElementName=expander}"
                    Placement="Bottom"
                    IsOpen="{Binding IsExpanded, ElementName=expander}">
-                    <Grid x:Name="ViewSettings" Grid.Row="1" Grid.ColumnSpan="2">
-                        <Grid.Background>
-                            <SolidColorBrush Color="#f5f5f5"/>
-                        </Grid.Background>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold">Context:</TextBlock>
-                        <CheckBox Grid.Row="1" Grid.Column="0">Cash</CheckBox>
-                        <CheckBox Grid.Row="2" Grid.Column="0">Popularity</CheckBox>
-                        <CheckBox Grid.Row="3" Grid.Column="0">Money earned on fuel</CheckBox>
-                        <CheckBox Grid.Row="4" Grid.Column="0">Money spent on fuel</CheckBox>
-                        <CheckBox Grid.Row="5" Grid.Column="0">Current Fuel</CheckBox>
-                    </Grid>
+                    <Border BorderBrush="Black" BorderThickness="1">
+                        <Grid x:Name="ViewSettings" Grid.Row="1" Grid.ColumnSpan="2">
+                            <Grid.Background>
+                                <SolidColorBrush Color="#f5f5f5"/>
+                            </Grid.Background>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Margin="5,0,0,0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold">Context</TextBlock>
+                            <CheckBox Margin="5,0,0,0" Grid.Row="1" Grid.Column="0">Cash</CheckBox>
+                            <CheckBox Margin="5,0,0,0" Grid.Row="2" Grid.Column="0">Popularity</CheckBox>
+                            <CheckBox Margin="5,0,0,0" Grid.Row="3" Grid.Column="0">Money earned on fuel</CheckBox>
+                            <CheckBox Margin="5,0,0,0" Grid.Row="4" Grid.Column="0">Money spent on fuel</CheckBox>
+                            <CheckBox Margin="5,0,0,0" Grid.Row="5" Grid.Column="0">Current Fuel</CheckBox>
+                            <Expander Header="Timing Method" Margin="5,0,0,0" Grid.Row="0" Grid.RowSpan="5" Grid.Column="2" FontWeight="Bold">
+                                <ListView Name="TimingMethodsList" FontWeight="Bold" Height="Auto">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding}"/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Expander>
+                        </Grid>
+                    </Border>
                 </Popup>
             </Expander>
         </Grid>

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="GasStationTracker.Controls.Settings"
+﻿<UserControl x:Class="GasStationTracker.Controls.SettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -21,9 +21,11 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" FontWeight="Bold">Application</TextBlock>
-            <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="False">Backup save files on quit</CheckBox>
+            <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="False">Check for updates on startup</CheckBox>
+            <CheckBox Grid.Row="2" IsEnabled="False" IsChecked="False">Backup save files on quit</CheckBox>
         </Grid>
         <Grid Margin="5,0" Grid.Row="2">
             <Grid.RowDefinitions>

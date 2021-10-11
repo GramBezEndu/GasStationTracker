@@ -70,11 +70,11 @@ namespace GasStationTracker
         }
 
         private Record firstRecord;
-        private float cashEarned;
-        private int popularityGained;
+        private float cashEarned = 0.00f;
+        private int popularityGained = 0;
         private bool sessionEnded = false;
         private DateTime startTime;
-        private TimeSpan sessionTime;
+        private TimeSpan sessionTime = new TimeSpan(0);
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -116,10 +116,7 @@ namespace GasStationTracker
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

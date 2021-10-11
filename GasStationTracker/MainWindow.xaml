@@ -58,6 +58,7 @@
             <RowDefinition Height="10*"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
         </Grid.RowDefinitions>
+        <Border Grid.Row="1" Panel.ZIndex="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1"></Border>
         <Image Source="/Assets/GasStationLogo.png" Name="Logo" Grid.Row="1"/>
         <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
             <Grid.RowDefinitions>
@@ -68,9 +69,9 @@
         <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
             <controls:RawData x:Name="RawData"></controls:RawData>
             <controls:SessionStatistics x:Name="SessionStatistics" Visibility="Collapsed"></controls:SessionStatistics>
-            <controls:Settings x:Name="Settings" Visibility="Collapsed"></controls:Settings>
+            <controls:SettingsView x:Name="Settings" Visibility="Collapsed"></controls:SettingsView>
         </Grid>
-        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="3">
+        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
             <controls:LiveGraphs x:Name="LiveGraphs" Visibility="Collapsed"></controls:LiveGraphs>
         </Grid>
         <DockPanel Grid.Row="2" LastChildFill="True">
@@ -89,22 +90,9 @@
                 <Button Click="SettingsClick" Content="Settings" Grid.Row="4"></Button>
             </Grid>
         </DockPanel>
-        <Grid Grid.Row="3">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
-            <TextBlock Text="Made by GramBezEndu" Grid.Row="0"></TextBlock>
-            <TextBlock Grid.Row="1">           
-                <Hyperlink NavigateUri="https://github.com/GramBezEndu/GasStationTracker" RequestNavigate="Hyperlink_RequestNavigate">
-                    Github project
-                </Hyperlink>
-            </TextBlock>
-            <TextBlock Text="Version: 0.1.0" Grid.Row="2"></TextBlock>
-            <TextBlock Text="Tested on game version: 1.0.1.37938"  Grid.Row="3"></TextBlock>
-        </Grid>
-        <TextBox x:Name="Logs" Text="LOGS:&#x0a;" Grid.Row="4" Grid.Column="1" Background="LightGray" IsReadOnly="True"></TextBox>
+        <controls:ApplicationInfo Grid.Row="3"></controls:ApplicationInfo>
+        <Border Grid.Row="4" Grid.Column="1" BorderBrush="Black" BorderThickness="1">
+            <TextBox x:Name="Logs" Text="LOGS:&#x0a;" Background="LightGray" IsReadOnly="True"></TextBox>
+        </Border>
     </Grid>
 </Window>
