@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Navigation;
 using Memory;
 using Newtonsoft.Json;
 using OxyPlot;
@@ -368,6 +369,19 @@ namespace GasStationTracker
             UpdateGraphLineSeries(MainWindow.currentFuelDisplay);
             AutoScaleGraph(Plot, Records);
             Plot.InvalidatePlot(true);
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            // for .NET Core you need to add UseShellExecute = true
+            // see https://docs.microsoft.com/dotnet/api/system.diagnostics.processstartinfo.useshellexecute#property-value
+            var destinationurl = e.Uri.AbsoluteUri;
+            var sInfo = new System.Diagnostics.ProcessStartInfo(destinationurl)
+            {
+                UseShellExecute = true,
+            };
+            System.Diagnostics.Process.Start(sInfo);
+            e.Handled = true;
         }
 
         #endregion

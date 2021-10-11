@@ -91,14 +91,20 @@
         </DockPanel>
         <Grid Grid.Row="3">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <TextBlock Text="Made by GramBezEndu" Grid.Row="0"></TextBlock>
-            <TextBlock Text="Version: 0.1.0" Grid.Row="1"></TextBlock>
-            <TextBlock Text="Tested on game version: 1.0.1.37938"  Grid.Row="2"></TextBlock>
+            <TextBlock Grid.Row="1">           
+                <Hyperlink NavigateUri="https://github.com/GramBezEndu/GasStationTracker" RequestNavigate="Hyperlink_RequestNavigate">
+                    Github project
+                </Hyperlink>
+            </TextBlock>
+            <TextBlock Text="Version: 0.1.0" Grid.Row="2"></TextBlock>
+            <TextBlock Text="Tested on game version: 1.0.1.37938"  Grid.Row="3"></TextBlock>
         </Grid>
-        <TextBox x:Name="Logs" Text="LOGS:&#x0a;" Grid.Row="3" Grid.Column="1" Background="LightGray" IsReadOnly="True"></TextBox>
+        <TextBox x:Name="Logs" Text="LOGS:&#x0a;" Grid.Row="4" Grid.Column="1" Background="LightGray" IsReadOnly="True"></TextBox>
     </Grid>
 </Window>

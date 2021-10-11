@@ -14,9 +14,9 @@
         <Grid.Background>
             <SolidColorBrush Color="LightGray" Opacity="0.3"/>
         </Grid.Background>
-        <Label Grid.Row="0" FontWeight="Bold">Session stats</Label>
+        <Label Grid.Row="0" FontWeight="Bold" Background="LightGray">Session stats</Label>
         <Image Grid.Row="1" Opacity="0.15" Source="/Assets/GasStationLogo.png"/>
-        <Grid Grid.Row="1">
+        <Grid Margin="5,0" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>

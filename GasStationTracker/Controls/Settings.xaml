@@ -9,19 +9,28 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.Background>
             <SolidColorBrush Color="LightGray" Opacity="0.3"/>
         </Grid.Background>
-        <Label Grid.Row="0" FontWeight="Bold">Settings</Label>
-        <Image Opacity="0.15" Grid.Row="1" Source="/Assets/GasStationLogo.png"/>
-        <Grid Grid.Row="1">
+        <Label Grid.Row="0" FontWeight="Bold" Background="LightGray">Settings</Label>
+        <Image Opacity="0.15" Grid.Row="1" Grid.RowSpan="2" Source="/Assets/GasStationLogo.png"/>
+        <Grid Margin="5,0" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-            <CheckBox Grid.Row="0" IsEnabled="False" IsChecked="False">Backup save files on quit</CheckBox>
+            <TextBlock Grid.Row="0" FontWeight="Bold">Application</TextBlock>
+            <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="False">Backup save files on quit</CheckBox>
+        </Grid>
+        <Grid Margin="5,0" Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontWeight="Bold">Game</TextBlock>
             <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="True">Add Herobrine</CheckBox>
         </Grid>
     </Grid>
