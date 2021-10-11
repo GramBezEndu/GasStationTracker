@@ -41,6 +41,33 @@ namespace GasStationTracker.Controls
                 { checkbox3.Name, checkbox3 },
                 { checkbox4.Name, checkbox4 },
             };
+            this.Loaded += new RoutedEventHandler(OnViewLoaded);
+        }
+
+        private void OnViewLoaded(object sender, RoutedEventArgs e)
+        {
+            Window w = Window.GetWindow(expander);
+            // w should not be Null now!
+            if (null != w)
+            {
+                w.LocationChanged += delegate (object sender2, EventArgs args)
+                {
+                    var offset = ViewSettingsPopUp.HorizontalOffset;
+                    // "bump" the offset to cause the popup to reposition itself
+                    //   on its own
+                    ViewSettingsPopUp.HorizontalOffset = offset + 1;
+                    ViewSettingsPopUp.HorizontalOffset = offset;
+                };
+                // Also handle the window being resized (so the popup's position stays
+                //  relative to its target element if the target element moves upon 
+                //  window resize)
+                w.SizeChanged += delegate (object sender3, SizeChangedEventArgs e2)
+                {
+                    var offset = ViewSettingsPopUp.HorizontalOffset;
+                    ViewSettingsPopUp.HorizontalOffset = offset + 1;
+                    ViewSettingsPopUp.HorizontalOffset = offset;
+                };
+            }
         }
 
         private void ContextClick(object sender, RoutedEventArgs e)

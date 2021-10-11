@@ -27,7 +27,7 @@
                 <Expander.Header>
                     <TextBlock TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center" Text="View" FontWeight="Bold"/>
                 </Expander.Header>
-                <Popup Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=expander}"
+                <Popup x:Name="ViewSettingsPopUp" Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=expander}"
                    Width="{Binding ActualWidth, ElementName=expander}"
                    Placement="Bottom"
                    IsOpen="{Binding IsExpanded, ElementName=expander}">
