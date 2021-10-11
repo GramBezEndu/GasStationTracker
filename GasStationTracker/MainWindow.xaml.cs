@@ -102,10 +102,6 @@ namespace GasStationTracker
             Records = new RecordCollection(RawData.DataTable, Plot);
             SessionStats.Records = Records;
             memoryHandler = new Mem();
-            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = new TimeSpan(0, intervalMinutes, intervalSeconds);
-            dispatcherTimer.Start();
             Load();
             Plot.Axes.Add(new DateTimeAxis()
             {
@@ -116,6 +112,10 @@ namespace GasStationTracker
                 Position = AxisPosition.Left,
             });
             LiveGraphs.Graph.Model = Plot;
+            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Interval = new TimeSpan(0, intervalMinutes, intervalSeconds);
+            dispatcherTimer.Start();
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -291,38 +291,6 @@ namespace GasStationTracker
                 return true;
         }
 
-        private void UpdateGraphLineSeries(string currentFilter)
-        {
-            ElementCollection<Series> series = Plot.Series;
-            foreach (var serie in series)
-            {
-                serie.IsVisible = false;
-            }
-            var currentSerie = series.FirstOrDefault(x => x.Title == currentFilter);
-            if (currentSerie != null)
-            {
-                if (currentSerie.IsVisible == false)
-                {
-                    currentSerie.IsVisible = true;
-                    AutoScaleGraph(this.Plot, this.Records);
-                    Plot.InvalidatePlot(true);
-                }
-            }
-        }
-
-        public static void AutoScaleGraph(PlotModel model, RecordCollection records)
-        {
-            IEnumerable<Record> orderedByDate = records.OrderBy(x => x.Date);
-            if (orderedByDate.Count() >= 1 && model.Axes.Count() >= 1)
-            {
-                model.Axes[0].Reset();
-                model.Axes[0].Minimum = DateTimeAxis.ToDouble(orderedByDate.ElementAt(0).Date);
-                model.Axes[0].Maximum = DateTimeAxis.ToDouble(orderedByDate.Last().Date + new TimeSpan(0, 0, 60));
-                model.Axes[1].Reset();
-                //model.Axes[1].Minimum = LinearAxis.ToDouble()
-            }
-        }
-
         #region Buttons
         private void SessionStatsClick(object sender, RoutedEventArgs e)
         {
@@ -354,41 +322,6 @@ namespace GasStationTracker
             LiveGraphs.Visibility = Visibility.Collapsed;
             RawData.Visibility = Visibility.Collapsed;
             SessionStatistics.Visibility = Visibility.Collapsed;
-        }
-
-        private void CashGraphClick(object sender, RoutedEventArgs e)
-        {
-            UpdateGraphLineSeries(MainWindow.CashDisplay);
-            AutoScaleGraph(Plot, Records);
-            Plot.InvalidatePlot(true);
-        }
-
-        private void PopularityGraphClick(object sender, RoutedEventArgs e)
-        {
-            UpdateGraphLineSeries(MainWindow.PopularityDisplay);
-            AutoScaleGraph(Plot, Records);
-            Plot.InvalidatePlot(true);
-        }
-
-        private void MoneyEarnedOnFuelClick(object sender, RoutedEventArgs e)
-        {
-            UpdateGraphLineSeries(MainWindow.MoneyEarnedOnFuelDisplay);
-            AutoScaleGraph(Plot, Records);
-            Plot.InvalidatePlot(true);
-        }
-
-        private void MoneySpentOnFuelClick(object sender, RoutedEventArgs e)
-        {
-            UpdateGraphLineSeries(MainWindow.MoneySpentOnFuelDisplay);
-            AutoScaleGraph(Plot, Records);
-            Plot.InvalidatePlot(true);
-        }
-
-        private void CurrentFuelClick(object sender, RoutedEventArgs e)
-        {
-            UpdateGraphLineSeries(MainWindow.CurrentFuelDisplay);
-            AutoScaleGraph(Plot, Records);
-            Plot.InvalidatePlot(true);
         }
         #endregion
     }

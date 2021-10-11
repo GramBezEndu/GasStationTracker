@@ -24,11 +24,46 @@ namespace GasStationTracker.Controls
             "Real Time",
         };
 
+        public string CurrentMethod { get; set; } = "IGT";
+
+        Dictionary<string, CheckBox> checkboxes;
+
         public LiveGraphs()
         {
             InitializeComponent();
             this.ResetSize();
             TimingMethodsList.ItemsSource = TimingMethods;
+            checkboxes = new Dictionary<string, CheckBox>()
+            {
+                { checkbox0.Name, checkbox0 },
+                { checkbox1.Name, checkbox1 },
+                { checkbox2.Name, checkbox2 },
+                { checkbox3.Name, checkbox3 },
+                { checkbox4.Name, checkbox4 },
+            };
+        }
+
+        private void ContextClick(object sender, RoutedEventArgs e)
+        {
+            var checkbox = (CheckBox)sender as CheckBox;
+            if (checkbox.IsChecked == true)
+            {
+                UncheckAllExcept(checkbox.Name);
+                Graph.Model.UpdateGraphLineSeries(checkbox.Name);
+            }
+            else
+            {
+                Graph.Model.UpdateGraphLineSeries(String.Empty);
+            }
+        }
+
+        private void UncheckAllExcept(string name)
+        {
+            foreach(var checkbox in checkboxes.Values)
+            {
+                checkbox.IsChecked = false;
+            }
+            checkboxes[name].IsChecked = true;
         }
     }
 }

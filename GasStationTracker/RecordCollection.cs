@@ -37,7 +37,7 @@ namespace GasStationTracker
             if (Plot != null)
             {
                 UpdateGraphs(item);
-                MainWindow.AutoScaleGraph(Plot, this);
+                Plot.AutoScaleGraph();
             }
             base.InsertItem(index, item);
         }
