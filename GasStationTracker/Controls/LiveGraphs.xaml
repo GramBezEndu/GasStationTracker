@@ -6,6 +6,16 @@
              xmlns:local="clr-namespace:GasStationTracker.Controls" xmlns:oxy="http://oxyplot.org/wpf" xmlns:gasstationtracker="clr-namespace:GasStationTracker"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <gasstationtracker:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <!--<Style x:Key="ExpanderStyle" TargetType="{x:Type Expander}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>-->
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -23,14 +33,15 @@
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Expander x:Name="expander" Grid.ColumnSpan="2" ExpandDirection="Down" IsExpanded="False" HorizontalAlignment="Stretch">
+            <Expander x:Name="expander" Grid.ColumnSpan="2" ExpandDirection="Down" IsExpanded="{Binding IsOpen, Mode=TwoWay, ElementName=ViewSettingsPopUp}" HorizontalAlignment="Stretch" Loaded="expander_Loaded">
                 <Expander.Header>
                     <TextBlock TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center" Text="View" FontWeight="Bold"/>
                 </Expander.Header>
                 <Popup x:Name="ViewSettingsPopUp" Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=expander}"
                    Width="{Binding ActualWidth, ElementName=expander}"
                    Placement="Bottom"
-                   IsOpen="{Binding IsExpanded, ElementName=expander}">
+                   StaysOpen="False"
+                   IsOpen="False">
                     <Border BorderBrush="Black" BorderThickness="1">
                         <Grid x:Name="ViewSettings" Grid.Row="1" Grid.ColumnSpan="2">
                             <Grid.Background>

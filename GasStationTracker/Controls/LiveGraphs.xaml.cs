@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -42,6 +45,13 @@ namespace GasStationTracker.Controls
                 { checkbox4.Name, checkbox4 },
             };
             this.Loaded += new RoutedEventHandler(OnViewLoaded);
+            //ViewSettingsPopUp.MouseUp += ViewSettingsPopUp_MouseUp;
+        }
+
+        private void ViewSettingsPopUp_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            //if (expander.IsExpanded)
+            //    expander.IsExpanded = false;
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
@@ -91,6 +101,43 @@ namespace GasStationTracker.Controls
                 checkbox.IsChecked = false;
             }
             checkboxes[name].IsChecked = true;
+        }
+
+        private void expander_Loaded(object sender, RoutedEventArgs e)
+        {
+            Expander expander = sender as Expander;
+            if (expander != null)
+            {
+                expander.PreviewMouseLeftButtonDown += (ss, ee) =>
+                {
+                    ee.Handled = ee.ClickCount < 1;
+                    expander.IsExpanded = true;
+                };
+                expander.PreviewMouseLeftButtonUp += (ss, ee) =>
+                {
+                    if (expander.IsExpanded)
+                    {
+                        var popup = (Popup)expander.Content;
+                        var positionRelative = ee.GetPosition(popup);
+                        //TODO: Get popup real height
+                        double height = ViewSettings.ActualHeight;
+                        bool popupClicked = positionRelative.X >= 0 &&
+                            positionRelative.X <= popup.Width &&
+                            positionRelative.Y >= 0 &&
+                            positionRelative.Y <= height;
+                        if (!popupClicked)
+                        {
+                            ee.Handled = true;
+                        }
+                    }
+                    else
+                    {
+                        expander.IsExpanded = false;
+                        Keyboard.ClearFocus();
+                        ee.Handled = true;
+                    }
+                };
+            }
         }
     }
 }
