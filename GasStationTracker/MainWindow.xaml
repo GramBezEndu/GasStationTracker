@@ -78,14 +78,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="0.5*"></RowDefinition>
-            <RowDefinition Height="8*"></RowDefinition>
+            <RowDefinition Height="7.5*"></RowDefinition>
             <RowDefinition Height="10*"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#363377"></Grid>
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Foreground="White" FontSize="22" FontFamily="/Assets/#Mono" Margin="12,0" VerticalAlignment="Center">Gas Station Simulator Tracker</TextBlock>
-        <Border Grid.Row="2" Panel.ZIndex="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="#1C053A" BorderThickness="2"></Border>
-        <Image Source="/Assets/GasStationLogo.png" Name="Logo" Grid.Row="2" HorizontalAlignment="Center" Width="230"/>
+        <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#363377" MouseDown="DragWindow">
+            <TextBlock Foreground="White" FontSize="22" FontFamily="/Assets/#Mono" Margin="12,0" VerticalAlignment="Center">Gas Station Simulator Tracker</TextBlock>
+        </Grid>
+        <Border Grid.Row="2" Panel.ZIndex="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="#1C053A" BorderThickness="1"></Border>
+        <Image Source="/Assets/GasStationLogo.png" Name="Logo" Grid.Row="2" HorizontalAlignment="Center" Width="238"/>
         <Grid Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
