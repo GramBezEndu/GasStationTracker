@@ -19,20 +19,28 @@ using System.Xml;
 
 namespace GasStationTracker.Controls
 {
+    public enum PopupPlacement
+    {
+        TopLeft = 0,
+        TopRight = 1,
+        BottomLeft = 2,
+        BottomRight = 3,
+    };
+
     /// <summary>
     /// Interaction logic for ViewAsPopup.xaml
     /// </summary>
     public partial class ViewAsPopup : UserControl, INotifyPropertyChanged
     {
-        public List<string> PlacementMethods { get; set; } = new List<string>()
+        public List<PopupPlacement> PlacementMethods { get; set; } = new List<PopupPlacement>()
         {
-            "Top Left",
-            "Top Right",
-            "Bottom Left",
-            "Bottom Right",
+            PopupPlacement.TopLeft,
+            PopupPlacement.TopRight,
+            PopupPlacement.BottomLeft,
+            PopupPlacement.BottomRight,
         };
 
-        public string CurrentPlacement
+        public PopupPlacement CurrentPlacement
         {
             get => PlacementMethods[SelectedPlacementIndex];
         }
@@ -88,16 +96,16 @@ namespace GasStationTracker.Controls
             {
                 switch (CurrentPlacement)
                 {
-                    case "Top Left":
+                    case PopupPlacement.TopLeft:
                         positions[0] = new CustomPopupPlacement(new Point(0, 0), PopupPrimaryAxis.None);
                         break;
-                    case "Top Right":
+                    case PopupPlacement.TopRight:
                         positions[0] = new CustomPopupPlacement(new Point(WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Width - PopupContent.ActualWidth - horizontalSafePixels, 0), PopupPrimaryAxis.None);
                         break;
-                    case "Bottom Left":
+                    case PopupPlacement.BottomLeft:
                         positions[0] = new CustomPopupPlacement(new Point(0, WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Height - PopupContent.ActualHeight - verticalSafePixels), PopupPrimaryAxis.None);
                         break;
-                    case "Bottom Right":
+                    case PopupPlacement.BottomRight:
                         positions[0] = new CustomPopupPlacement(new Point(WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Width - PopupContent.ActualWidth - horizontalSafePixels,
                             WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Height - PopupContent.ActualHeight - verticalSafePixels), PopupPrimaryAxis.None);
                         break;

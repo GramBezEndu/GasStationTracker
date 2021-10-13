@@ -6,9 +6,6 @@
              xmlns:local="clr-namespace:GasStationTracker.Controls" xmlns:oxy="http://oxyplot.org/wpf" xmlns:gasstationtracker="clr-namespace:GasStationTracker"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <gasstationtracker:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>

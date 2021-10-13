@@ -3,9 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GasStationTracker.Controls"
+             xmlns:local="clr-namespace:GasStationTracker.Controls" xmlns:converters="clr-namespace:GasStationTracker.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="120" d:DesignWidth="150">
+    <UserControl.Resources>
+        <converters:PopupPlacementConverter x:Key="PopupPlacementConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Expander x:Name="PopupExpander" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  Header="Popup" IsExpanded="True">
             <Grid>
@@ -19,7 +22,7 @@
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}Placement: {1}">
                                     <Binding Path="PlacementMethods" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-                                    <Binding Path="SelectedPlacementIndex" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+                                    <Binding Path="SelectedPlacementIndex" RelativeSource="{RelativeSource AncestorType=UserControl}" Converter="{StaticResource PopupPlacementConverter}"></Binding>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
@@ -28,7 +31,7 @@
                               SelectedIndex="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=SelectedPlacementIndex}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock TextWrapping="Wrap" Text="{Binding}"/>
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Converter={StaticResource PopupPlacementConverter}}"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
