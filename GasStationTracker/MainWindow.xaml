@@ -13,8 +13,10 @@
         <Style TargetType="Button" x:Key="MainButtonStyle">
             <Setter Property="Background" Value="#1B1A59" />
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontSize" Value="20" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Width" Value="230"></Setter>
+            <Setter Property="Height" Value="55"></Setter>
             
             <Setter Property="Template">
                 <Setter.Value>
@@ -81,9 +83,9 @@
             <RowDefinition Height="2*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#363377"></Grid>
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Foreground="White" FontSize="22" FontFamily="/Assets/#Mono" Margin="25,0" VerticalAlignment="Center">Gas Station Simulator Tracker</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Foreground="White" FontSize="22" FontFamily="/Assets/#Mono" Margin="12,0" VerticalAlignment="Center">Gas Station Simulator Tracker</TextBlock>
         <Border Grid.Row="2" Panel.ZIndex="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1"></Border>
-        <Image Source="/Assets/GasStationLogo.png" Name="Logo" Grid.Row="2"/>
+        <Image Source="/Assets/GasStationLogo.png" Name="Logo" Grid.Row="2" HorizontalAlignment="Center" Width="230"/>
         <Grid Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -99,7 +101,7 @@
             <controls:LiveGraphs x:Name="LiveGraphs" Visibility="Collapsed"></controls:LiveGraphs>
         </Grid>
         <DockPanel Grid.Row="3" LastChildFill="True">
-            <Grid>
+            <Grid HorizontalAlignment="Center" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>

@@ -7,19 +7,22 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="#123552"></SolidColorBrush>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock Text="Made by GramBezEndu" Grid.Row="0"></TextBlock>
-        <TextBlock Grid.Row="1">
-                <Hyperlink NavigateUri="https://github.com/GramBezEndu/GasStationTracker" RequestNavigate="Hyperlink_RequestNavigate">
+        <TextBlock Grid.Row="0" Foreground="White">
+                <Hyperlink NavigateUri="https://github.com/GramBezEndu/GasStationTracker" RequestNavigate="Hyperlink_RequestNavigate" Foreground="White" FontWeight="Bold">
                     Github project
                 </Hyperlink>
         </TextBlock>
-        <TextBlock Text="{Binding Version, StringFormat={}Version: {0}}" Grid.Row="2"></TextBlock>
-        <TextBlock Text="Latest tested game version: 1.0.1.37938"  Grid.Row="3"></TextBlock>
+        <TextBlock Text="{Binding Version, StringFormat={}Version: {0}}" Grid.Row="1" Foreground="White"></TextBlock>
+        <TextBlock Text="Made by GramBezEndu" Grid.Row="2" Foreground="White"></TextBlock>
+        <TextBlock Text="Latest tested game version: 1.0.1.37938"  Grid.Row="3" Foreground="White"></TextBlock>
     </Grid>
 </UserControl>
