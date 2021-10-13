@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:oxy="http://oxyplot.org/wpf"
-        xmlns:local="clr-namespace:GasStationTracker" xmlns:controls="clr-namespace:GasStationTracker.Controls"
+        xmlns:local="clr-namespace:GasStationTracker" xmlns:controls="clr-namespace:GasStationTracker.Controls" xmlns:attachedProperties="clr-namespace:GasStationTracker.AttachedProperties"
         mc:Ignorable="d"
         Title="Gas Station Simulator Tracker" Height="720" Width="1280"
         WindowStyle="None"
@@ -84,7 +84,7 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#363377"></Grid>
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Foreground="White" FontSize="22" FontFamily="/Assets/#Mono" Margin="12,0" VerticalAlignment="Center">Gas Station Simulator Tracker</TextBlock>
-        <Border Grid.Row="2" Panel.ZIndex="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1"></Border>
+        <Border Grid.Row="2" Panel.ZIndex="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="#1C053A" BorderThickness="2"></Border>
         <Image Source="/Assets/GasStationLogo.png" Name="Logo" Grid.Row="2" HorizontalAlignment="Center" Width="230"/>
         <Grid Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
             <Grid.RowDefinitions>
@@ -118,7 +118,7 @@
         </DockPanel>
         <controls:ApplicationInfo Grid.Row="4"></controls:ApplicationInfo>
         <Border Grid.Row="5" Grid.Column="1" BorderBrush="Black" BorderThickness="1">
-            <TextBox x:Name="Logs" Text="LOGS:&#x0a;" Background="LightGray" IsReadOnly="True"></TextBox>
+            <TextBox x:Name="Logs" Text="LOGS:&#x0a;" Background="#042037" Foreground="White" FontWeight="Bold" IsReadOnly="True" attachedProperties:TextBoxAttachedProperties.AutoScrollToEnd="True"></TextBox>
         </Border>
     </Grid>
 </Window>
