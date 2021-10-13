@@ -27,7 +27,15 @@ namespace GasStationTracker.Controls
             "Real Time",
         };
 
-        public string CurrentMethod { get; set; } = "IGT";
+        public string CurrentMethod 
+        {
+            get
+            {
+                return TimingMethods[SelectedMethodIndex];
+            }
+        }
+
+        public int SelectedMethodIndex { get; set; } = 0;
 
         Dictionary<string, CheckBox> checkboxes;
 
@@ -45,13 +53,6 @@ namespace GasStationTracker.Controls
                 { checkbox4.Name, checkbox4 },
             };
             this.Loaded += new RoutedEventHandler(OnViewLoaded);
-            //ViewSettingsPopUp.MouseUp += ViewSettingsPopUp_MouseUp;
-        }
-
-        private void ViewSettingsPopUp_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            //if (expander.IsExpanded)
-            //    expander.IsExpanded = false;
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)

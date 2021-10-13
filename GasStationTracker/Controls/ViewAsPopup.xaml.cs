@@ -30,11 +30,30 @@ namespace GasStationTracker.Controls
             "Bottom Right",
         };
 
-        public string CurrentPlacement { get; set; } = "Top Left";
+        public string CurrentPlacement
+        {
+            get => PlacementMethods[SelectedPlacementIndex];
+        }
 
+        public int SelectedPlacementIndex 
+        { 
+            get => selectedPlacementIndex;
+            set
+            {
+                if (value != selectedPlacementIndex)
+                {
+                    selectedPlacementIndex = value;
+                    //TODO: Move popup
+                    if (popup != null)
+                    {
+
+                    }
+                }
+            }
+        }
         private Grid popupContent;
 
-        public Grid PopupContent 
+        public Grid PopupContent
         {
             get => popupContent;
             set
@@ -49,15 +68,33 @@ namespace GasStationTracker.Controls
 
         private CustomPopupPlacement[] PlacePopup(Size popupSize, Size targetSize, Point offset)
         {
-            CustomPopupPlacement placement1 = new CustomPopupPlacement(new Point(0, 0), PopupPrimaryAxis.Vertical);
+            CustomPopupPlacement[] positions = new CustomPopupPlacement[]
+            {
+                new CustomPopupPlacement(new Point(0, 0), PopupPrimaryAxis.Vertical),
+                new CustomPopupPlacement(new Point(0, 0), PopupPrimaryAxis.Vertical),
+            };
 
-            CustomPopupPlacement placement2 = new CustomPopupPlacement(new Point(0, 300), PopupPrimaryAxis.Horizontal);
-
-            CustomPopupPlacement[] ttplaces = new CustomPopupPlacement[] { placement1, placement2 };
-            return ttplaces;
+            switch (CurrentPlacement)
+            {
+                case "Top Left":
+                    positions[0] = new CustomPopupPlacement(new Point(0, 0), PopupPrimaryAxis.Vertical);
+                    break;
+                case "Top Right":
+                    positions[0] = new CustomPopupPlacement(new Point(100, 0), PopupPrimaryAxis.Vertical);
+                    break;
+                case "Bottom Left":
+                    positions[0] = new CustomPopupPlacement(new Point(200, 0), PopupPrimaryAxis.Vertical);
+                    break;
+                case "Bottom Right":
+                    positions[0] = new CustomPopupPlacement(new Point(300, 0), PopupPrimaryAxis.Vertical);
+                    break;
+            }
+            return positions;
         }
 
         Popup popup;
+
+        private int selectedPlacementIndex = 0;
 
         public ViewAsPopup()
         {
@@ -119,6 +156,11 @@ namespace GasStationTracker.Controls
             {
                 throw new InvalidOperationException("Grid could not be cast.");
             }
+        }
+
+        private void PlacementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //SelectedPlacementIndex = PlacementMethods.IndexOf(PlacementList.SelectedItem.ToString());
         }
     }
 }

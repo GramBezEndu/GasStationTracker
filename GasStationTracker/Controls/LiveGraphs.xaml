@@ -59,7 +59,16 @@
                             <CheckBox Margin="5,0,0,0" Grid.Row="3" Grid.Column="0" Click="ContextClick" x:Name="checkbox2" IsChecked="False" Content="{Binding Source={x:Static gasstationtracker:MainWindow.MoneyEarnedOnFuelDisplay}}"></CheckBox>
                             <CheckBox Margin="5,0,0,0" Grid.Row="4" Grid.Column="0" Click="ContextClick" x:Name="checkbox3" IsChecked="False" Content="{Binding Source={x:Static gasstationtracker:MainWindow.MoneySpentOnFuelDisplay}}"></CheckBox>
                             <CheckBox Margin="5,0,0,0" Grid.Row="5" Grid.Column="0" Click="ContextClick" x:Name="checkbox4" IsChecked="False" Content="{Binding Source={x:Static gasstationtracker:MainWindow.CurrentFuelDisplay}}"></CheckBox>
-                            <Expander Header="Timing Method" IsEnabled="False" Margin="5,0,0,0" Grid.Row="0" Grid.RowSpan="5" Grid.Column="2" FontWeight="Bold">
+                            <Expander x:Name="TimingMethodsExpander" IsEnabled="False" Margin="5,0,0,0" Grid.Row="0" Grid.RowSpan="5" Grid.Column="2" FontWeight="Bold">
+                                <Expander.Header>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}Timing Method: {0}">
+                                                <Binding Path="CurrentMethod" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Expander.Header>
                                 <ListView Name="TimingMethodsList" FontWeight="Bold" Height="44">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>

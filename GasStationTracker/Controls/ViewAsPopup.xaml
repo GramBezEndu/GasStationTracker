@@ -13,8 +13,18 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Expander Header="Placement" Margin="5,0,0,0" Grid.Row="0" FontWeight="Bold">
-                    <ListView Name="PlacementList" FontWeight="Bold" Height="88">
+                <Expander Margin="5,0,0,0" Grid.Row="0" FontWeight="Bold">
+                    <Expander.Header>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}Placement: {0}">
+                                    <Binding Path="CurrentPlacement" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Expander.Header>
+                    <ListView Name="PlacementList" FontWeight="Bold" Height="88" SelectionChanged="PlacementList_SelectionChanged" 
+                              SelectedIndex="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=SelectedPlacementIndex}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock TextWrapping="Wrap" Text="{Binding}"/>
