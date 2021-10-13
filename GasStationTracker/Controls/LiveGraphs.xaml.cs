@@ -119,7 +119,6 @@ namespace GasStationTracker.Controls
                     {
                         var popup = (Popup)expander.Content;
                         var positionRelative = ee.GetPosition(popup);
-                        //TODO: Get popup real height
                         double height = ViewSettings.ActualHeight;
                         bool popupClicked = positionRelative.X >= 0 &&
                             positionRelative.X <= popup.Width &&

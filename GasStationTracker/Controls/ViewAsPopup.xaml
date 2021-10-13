@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="GasStationTracker.Controls.ViewAsPopup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GasStationTracker.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="120" d:DesignWidth="150">
+    <Grid>
+        <Expander x:Name="PopupExpander" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  Header="Popup" IsExpanded="True">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Expander Header="Placement" Margin="5,0,0,0" Grid.Row="0" FontWeight="Bold">
+                    <ListView Name="PlacementList" FontWeight="Bold" Height="88">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap" Text="{Binding}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Expander>
+                <Button x:Name="ToggleButton" Click="TogglePopup" Grid.Row="1">Show popup</Button>
+            </Grid>
+        </Expander>
+    </Grid>
+</UserControl>

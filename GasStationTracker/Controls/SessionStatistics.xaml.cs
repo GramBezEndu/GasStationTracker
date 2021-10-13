@@ -23,5 +23,11 @@ namespace GasStationTracker.Controls
             InitializeComponent();
             this.ResetSize();
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            PopupView.PopupExpander.IsExpanded = false;
+            PopupView.PopupContent = Stats;
+        }
     }
 }

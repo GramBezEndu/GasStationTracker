@@ -50,14 +50,27 @@ namespace GasStationTracker
             }
         }
 
-        public TimeSpan SessionTime 
-        { 
+        public TimeSpan SessionTime
+        {
             get => sessionTime;
             private set
             {
                 if (value != sessionTime)
                 {
                     sessionTime = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public InGameTime IgtPassed 
+        { 
+            get => igtPassed; 
+            private set
+            {
+                if (value != igtPassed)
+                {
+                    igtPassed = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -75,6 +88,12 @@ namespace GasStationTracker
         private bool sessionEnded = false;
         private DateTime startTime;
         private TimeSpan sessionTime = new TimeSpan(0);
+        private InGameTime igtPassed = new InGameTime() 
+        {
+            Days = 0,
+            Hours = 0,
+            Minutes = 0,
+        };
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -103,9 +122,18 @@ namespace GasStationTracker
                 {
                     return;
                 }
-                CashEarned = (float)(Convert.ToDouble(GetLastRecord().GetValue(MainWindow.CashDisplay)) - Convert.ToDouble(FirstRecord.GetValue(MainWindow.CashDisplay)));
-                PopularityGained = (int)GetLastRecord().GetValue(MainWindow.PopularityDisplay) - (int)FirstRecord.GetValue(MainWindow.PopularityDisplay);
+                Record lastRecord = GetLastRecord();
+                CashEarned = (float)(Convert.ToDouble(lastRecord.GetValue(MainWindow.CashDisplay)) - Convert.ToDouble(FirstRecord.GetValue(MainWindow.CashDisplay)));
+                PopularityGained = (int)lastRecord.GetValue(MainWindow.PopularityDisplay) - (int)FirstRecord.GetValue(MainWindow.PopularityDisplay);
                 SessionTime = DateTime.Now - StartTime;
+                TimeSpan inGameTimePassed = new TimeSpan(FirstRecord.IGT.Days, FirstRecord.IGT.Hours, FirstRecord.IGT.Minutes, FirstRecord.IGT.Seconds) -
+                    new TimeSpan(lastRecord.IGT.Days, lastRecord.IGT.Hours, lastRecord.IGT.Minutes, lastRecord.IGT.Seconds);
+                IgtPassed = new InGameTime()
+                {
+                    Days = inGameTimePassed.Days,
+                    Hours = inGameTimePassed.Hours,
+                    Minutes = inGameTimePassed.Minutes,
+                };
             }
         }
 
