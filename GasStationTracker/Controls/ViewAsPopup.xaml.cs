@@ -46,15 +46,18 @@ namespace GasStationTracker.Controls
                 {
                     selectedPlacementIndex = value;
                     NotifyPropertyChanged();
-                    //TODO: Move popup
                     if (popup != null)
                     {
-
+                        //This forces placement callback call
+                        popup.Placement = PlacementMode.Center;
+                        popup.Placement = PlacementMode.Custom;
                     }
                 }
             }
         }
         private Grid popupContent;
+
+        private Window parentWindow;
 
         public Grid PopupContent
         {
@@ -78,20 +81,27 @@ namespace GasStationTracker.Controls
                 new CustomPopupPlacement(new Point(0, 0), PopupPrimaryAxis.Vertical),
             };
 
-            switch (CurrentPlacement)
+            int horizontalSafePixels = 8;
+            int verticalSafePixels = 4;
+
+            if (parentWindow != null)
             {
-                case "Top Left":
-                    positions[0] = new CustomPopupPlacement(new Point(0, 0), PopupPrimaryAxis.Vertical);
-                    break;
-                case "Top Right":
-                    positions[0] = new CustomPopupPlacement(new Point(100, 0), PopupPrimaryAxis.Vertical);
-                    break;
-                case "Bottom Left":
-                    positions[0] = new CustomPopupPlacement(new Point(200, 0), PopupPrimaryAxis.Vertical);
-                    break;
-                case "Bottom Right":
-                    positions[0] = new CustomPopupPlacement(new Point(300, 0), PopupPrimaryAxis.Vertical);
-                    break;
+                switch (CurrentPlacement)
+                {
+                    case "Top Left":
+                        positions[0] = new CustomPopupPlacement(new Point(0, 0), PopupPrimaryAxis.None);
+                        break;
+                    case "Top Right":
+                        positions[0] = new CustomPopupPlacement(new Point(WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Width - PopupContent.ActualWidth - horizontalSafePixels, 0), PopupPrimaryAxis.None);
+                        break;
+                    case "Bottom Left":
+                        positions[0] = new CustomPopupPlacement(new Point(0, WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Height - PopupContent.ActualHeight - verticalSafePixels), PopupPrimaryAxis.None);
+                        break;
+                    case "Bottom Right":
+                        positions[0] = new CustomPopupPlacement(new Point(WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Width - PopupContent.ActualWidth - horizontalSafePixels,
+                            WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Height - PopupContent.ActualHeight - verticalSafePixels), PopupPrimaryAxis.None);
+                        break;
+                }
             }
             return positions;
         }
@@ -107,6 +117,12 @@ namespace GasStationTracker.Controls
             InitializeComponent();
             PlacementList.ItemsSource = PlacementMethods;
             this.ResetSize();
+            Loaded += new RoutedEventHandler(UserControl_Loaded);
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            parentWindow = Window.GetWindow(this);
         }
 
         private void TogglePopup(object sender, RoutedEventArgs e)
@@ -166,7 +182,7 @@ namespace GasStationTracker.Controls
 
         private void PlacementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PlacementExpander.IsExpanded = false;
+            //PlacementExpander.IsExpanded = false;
         }
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
