@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,7 +22,7 @@ namespace GasStationTracker.Controls
     /// <summary>
     /// Interaction logic for ViewAsPopup.xaml
     /// </summary>
-    public partial class ViewAsPopup : UserControl
+    public partial class ViewAsPopup : UserControl, INotifyPropertyChanged
     {
         public List<string> PlacementMethods { get; set; } = new List<string>()
         {
@@ -43,6 +45,7 @@ namespace GasStationTracker.Controls
                 if (value != selectedPlacementIndex)
                 {
                     selectedPlacementIndex = value;
+                    NotifyPropertyChanged();
                     //TODO: Move popup
                     if (popup != null)
                     {
@@ -60,6 +63,7 @@ namespace GasStationTracker.Controls
             {
                 popupContent = CloneViaXamlSerialization(value);
                 popup = new Popup();
+                popup.AllowsTransparency = true;
                 popup.Child = popupContent;
                 popup.Placement = PlacementMode.Custom;
                 popup.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacePopup);
@@ -95,6 +99,8 @@ namespace GasStationTracker.Controls
         Popup popup;
 
         private int selectedPlacementIndex = 0;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public ViewAsPopup()
         {
@@ -160,7 +166,12 @@ namespace GasStationTracker.Controls
 
         private void PlacementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //SelectedPlacementIndex = PlacementMethods.IndexOf(PlacementList.SelectedItem.ToString());
+            PlacementExpander.IsExpanded = false;
+        }
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

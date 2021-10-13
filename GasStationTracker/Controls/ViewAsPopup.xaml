@@ -13,12 +13,13 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Expander Margin="5,0,0,0" Grid.Row="0" FontWeight="Bold">
+                <Expander x:Name="PlacementExpander" Margin="5,0,0,0" Grid.Row="0" FontWeight="Bold">
                     <Expander.Header>
                         <TextBlock>
                             <TextBlock.Text>
-                                <MultiBinding StringFormat="{}Placement: {0}">
-                                    <Binding Path="CurrentPlacement" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                <MultiBinding StringFormat="{}Placement: {1}">
+                                    <Binding Path="PlacementMethods" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                    <Binding Path="SelectedPlacementIndex" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
