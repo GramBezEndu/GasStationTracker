@@ -35,6 +35,29 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="Button" x:Key="ToolbarStyle">
+            <Setter Property="Background" Value="#4C2D73" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="3" BorderBrush="Black">
+                            <Grid>
+                                <ContentPresenter x:Name="MyContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#6B4E90"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="ToggleButtonStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Content" Value="EDIT"/>
             <Setter Property="Template">
@@ -76,15 +99,25 @@
             <ColumnDefinition Width="4*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
             <RowDefinition Height="0.5*"></RowDefinition>
             <RowDefinition Height="7.5*"></RowDefinition>
             <RowDefinition Height="10*"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#363377" MouseDown="DragWindow">
-            <TextBlock Foreground="White" FontSize="22" FontFamily="/Assets/#Mono" Margin="12,0" VerticalAlignment="Center">Gas Station Simulator Tracker</TextBlock>
-        </Grid>
+        <local:GridLayout Grid.Row="0" Grid.ColumnSpan="2" Background="#363377" MouseDown="DragWindow" ChildMargin="3, 0, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Foreground="White" FontSize="24" FontFamily="/Assets/#Mono" Margin="12,0" VerticalAlignment="Center" Grid.Column="1">Gas Station Simulator Tracker</TextBlock>
+            <Button x:Name="BtnMinimize" Style="{StaticResource ToolbarStyle}" Click="MinimizeWindow" Content="" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,70,0" Width="35" Height="35" Grid.Column="2"/>
+            <Button x:Name="BtnMaximize" Style="{StaticResource ToolbarStyle}" Click="MaximuzeWindow" Content="" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,35,0" Width="35" Height="35" Grid.Column="3"/>
+            <Button x:Name="BtnClose" Style="{StaticResource ToolbarStyle}" Click="CloseApplication" Content="" HorizontalAlignment="Right" VerticalAlignment="Top" Width="35" Height="35" Grid.Column="4"/>
+        </local:GridLayout>
         <Border Grid.Row="2" Panel.ZIndex="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="#1C053A" BorderThickness="1"></Border>
         <Image Source="/Assets/GasStationLogo.png" Name="Logo" Grid.Row="2" HorizontalAlignment="Center" Width="238"/>
         <Grid Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
