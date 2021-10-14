@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Shapes;
 using Memory;
 using Newtonsoft.Json;
 using OxyPlot;
@@ -48,7 +49,7 @@ namespace GasStationTracker
             TypeNameHandling = TypeNameHandling.Auto,
         };
 
-        private readonly System.Windows.Threading.DispatcherTimer dispatcherTimer;
+        private System.Windows.Threading.DispatcherTimer dispatcherTimer;
 
         private readonly Mem memoryHandler;
 
@@ -97,12 +98,18 @@ namespace GasStationTracker
         public MainWindow()
         {
             InitializeComponent();
-
             DataContext = this;
+
             Records = new RecordCollection(RawData.DataTable, Plot);
             SessionStats.Records = Records;
             memoryHandler = new Mem();
             Load();
+            AddPlotAxes();
+            LiveGraphs.Graph.Model = Plot;
+            InitTimer();
+        }
+        private void AddPlotAxes()
+        {
             Plot.Axes.Add(new DateTimeAxis()
             {
                 Position = AxisPosition.Bottom,
@@ -111,7 +118,10 @@ namespace GasStationTracker
             {
                 Position = AxisPosition.Left,
             });
-            LiveGraphs.Graph.Model = Plot;
+        }
+
+        private void InitTimer()
+        {
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, intervalMinutes, intervalSeconds);

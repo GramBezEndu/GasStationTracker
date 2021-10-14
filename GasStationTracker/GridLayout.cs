@@ -97,7 +97,5 @@ namespace GasStationTracker
             UpdateChildMargins();
             return base.MeasureOverride(availableSize);
         }
-
-
     }
 }
