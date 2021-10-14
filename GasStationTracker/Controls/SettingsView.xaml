@@ -3,37 +3,55 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GasStationTracker.Controls"
+             xmlns:local="clr-namespace:GasStationTracker.Controls" xmlns:gasstationtracker="clr-namespace:GasStationTracker"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="0.005*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="0.015*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.08*"></ColumnDefinition>
+            <ColumnDefinition Width="10*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
         <Grid.Background>
-            <SolidColorBrush Color="LightGray" Opacity="0.3"/>
+            <SolidColorBrush Color="#565595"/>
         </Grid.Background>
-        <Label Grid.Row="0" FontWeight="Bold" Background="LightGray">Settings</Label>
-        <Image Opacity="0.15" Grid.Row="1" Grid.RowSpan="2" Source="/Assets/GasStationLogo.png"/>
-        <Grid Margin="5,0" Grid.Row="1">
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Background="#1B1A59" Foreground="White" FontSize="18">Settings</Label>
+        <Image Opacity="0.15" Grid.Row="1" Grid.RowSpan="2000" Grid.ColumnSpan="2" Source="/Assets/GasStationLogo.png"/>
+        <gasstationtracker:GridLayout Grid.Row="2" Grid.Column="1" ChildMargin="0,5,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" FontWeight="Bold">Application</TextBlock>
-            <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="False">Check for updates on startup</CheckBox>
-            <CheckBox Grid.Row="2" IsEnabled="False" IsChecked="False">Backup save files on quit</CheckBox>
-        </Grid>
-        <Grid Margin="5,0" Grid.Row="2">
+            <TextBlock Grid.Row="0" FontWeight="Bold" Foreground="White" FontSize="18">Application</TextBlock>
+            <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="False" Foreground="White" Content="Check for updates on startup">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                </CheckBox.LayoutTransform>
+            </CheckBox>
+            <CheckBox Grid.Row="2" IsEnabled="False" IsChecked="False" Foreground="White" Content="Backup save files on quit">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                </CheckBox.LayoutTransform>
+            </CheckBox>
+        </gasstationtracker:GridLayout>
+        <gasstationtracker:GridLayout Grid.Row="4" Grid.Column="1"  ChildMargin="0,5,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" FontWeight="Bold">Game</TextBlock>
-            <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="True">Add Herobrine</CheckBox>
-        </Grid>
+            <TextBlock Grid.Row="0" FontWeight="Bold" Foreground="White" FontSize="18">Game</TextBlock>
+            <CheckBox Grid.Row="1" IsEnabled="False" IsChecked="True" Foreground="White" Content="Add Herobrine">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                </CheckBox.LayoutTransform>
+            </CheckBox>
+        </gasstationtracker:GridLayout>
     </Grid>
 </UserControl>
