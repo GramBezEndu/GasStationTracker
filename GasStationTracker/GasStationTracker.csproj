@@ -17,6 +17,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <Deterministic>false</Deterministic>
+    <ApplicationIcon>Logo.ico</ApplicationIcon>
 </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -33,6 +34,7 @@
 
   <ItemGroup>
     <None Remove="Assets\GasStationLogo.png" />
+    <None Remove="Assets\Logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +45,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\GasStationLogo.png" />
+    <Resource Include="Assets\Logo.png" />
   </ItemGroup>
 
 </Project>
