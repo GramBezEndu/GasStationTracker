@@ -178,7 +178,7 @@ namespace GasStationTracker.Controls
             if (clonedGrid is Grid)
             {
                 Grid newGrid = clonedGrid as Grid;
-                newGrid.Background = Brushes.LightGray;
+                newGrid.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#565595");
                 return newGrid;
             }
 

@@ -17,9 +17,9 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.Background>
-            <SolidColorBrush Color="LightGray" Opacity="0.3"/>
+            <SolidColorBrush Color="#565595"/>
         </Grid.Background>
-        <Label Grid.Row="0" FontWeight="Bold" Background="LightGray">Session stats</Label>
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Background="#1B1A59" Foreground="White" FontSize="18">Session statistics</Label>
         <Image Grid.Row="1" Grid.RowSpan="2" Opacity="0.15" Source="/Assets/GasStationLogo.png"/>
         <Grid x:Name="Stats" Margin="5,0" Grid.Row="1">
             <Grid.RowDefinitions>
@@ -34,14 +34,14 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0">Session time:</TextBlock>
-            <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.SessionTime, StringFormat=hh\\:mm\\:ss}"></TextBlock>
-            <TextBlock Grid.Row="1" Grid.Column="0">IGT passed:</TextBlock>
-            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.IgtPassed, Converter={StaticResource IgtConverter}}"></TextBlock>
-            <TextBlock Grid.Row="2" Grid.Column="0">Cash earned:</TextBlock>
-            <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.CashEarned, StringFormat={}{0:F2}}"></TextBlock>
-            <TextBlock Grid.Row="3" Grid.Column="0">Popularity earned:</TextBlock>
-            <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.PopularityGained}"></TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="0" Foreground="White" FontSize="18">Session time:</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.SessionTime, StringFormat=hh\\:mm\\:ss}" FontSize="18" Foreground="White"></TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0" Foreground="White" FontSize="18">IGT passed:</TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.IgtPassed, Converter={StaticResource IgtConverter}}" Foreground="White" FontSize="18"></TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="0" Foreground="White" FontSize="18">Cash earned:</TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.CashEarned, StringFormat={}{0:F2}}" Foreground="White" FontSize="18"></TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="0" Foreground="White" FontSize="18">Popularity earned:</TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.PopularityGained}" Foreground="White" FontSize="18"></TextBlock>
         </Grid>
         <local:ViewAsPopup x:Name="PopupView" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top"></local:ViewAsPopup>
     </Grid>

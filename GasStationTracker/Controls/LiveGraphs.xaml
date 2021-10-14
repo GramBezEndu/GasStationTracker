@@ -14,7 +14,7 @@
         <Grid.DataContext>
             <gasstationtracker:GraphViewModel/>
         </Grid.DataContext>
-        <Grid Background="LightGray" Grid.Row="0">
+        <Grid Background="#1B1A59" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -23,9 +23,12 @@
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Expander x:Name="expander" Grid.ColumnSpan="2" ExpandDirection="Down" IsExpanded="{Binding IsOpen, Mode=TwoWay, ElementName=ViewSettingsPopUp}" HorizontalAlignment="Stretch" Loaded="expander_Loaded">
+            <Expander x:Name="expander" Grid.ColumnSpan="2" ExpandDirection="Down" IsExpanded="{Binding IsOpen, Mode=TwoWay, ElementName=ViewSettingsPopUp}" Background="#1B1A59" HorizontalAlignment="Stretch" Loaded="expander_Loaded">
+                <!--<Expander.LayoutTransform>
+                    <ScaleTransform ScaleX="1.4" ScaleY="1.4" />
+                </Expander.LayoutTransform>-->
                 <Expander.Header>
-                    <TextBlock TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center" Text="View" FontWeight="Bold"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="White">Graph view</TextBlock>
                 </Expander.Header>
                 <Popup x:Name="ViewSettingsPopUp" Grid.ColumnSpan="2" PlacementTarget="{Binding ElementName=expander}"
                    Width="{Binding ActualWidth, ElementName=expander}"
@@ -79,6 +82,6 @@
                 </Popup>
             </Expander>
         </Grid>
-        <oxy:PlotView x:Name="Graph" Background="Transparent" Grid.Row="1" Model="{Binding Plot}"></oxy:PlotView>
+        <oxy:PlotView x:Name="Graph" Background="#8180B2" Grid.Row="1" Model="{Binding Plot}"></oxy:PlotView>
     </Grid>
 </UserControl>

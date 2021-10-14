@@ -35,14 +35,13 @@ namespace GasStationTracker.Controls
             }
         }
 
-        public int SelectedMethodIndex { get; set; } = 0;
+        public int SelectedMethodIndex { get; set; } = 1;
 
         Dictionary<string, CheckBox> checkboxes;
 
         public LiveGraphs()
         {
             InitializeComponent();
-            this.ResetSize();
             TimingMethodsList.ItemsSource = TimingMethods;
             checkboxes = new Dictionary<string, CheckBox>()
             {
@@ -53,6 +52,7 @@ namespace GasStationTracker.Controls
                 { checkbox4.Name, checkbox4 },
             };
             this.Loaded += new RoutedEventHandler(OnViewLoaded);
+            this.ResetSize();
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
