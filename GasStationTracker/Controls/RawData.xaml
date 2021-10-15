@@ -9,10 +9,10 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Background="#1B1A59" Foreground="White" FontSize="18">Raw data</Label>
-        <DataGrid x:Name="DataTable" Grid.Row="1" HeadersVisibility="Column" AutoGenerateColumns="False" ItemsSource="{Binding Records}" IsReadOnly="True">
+        <DataGrid x:Name="DataTable" Grid.Row="1" HeadersVisibility="Column" AutoGenerateColumns="False" Background="#565595" ItemsSource="{Binding Records}" ScrollViewer.CanContentScroll="True" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Date" Binding="{Binding Path=Date}"/>
                 <DataGridTextColumn Header="IGT" Binding="{Binding Path=IGT}"/>
