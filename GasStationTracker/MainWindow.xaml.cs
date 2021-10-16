@@ -107,7 +107,7 @@ namespace GasStationTracker
             Load();
             AddPlotAxes();
             Plot.TextColor = OxyColors.Black;
-            Plot.LegendTextColor = OxyColors.White;
+            Plot.LegendTextColor = OxyColors.Black;
             Plot.LegendFontSize = 14;
             var legendBackground = System.Drawing.ColorTranslator.FromHtml("#B9A8CE");
             Plot.LegendBackground = OxyColor.FromArgb(legendBackground.A, legendBackground.R, legendBackground.G, legendBackground.B);

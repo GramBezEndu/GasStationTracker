@@ -10,13 +10,13 @@
         <converters:PopupPlacementConverter x:Key="PopupPlacementConverter"/>
     </UserControl.Resources>
     <Grid>
-        <Expander x:Name="PopupExpander" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  Header="Popup" IsExpanded="True">
+        <Expander x:Name="PopupExpander" Foreground="White" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  Header="Popup" IsExpanded="True">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Expander x:Name="PlacementExpander" Margin="5,0,0,0" Grid.Row="0" FontWeight="Bold">
+                <Expander x:Name="PlacementExpander" Margin="5,0,0,0" Grid.Row="0" FontWeight="Bold" Foreground="White">
                     <Expander.Header>
                         <TextBlock>
                             <TextBlock.Text>

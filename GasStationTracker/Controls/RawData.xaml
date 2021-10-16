@@ -14,18 +14,12 @@
         <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Background="#1B1A59" Foreground="White" FontSize="18">Raw data</Label>
         <DataGrid x:Name="DataTable" Grid.Row="1" HeadersVisibility="Column" AutoGenerateColumns="False" FontSize="13" ItemsSource="{Binding Records}" ScrollViewer.CanContentScroll="True" IsReadOnly="True">
             <DataGrid.Resources>
-                <Style TargetType="{x:Type DataGrid}">
-                    <Setter Property="Background" Value="#E0E0E0"/>
-                </Style>
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="Background" Value="#E0E0E0"/>
                 </Style>
                 <Style TargetType="{x:Type DataGridRowHeader}">
                     <Setter Property="Background" Value="#E0E0E0"/>
                 </Style>
-                <!--<Style TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="#E0E0E0"/>
-                </Style>-->
                 <Style TargetType="{x:Type Button}" x:Key="{ComponentResourceKey ResourceId=DataGridSelectAllButtonStyle, TypeInTargetAssembly={x:Type DataGrid}}">
                     <Setter Property="Background" Value="Black" />
                 </Style>

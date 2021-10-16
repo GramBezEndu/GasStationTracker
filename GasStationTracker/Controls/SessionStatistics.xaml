@@ -35,14 +35,14 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" Foreground="White" FontSize="18">Session time:</TextBlock>
-            <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.SessionTime, StringFormat=hh\\:mm\\:ss}" FontSize="18" Foreground="White"></TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.SessionTime, StringFormat=hh\\:mm\\:ss}" d:Text="00:00:00" FontSize="18" Foreground="White"></TextBlock>
             <TextBlock Grid.Row="1" Grid.Column="0" Foreground="White" FontSize="18">IGT passed:</TextBlock>
-            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.IgtPassed, Converter={StaticResource IgtConverter}}" Foreground="White" FontSize="18"></TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.IgtPassed, Converter={StaticResource IgtConverter}}" d:Text="0 days 0 hours 0 minutes" Foreground="White" FontSize="18"></TextBlock>
             <TextBlock Grid.Row="2" Grid.Column="0" Foreground="White" FontSize="18">Cash earned:</TextBlock>
-            <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.CashEarned, StringFormat={}{0:F2}}" Foreground="White" FontSize="18"></TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.CashEarned, StringFormat={}{0:F2}}" d:Text="0.00" Foreground="White" FontSize="18"></TextBlock>
             <TextBlock Grid.Row="3" Grid.Column="0" Foreground="White" FontSize="18">Popularity earned:</TextBlock>
-            <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.PopularityGained}" Foreground="White" FontSize="18"></TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding SessionStats.PopularityGained}" d:Text="0 " Foreground="White" FontSize="18"></TextBlock>
         </Grid>
-        <local:ViewAsPopup x:Name="PopupView" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top"></local:ViewAsPopup>
+            <local:ViewAsPopup x:Name="PopupView" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top"></local:ViewAsPopup>
     </Grid>
 </UserControl>
