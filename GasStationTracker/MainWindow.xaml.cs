@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -105,6 +106,12 @@ namespace GasStationTracker
             memoryHandler = new Mem();
             Load();
             AddPlotAxes();
+            Plot.TextColor = OxyColors.Black;
+            Plot.LegendTextColor = OxyColors.White;
+            Plot.LegendFontSize = 14;
+            var legendBackground = System.Drawing.ColorTranslator.FromHtml("#B9A8CE");
+            Plot.LegendBackground = OxyColor.FromArgb(legendBackground.A, legendBackground.R, legendBackground.G, legendBackground.B);
+            Plot.LegendPlacement = LegendPlacement.Inside;
             LiveGraphs.Graph.Model = Plot;
             InitTimer();
         }
@@ -113,10 +120,12 @@ namespace GasStationTracker
             Plot.Axes.Add(new DateTimeAxis()
             {
                 Position = AxisPosition.Bottom,
+                MajorGridlineStyle = LineStyle.Automatic,
             });
             Plot.Axes.Add(new LinearAxis()
             {
                 Position = AxisPosition.Left,
+                MajorGridlineStyle = LineStyle.Automatic,
             });
         }
 

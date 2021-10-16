@@ -82,6 +82,6 @@
                 </Popup>
             </Expander>
         </Grid>
-        <oxy:PlotView x:Name="Graph" Background="#8180B2" Grid.Row="1" Model="{Binding Plot}"></oxy:PlotView>
+        <oxy:PlotView x:Name="Graph" Grid.Row="1" Background="#E0E0E0" Model="{Binding Plot}"></oxy:PlotView>
     </Grid>
 </UserControl>
