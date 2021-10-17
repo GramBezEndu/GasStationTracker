@@ -7,8 +7,12 @@
         xmlns:local="clr-namespace:GasStationTracker" xmlns:controls="clr-namespace:GasStationTracker.Controls" xmlns:attachedProperties="clr-namespace:GasStationTracker.AttachedProperties"
         mc:Ignorable="d"
         Title="Gas Station Simulator Tracker" Height="720" Width="1280"
-        WindowStyle="None"
-        ResizeMode="NoResize">
+        WindowStyle="None">
+    <WindowChrome.WindowChrome>
+        <WindowChrome 
+        CaptionHeight="0"
+        ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
     <Window.Resources>
         <Style TargetType="Button" x:Key="MainButtonStyle">
             <Setter Property="Background" Value="#1B1A59" />
