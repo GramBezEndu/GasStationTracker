@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shapes;
 using Memory;
@@ -114,7 +115,15 @@ namespace GasStationTracker
             Plot.LegendPlacement = LegendPlacement.Inside;
             LiveGraphs.Graph.Model = Plot;
             InitTimer();
+            if (UserSettings.Default.AutoUpdate)
+                CheckVersion();
         }
+
+        private async void CheckVersion()
+        {
+            await new AutoUpdater().CheckGitHubNewerVersion(new Version(Version));
+        }
+
         private void AddPlotAxes()
         {
             Plot.Axes.Add(new DateTimeAxis()
