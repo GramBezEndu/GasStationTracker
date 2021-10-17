@@ -3,7 +3,7 @@
 
 Track your cash, popularity, money earned on fuel and other statistics with no effort!
 
-![Cash graph](https://i.imgur.com/NwHG0ao.png)
+![Cash graph](https://i.imgur.com/L3275Wg.png)
 
 # How to use:
 1. Launch your game and load your save file.
@@ -14,7 +14,6 @@ That's it! Click "Stop Tracking" once you're done playing.
 
 # Incoming features:
 * Data filtering
-* Support of "IGT" timing method
 * Exporting graphs as images
 * More customization
 * Automatic game saves backup
