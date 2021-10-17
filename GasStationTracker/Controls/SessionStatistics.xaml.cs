@@ -27,6 +27,13 @@ namespace GasStationTracker.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             PopupView.PopupExpander.IsExpanded = false;
+            PopupView.BindingListNames = new string[] 
+            { 
+                SessionTimeDisplay.Name,
+                IgtPassedDisplay.Name,
+                CashEarnedDisplay.Name,
+                PopularityGainedDisplay.Name,
+            };
             PopupView.PopupContent = Stats;
         }
     }

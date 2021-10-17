@@ -57,7 +57,7 @@
                             </TextBlock.Text>
                         </TextBlock>
                     </Expander.Header>
-                    <ListView Name="PlacementList" Background="#E0E0E0" FontWeight="Bold" Height="100" SelectionChanged="PlacementList_SelectionChanged" 
+                    <ListView Name="PlacementList" Background="#E0E0E0" FontWeight="Bold" Height="100"
                               SelectedIndex="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=SelectedPlacementIndex}">
                         <ListView.ItemTemplate>
                             <DataTemplate>

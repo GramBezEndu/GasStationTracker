@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -16,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+using static GasStationTracker.DependencyObjectHelper;
 
 namespace GasStationTracker.Controls
 {
@@ -67,13 +69,16 @@ namespace GasStationTracker.Controls
 
         private Window parentWindow;
 
+        public string[] BindingListNames { get; set; } = new string[0];
+
         public Grid PopupContent
         {
             get => popupContent;
             set
             {
-                popupContent = CloneViaXamlSerialization(value);
+                popupContent = CloneGridViaXmlSerialization(value, BindingListNames);
                 popup = new Popup();
+                popup.DataContext = this.DataContext;
                 popup.AllowsTransparency = true;
                 popup.Child = popupContent;
                 popup.Placement = PlacementMode.Custom;
@@ -150,8 +155,14 @@ namespace GasStationTracker.Controls
             }
         }
 
-        public static Grid CloneViaXamlSerialization(Grid grid)
+        public Grid CloneGridViaXmlSerialization(Grid grid, string[] propertyNames)
         {
+            //TODO: Refactor
+            List<BindingData> bindingList = new List<BindingData>();
+            List<BindingBase> clonedBindings = new List<BindingBase>();
+            GetBindingsDataRecursive(grid, bindingList);
+            //foreach
+
             var sb = new StringBuilder();
             var writer = XmlWriter.Create(sb, new XmlWriterSettings
             {
@@ -178,6 +189,17 @@ namespace GasStationTracker.Controls
             if (clonedGrid is Grid)
             {
                 Grid newGrid = clonedGrid as Grid;
+                for (int i = 0; i < propertyNames.Length; i++)
+                {
+                    string currentElementName = propertyNames[i];
+                    BindingData bindingData = bindingList[i];
+                    UIElement currentElement = (UIElement)newGrid.FindName(currentElementName);
+                    if (currentElement is TextBlock)
+                    {
+                        TextBlock textBlock = currentElement as TextBlock;
+                        textBlock.SetBinding(TextBlock.TextProperty, bindingData.Binding);
+                    }
+                }
                 newGrid.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#565595");
                 return newGrid;
             }
@@ -188,14 +210,82 @@ namespace GasStationTracker.Controls
             }
         }
 
-        private void PlacementList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public BindingBase CloneBindingViaXmlSerialization(BindingBase binding)
         {
-            //PlacementExpander.IsExpanded = false;
+            var sb = new StringBuilder();
+            var writer = XmlWriter.Create(sb, new XmlWriterSettings
+            {
+                Indent = true,
+                ConformanceLevel = ConformanceLevel.Fragment,
+                OmitXmlDeclaration = true,
+                NamespaceHandling = NamespaceHandling.OmitDuplicates,
+            });
+            var mgr = new XamlDesignerSerializationManager(writer);
+
+            // HERE BE MAGIC!!!
+            mgr.XamlWriterMode = XamlWriterMode.Expression;
+            // THERE WERE MAGIC!!!
+
+            System.Windows.Markup.XamlWriter.Save(binding, mgr);
+            StringReader stringReader = new StringReader(sb.ToString());
+            XmlReader xmlReader = XmlReader.Create(stringReader);
+            object newBinding = (object)XamlReader.Load(xmlReader);
+            if (newBinding == null)
+            {
+                throw new ArgumentNullException("Binding could not be cloned via Xaml Serialization Stack.");
+            }
+
+            if (newBinding is Binding)
+            {
+                return (Binding)newBinding;
+            }
+            else if (newBinding is MultiBinding)
+            {
+                return (MultiBinding)newBinding;
+            }
+            else if (newBinding is PriorityBinding)
+            {
+                return (PriorityBinding)newBinding;
+            }
+            else
+            {
+                throw new InvalidOperationException("Binding could not be cast.");
+            }
         }
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private static void GetBindingsRecursive(DependencyObject dObj, List<BindingBase> bindingList)
+        {
+            bindingList.AddRange(DependencyObjectHelper.GetBindingObjects(dObj));
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(dObj);
+            if (childrenCount > 0)
+            {
+                for (int i = 0; i < childrenCount; i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(dObj, i);
+                    GetBindingsRecursive(child, bindingList);
+                }
+            }
+        }
+
+        private void GetBindingsDataRecursive(DependencyObject dObj, List<BindingData> bindingList)
+        {
+            bindingList.AddRange(DependencyObjectHelper.GetBindingData(dObj));
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(dObj);
+            if (childrenCount > 0)
+            {
+                for (int i = 0; i < childrenCount; i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(dObj, i);
+                    GetBindingsDataRecursive(child, bindingList);
+                }
+            }
         }
     }
 }
