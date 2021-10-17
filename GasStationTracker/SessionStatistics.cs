@@ -126,8 +126,8 @@ namespace GasStationTracker
                 CashEarned = (float)(Convert.ToDouble(lastRecord.GetValue(MainWindow.CashDisplay)) - Convert.ToDouble(FirstRecord.GetValue(MainWindow.CashDisplay)));
                 PopularityGained = (int)lastRecord.GetValue(MainWindow.PopularityDisplay) - (int)FirstRecord.GetValue(MainWindow.PopularityDisplay);
                 SessionTime = DateTime.Now - StartTime;
-                TimeSpan inGameTimePassed = new TimeSpan(FirstRecord.IGT.Days, FirstRecord.IGT.Hours, FirstRecord.IGT.Minutes, FirstRecord.IGT.Seconds) -
-                    new TimeSpan(lastRecord.IGT.Days, lastRecord.IGT.Hours, lastRecord.IGT.Minutes, lastRecord.IGT.Seconds);
+                TimeSpan inGameTimePassed = new TimeSpan(lastRecord.IGT.Days, lastRecord.IGT.Hours, lastRecord.IGT.Minutes, lastRecord.IGT.Seconds) -
+                    new TimeSpan(FirstRecord.IGT.Days, FirstRecord.IGT.Hours, FirstRecord.IGT.Minutes, FirstRecord.IGT.Seconds);
                 IgtPassed = new InGameTime()
                 {
                     Days = inGameTimePassed.Days,
