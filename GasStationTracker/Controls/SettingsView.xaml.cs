@@ -21,7 +21,13 @@ namespace GasStationTracker.Controls
         public SettingsView()
         {
             InitializeComponent();
+            Loaded += LoadSettings;
             this.ResetSize();
+        }
+
+        private void LoadSettings(object sender, RoutedEventArgs e)
+        {
+            AutoUpdate.IsChecked = UserSettings.Default.AutoUpdate;
         }
     }
 }

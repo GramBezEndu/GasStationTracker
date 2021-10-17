@@ -17,5 +17,10 @@ namespace GasStationTracker
         {
             MessageBox.Show("An unhandled exception just occurred: " + e.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            UserSettings.Default.Save();
+        }
     }
 }
