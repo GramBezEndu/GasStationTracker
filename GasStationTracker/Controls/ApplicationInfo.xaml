@@ -27,6 +27,6 @@
         </TextBlock>
         <TextBlock Text="{Binding Version, StringFormat={}Version: {0}}" Grid.Row="1" Grid.Column="1" Foreground="White"></TextBlock>
         <TextBlock Text="Made by GramBezEndu" Grid.Row="2" Grid.Column="1" Foreground="White"></TextBlock>
-        <TextBlock Text="Latest tested game version: 1.0.1.37938"  Grid.Row="3" Grid.Column="1" Foreground="White"></TextBlock>
+        <TextBlock Text="Latest tested game version: 1.0.1.38259"  Grid.Row="3" Grid.Column="1" Foreground="White"></TextBlock>
     </Grid>
 </UserControl>

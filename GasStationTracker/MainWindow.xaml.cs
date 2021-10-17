@@ -213,12 +213,12 @@ namespace GasStationTracker
 
         public void GetData()
         {
-            var cash = CreateFloatRecord(MainWindow.CashDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,11C");
-            var popularity = CreateIntRecord(MainWindow.PopularityDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x888");
-            var moneySpentOnFuel = CreateFloatRecord(MainWindow.MoneySpentOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x580,0x1A0,0xE0,0xD8");
-            var moneyEarnedOnFuel = CreateFloatRecord(MainWindow.MoneyEarnedOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x790");
-            var currentFuelCapacity = CreateFloatRecord(MainWindow.CurrentFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,0x114");
-            var igt = memoryHandler.ReadFloat("GSS2-Win64-Shipping.exe+0x04115790,0x130,0x2E4");
+            var cash = CreateFloatRecord(MainWindow.CashDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x228,0x1A0,0x0,11C");
+            var popularity = CreateIntRecord(MainWindow.PopularityDisplay, "GSS2-Win64-Shipping.exe+0x04127350,0x130,0x888");
+            var moneySpentOnFuel = CreateFloatRecord(MainWindow.MoneySpentOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x580,0x1A0,0xE0,0xD8");
+            var moneyEarnedOnFuel = CreateFloatRecord(MainWindow.MoneyEarnedOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x04127350,0x130,0x790");
+            var currentFuelCapacity = CreateFloatRecord(MainWindow.CurrentFuelDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x228,0x1A0,0x0,0x114");
+            var igt = memoryHandler.ReadFloat("GSS2-Win64-Shipping.exe+0x04127350,0x130,0x2E4");
 
             var record = new Record()
             {
@@ -303,7 +303,7 @@ namespace GasStationTracker
 
         public bool InGame()
         {
-            var value = memoryHandler.ReadByte("GSS2-Win64-Shipping.exe+0x3FD4A06");
+            var value = memoryHandler.ReadByte("GSS2-Win64-Shipping.exe+0x3FE65C6");
             if (value == 0)
                 return false;
             else
