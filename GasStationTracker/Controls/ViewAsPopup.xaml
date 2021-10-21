@@ -37,7 +37,8 @@
     <Grid>
         <Border BorderBrush="Black" BorderThickness="2">
         </Border>
-        <Expander FontSize="18" FontWeight="Bold" x:Name="PopupExpander" Background="#8180B2" Foreground="White" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" IsExpanded="True" Width="{Binding Width, ElementName=PlacementExpander}">
+        <Expander FontSize="18" FontWeight="Bold" x:Name="PopupExpander" Background="#8180B2"
+                  Foreground="White" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" IsExpanded="True" Width="{Binding Width, ElementName=PlacementExpander}">
             <Expander.Header>
                 <TextBlock>Popup</TextBlock>
             </Expander.Header>

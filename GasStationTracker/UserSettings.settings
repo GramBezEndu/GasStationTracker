@@ -5,5 +5,11 @@
     <Setting Name="AutoUpdate" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="PointerSource" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Online Repository</Value>
+    </Setting>
+    <Setting Name="SessionStatsPopupPlacement" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Top Left</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

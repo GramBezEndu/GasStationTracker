@@ -66,6 +66,10 @@ namespace GasStationTracker
 
         public static readonly string CurrentFuelDisplay = "Current Fuel Capacity";
 
+        public static readonly string IGT = "IGT";
+
+        public static readonly string InGame = "In Game";
+
         public bool IsTracking
         {
             get => isTracking;
@@ -152,7 +156,7 @@ namespace GasStationTracker
             {
                 if (memoryHandler.GetProcIdFromName(processName) != 0)
                 {
-                    if (InGame())
+                    if (IsInGame())
                     {
                         GetData();
                         Plot.InvalidatePlot(true);
@@ -201,7 +205,7 @@ namespace GasStationTracker
                 if (memoryHandler.OpenProcess(gameProcessId))
                 {
                     IsTracking = true;
-                    if (!InGame())
+                    if (!IsInGame())
                         Log("In Game Flag is set to false. Load your save file to start tracking.");
                 }
                 else
@@ -310,7 +314,7 @@ namespace GasStationTracker
             return true;
         }
 
-        public bool InGame()
+        public bool IsInGame()
         {
             var value = memoryHandler.ReadByte("GSS2-Win64-Shipping.exe+0x3FE65C6");
             if (value == 0)

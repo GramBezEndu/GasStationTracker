@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -28,7 +29,6 @@ namespace GasStationTracker.Controls
         BottomLeft = 2,
         BottomRight = 3,
     };
-
     /// <summary>
     /// Interaction logic for ViewAsPopup.xaml
     /// </summary>
@@ -45,6 +45,10 @@ namespace GasStationTracker.Controls
         public PopupPlacement CurrentPlacement
         {
             get => PlacementMethods[SelectedPlacementIndex];
+            set
+            {
+                SelectedPlacementIndex = PlacementMethods.IndexOf(value);
+            }
         }
 
         public int SelectedPlacementIndex 
@@ -52,7 +56,7 @@ namespace GasStationTracker.Controls
             get => selectedPlacementIndex;
             set
             {
-                if (value != selectedPlacementIndex)
+                if (value != selectedPlacementIndex && value >= 0 && value < PlacementMethods.Count)
                 {
                     selectedPlacementIndex = value;
                     NotifyPropertyChanged();

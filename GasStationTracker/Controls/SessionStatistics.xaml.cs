@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GasStationTracker.Converters;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,6 +37,14 @@ namespace GasStationTracker.Controls
                 PopularityGainedDisplay.Name,
             };
             PopupView.PopupContent = Stats;
+            PopupPlacement placement = (PopupPlacement)PopupPlacementConverter.ConvertBack(UserSettings.Default.SessionStatsPopupPlacement);
+            PopupView.CurrentPlacement = placement;
+            PopupView.PropertyChanged += (o, e) => SavePopupPlacement();
+        }
+
+        private void SavePopupPlacement()
+        {
+            UserSettings.Default.SessionStatsPopupPlacement = (string)PointerSourceConverter.Convert(PopupView.CurrentPlacement);
         }
     }
 }

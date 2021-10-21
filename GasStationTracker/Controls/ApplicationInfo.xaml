@@ -27,6 +27,10 @@
         </TextBlock>
         <TextBlock Text="{Binding Version, StringFormat={}Version: {0}}" d:Text="Version: ?.?.?" Grid.Row="1" Grid.Column="1" Foreground="White"></TextBlock>
         <TextBlock Text="Made by GramBezEndu" Grid.Row="2" Grid.Column="1" Foreground="White"></TextBlock>
-        <TextBlock Text="Latest tested game version: 1.0.1.38259"  Grid.Row="3" Grid.Column="1" Foreground="White"></TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="1" Foreground="White">
+                <Hyperlink NavigateUri="https://github.com/GramBezEndu/GasStationSimulatorCheatTable/blob/main/README.md" RequestNavigate="Hyperlink_RequestNavigate" Foreground="White" FontWeight="Bold">
+                    View supported game versions
+                </Hyperlink>
+        </TextBlock>
     </Grid>
 </UserControl>

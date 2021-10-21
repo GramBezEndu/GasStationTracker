@@ -28,14 +28,16 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" FontWeight="Bold" Foreground="White" FontSize="18">Application</TextBlock>
-            <CheckBox x:Name="AutoUpdate" Grid.Row="1" IsChecked="{Binding Source={x:Static gasstationtracker:UserSettings.Default}, Path=AutoUpdate, Mode=TwoWay}" Foreground="White" Content="Check for updates on startup">
+            <local:PointerSettings Width="300" HorizontalAlignment="Left" Grid.Row="1"></local:PointerSettings>
+            <CheckBox x:Name="AutoUpdate" Grid.Row="2" IsChecked="{Binding Source={x:Static gasstationtracker:UserSettings.Default}, Path=AutoUpdate, Mode=TwoWay}" Foreground="White" Content="Check for updates on startup">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
             </CheckBox>
-            <CheckBox Grid.Row="2" IsEnabled="False" IsChecked="False" Foreground="White" Content="Backup save files on quit">
+            <CheckBox Grid.Row="3" IsEnabled="False" IsChecked="False" Foreground="White" Content="Backup save files on quit">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>

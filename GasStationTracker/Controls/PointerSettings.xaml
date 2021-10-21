@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="GasStationTracker.Controls.PointerSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GasStationTracker.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="140" d:DesignWidth="300">
+    <Grid>
+        <Border BorderBrush="Black" BorderThickness="2">
+        </Border>
+        <Expander FontSize="18" FontWeight="Bold" x:Name="PointerExpander" Background="#8180B2" Foreground="White" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" IsExpanded="False">
+            <Expander.Header>
+                <TextBlock>Pointer settings</TextBlock>
+            </Expander.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock FontSize="16" Margin="0,2,0,0">Get pointer data from:</TextBlock>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <CheckBox Grid.Row="0" Content="Online Repository" FontSize="13" Foreground="White" FontWeight="Normal">
+                        <CheckBox.LayoutTransform>
+                            <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                        </CheckBox.LayoutTransform>
+                    </CheckBox>
+                    <CheckBox Grid.Row="1" Content="Embedded in application" FontSize="13" Foreground="White" FontWeight="Normal">
+                        <CheckBox.LayoutTransform>
+                            <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                        </CheckBox.LayoutTransform>
+                    </CheckBox>
+                    <CheckBox IsEnabled="False" Grid.Row="2" Content="Local Cheat Table" FontSize="13" Foreground="White" FontWeight="Normal">
+                        <CheckBox.LayoutTransform>
+                            <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                        </CheckBox.LayoutTransform>
+                    </CheckBox>
+                </Grid>
+            </Grid>
+        </Expander>
+    </Grid>
+</UserControl>

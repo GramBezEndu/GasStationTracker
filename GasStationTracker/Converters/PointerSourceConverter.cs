@@ -8,25 +8,25 @@ using System.Windows.Data;
 
 namespace GasStationTracker.Converters
 {
-    public class PopupPlacementConverter : IValueConverter
+    public class PointerSourceConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            PopupPlacement popupPlacement = (PopupPlacement)value;
+            PointerSource pointerSource = (PointerSource)value;
             //Add spaces camel case
-            return Regex.Replace(popupPlacement.ToString(), "(\\B[A-Z0-9])", " $1");
+            return Regex.Replace(pointerSource.ToString(), "(\\B[A-Z0-9])", " $1");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            PopupPlacement placement;
-            Enum.TryParse(Regex.Replace(value.ToString(), @"\s", ""), out placement);
-            return placement;
+            PointerSource pointerSource;
+            Enum.TryParse(Regex.Replace(value.ToString(), @"\s", ""), out pointerSource);
+            return pointerSource;
         }
 
-        public static object ConvertBack(object value)
+        public static object Convert(object value)
         {
-            return new PopupPlacementConverter().ConvertBack(value, null, null, CultureInfo.CurrentCulture);
+            return new PointerSourceConverter().Convert(value, null, null, CultureInfo.CurrentCulture);
         }
     }
 }
