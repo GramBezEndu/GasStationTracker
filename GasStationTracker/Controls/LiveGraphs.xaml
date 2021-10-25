@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GasStationTracker.Controls" xmlns:oxy="http://oxyplot.org/wpf" xmlns:gasstationtracker="clr-namespace:GasStationTracker"
+             xmlns:local="clr-namespace:GasStationTracker.Controls" xmlns:oxy="http://oxyplot.org/wpf" xmlns:gasstationtracker="clr-namespace:GasStationTracker" xmlns:gameData="clr-namespace:GasStationTracker.GameData"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -24,9 +24,6 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Expander x:Name="expander" Grid.ColumnSpan="2" ExpandDirection="Down" IsExpanded="{Binding IsOpen, Mode=TwoWay, ElementName=ViewSettingsPopUp}" Background="#1B1A59" HorizontalAlignment="Stretch" Loaded="expander_Loaded">
-                <!--<Expander.LayoutTransform>
-                    <ScaleTransform ScaleX="1.4" ScaleY="1.4" />
-                </Expander.LayoutTransform>-->
                 <Expander.Header>
                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="White">Graph view</TextBlock>
                 </Expander.Header>
@@ -54,11 +51,11 @@
                                 <RowDefinition Height="Auto"></RowDefinition>
                             </Grid.RowDefinitions>
                             <TextBlock Margin="5,0,0,0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold">Context</TextBlock>
-                            <CheckBox Margin="5,0,0,0" Grid.Row="1" Grid.Column="0" Click="ContextClick" x:Name="checkbox0" IsChecked="True" Content="{Binding Source={x:Static gasstationtracker:MainWindow.CashDisplay}}"></CheckBox>
-                            <CheckBox Margin="5,0,0,0" Grid.Row="2" Grid.Column="0" Click="ContextClick" x:Name="checkbox1" IsChecked="False" Content="{Binding Source={x:Static gasstationtracker:MainWindow.PopularityDisplay}}"></CheckBox>
-                            <CheckBox Margin="5,0,0,0" Grid.Row="3" Grid.Column="0" Click="ContextClick" x:Name="checkbox2" IsChecked="False" Content="{Binding Source={x:Static gasstationtracker:MainWindow.MoneyEarnedOnFuelDisplay}}"></CheckBox>
-                            <CheckBox Margin="5,0,0,0" Grid.Row="4" Grid.Column="0" Click="ContextClick" x:Name="checkbox3" IsChecked="False" Content="{Binding Source={x:Static gasstationtracker:MainWindow.MoneySpentOnFuelDisplay}}"></CheckBox>
-                            <CheckBox Margin="5,0,0,0" Grid.Row="5" Grid.Column="0" Click="ContextClick" x:Name="checkbox4" IsChecked="False" Content="{Binding Source={x:Static gasstationtracker:MainWindow.CurrentFuelDisplay}}"></CheckBox>
+                            <CheckBox Margin="5,0,0,0" Grid.Row="1" Grid.Column="0" Click="ContextClick" x:Name="checkbox0" IsChecked="True" Content="{Binding Source={x:Static gameData:GameIdentifiers.CashDisplay}}"></CheckBox>
+                            <CheckBox Margin="5,0,0,0" Grid.Row="2" Grid.Column="0" Click="ContextClick" x:Name="checkbox1" IsChecked="False" Content="{Binding Source={x:Static gameData:GameIdentifiers.PopularityDisplay}}"></CheckBox>
+                            <CheckBox Margin="5,0,0,0" Grid.Row="3" Grid.Column="0" Click="ContextClick" x:Name="checkbox2" IsChecked="False" Content="{Binding Source={x:Static gameData:GameIdentifiers.MoneyEarnedOnFuelDisplay}}"></CheckBox>
+                            <CheckBox Margin="5,0,0,0" Grid.Row="4" Grid.Column="0" Click="ContextClick" x:Name="checkbox3" IsChecked="False" Content="{Binding Source={x:Static gameData:GameIdentifiers.MoneySpentOnFuelDisplay}}"></CheckBox>
+                            <CheckBox Margin="5,0,0,0" Grid.Row="5" Grid.Column="0" Click="ContextClick" x:Name="checkbox4" IsChecked="False" Content="{Binding Source={x:Static gameData:GameIdentifiers.CurrentFuelDisplay}}"></CheckBox>
                             <Expander x:Name="TimingMethodsExpander" IsEnabled="False" Margin="5,0,0,0" Grid.Row="0" Grid.RowSpan="5" Grid.Column="2" FontWeight="Bold">
                                 <Expander.Header>
                                     <TextBlock>

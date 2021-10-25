@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GasStationTracker.GameData;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -123,8 +124,8 @@ namespace GasStationTracker
                     return;
                 }
                 Record lastRecord = GetLastRecord();
-                CashEarned = (float)(Convert.ToDouble(lastRecord.GetValue(MainWindow.CashDisplay)) - Convert.ToDouble(FirstRecord.GetValue(MainWindow.CashDisplay)));
-                PopularityGained = (int)lastRecord.GetValue(MainWindow.PopularityDisplay) - (int)FirstRecord.GetValue(MainWindow.PopularityDisplay);
+                CashEarned = (float)(Convert.ToDouble(lastRecord.GetValue(GameIdentifiers.CashDisplay)) - Convert.ToDouble(FirstRecord.GetValue(GameIdentifiers.CashDisplay)));
+                PopularityGained = (int)lastRecord.GetValue(GameIdentifiers.PopularityDisplay) - (int)FirstRecord.GetValue(GameIdentifiers.PopularityDisplay);
                 SessionTime = DateTime.Now - StartTime;
                 TimeSpan inGameTimePassed = new TimeSpan(lastRecord.IGT.Days, lastRecord.IGT.Hours, lastRecord.IGT.Minutes, lastRecord.IGT.Seconds) -
                     new TimeSpan(FirstRecord.IGT.Days, FirstRecord.IGT.Hours, FirstRecord.IGT.Minutes, FirstRecord.IGT.Seconds);

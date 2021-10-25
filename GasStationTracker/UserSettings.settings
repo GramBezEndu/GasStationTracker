@@ -11,5 +11,11 @@
     <Setting Name="SessionStatsPopupPlacement" Type="System.String" Scope="User">
       <Value Profile="(Default)">Top Left</Value>
     </Setting>
+    <Setting Name="OnlineRepositoryVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Latest</Value>
+    </Setting>
+    <Setting Name="EmbeddedVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Latest</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

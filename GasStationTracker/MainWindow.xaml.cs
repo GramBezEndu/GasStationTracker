@@ -7,6 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shapes;
+using GasStationTracker.Controls;
+using GasStationTracker.Converters;
+using GasStationTracker.GameData;
 using Memory;
 using Newtonsoft.Json;
 using OxyPlot;
@@ -24,14 +27,24 @@ namespace GasStationTracker
 
         public PlotModel Plot { get; private set; } = new PlotModel();
 
+        public PointerDataRepository PointerDataRepository { get; set; } = new PointerDataRepository();
+
         public RecordCollection Records { get => records; private set => records = value; }
 
-        public string Version
+        public Version CurrentVersion
         {
             get
             {
                 Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                return String.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+                return new Version(String.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build));
+            }
+        }
+
+        public string VersionDisplay
+        {
+            get
+            {
+                return CurrentVersion.ToString();
             }
         }
 
@@ -42,6 +55,8 @@ namespace GasStationTracker
         private readonly int intervalSeconds = 5;
 
         private readonly string fileName = "Data.json";
+
+        private CheatTableReader cheatTableReader = new CheatTableReader();
 
         private readonly JsonSerializerSettings settings = new JsonSerializerSettings 
         {
@@ -55,21 +70,7 @@ namespace GasStationTracker
 
         private readonly Mem memoryHandler;
 
-        #region GssData
-        public static readonly string CashDisplay = "Cash";
-
-        public static readonly string PopularityDisplay = "Popularity";
-
-        public static readonly string MoneySpentOnFuelDisplay = "Money Spent On Fuel";
-
-        public static readonly string MoneyEarnedOnFuelDisplay = "Money Earned On Fuel";
-
-        public static readonly string CurrentFuelDisplay = "Current Fuel Capacity";
-
-        public static readonly string IGT = "IGT";
-
-        public static readonly string InGame = "In Game";
-
+        #region GameHandling
         public bool IsTracking
         {
             get => isTracking;
@@ -80,13 +81,13 @@ namespace GasStationTracker
                     if (value == true)
                     {
                         StartStop.Content = "Stop tracking";
-                        Log("Attatched to process " + processName);
+                        Log("Attatched to process " + GameIdentifiers.ProcessName);
                         SessionStats.StartTime = DateTime.Now;
                     }
                     else
                     {
                         StartStop.Content = "Start tracking";
-                        Log("Process was closed " + processName);
+                        Log("Process was closed " + GameIdentifiers.ProcessName);
                         SessionStats.EndSession();
                     }
                     isTracking = value;
@@ -97,8 +98,6 @@ namespace GasStationTracker
         private int gameProcessId;
 
         private bool isTracking = false;
-
-        private readonly string processName = "GSS2-Win64-Shipping";
         #endregion
 
         public MainWindow()
@@ -118,14 +117,21 @@ namespace GasStationTracker
             Plot.LegendBackground = OxyColor.FromArgb(legendBackground.A, legendBackground.R, legendBackground.G, legendBackground.B);
             Plot.LegendPlacement = LegendPlacement.Inside;
             LiveGraphs.Graph.Model = Plot;
-            InitTimer();
+            cheatTableReader.OnDataLoaded += (o, e) => SetData();
+            cheatTableReader.GetPointerData();
             if (UserSettings.Default.AutoUpdate)
                 CheckVersion();
+            InitTimer();
+        }
+
+        private void SetData()
+        {
+            PointerDataRepository.OnlineRepositoryData = cheatTableReader.Data;
         }
 
         private async void CheckVersion()
         {
-            await new AutoUpdater().CheckGitHubNewerVersion(new Version(Version));
+            await new AutoUpdater().CheckGitHubNewerVersion(CurrentVersion);
         }
 
         private void AddPlotAxes()
@@ -154,7 +160,7 @@ namespace GasStationTracker
         {
             if (IsTracking && gameProcessId != 0)
             {
-                if (memoryHandler.GetProcIdFromName(processName) != 0)
+                if (memoryHandler.GetProcIdFromName(GameIdentifiers.ProcessName) != 0)
                 {
                     if (IsInGame())
                     {
@@ -196,7 +202,7 @@ namespace GasStationTracker
 
         private void OpenProcess()
         {
-            gameProcessId = memoryHandler.GetProcIdFromName(processName);
+            gameProcessId = memoryHandler.GetProcIdFromName(GameIdentifiers.ProcessName);
             if (gameProcessId != 0)
             {
                 Log("Process ID: " + gameProcessId);
@@ -210,12 +216,12 @@ namespace GasStationTracker
                 }
                 else
                 {
-                    Log("Could not attach to process " + processName);
+                    Log("Could not attach to process " + GameIdentifiers.ProcessName);
                 }
             }
             else
             {
-                Log("Could not find process " + processName);
+                Log("Could not find process " + GameIdentifiers.ProcessName);
             }
         }
 
@@ -226,11 +232,23 @@ namespace GasStationTracker
 
         public void GetData()
         {
-            var cash = CreateFloatRecord(MainWindow.CashDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x228,0x1A0,0x0,11C");
-            var popularity = CreateIntRecord(MainWindow.PopularityDisplay, "GSS2-Win64-Shipping.exe+0x04127350,0x130,0x888");
-            var moneySpentOnFuel = CreateFloatRecord(MainWindow.MoneySpentOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x580,0x1A0,0xE0,0xD8");
-            var moneyEarnedOnFuel = CreateFloatRecord(MainWindow.MoneyEarnedOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x04127350,0x130,0x790");
-            var currentFuelCapacity = CreateFloatRecord(MainWindow.CurrentFuelDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x228,0x1A0,0x0,0x114");
+            List<PointerData> data;
+            PointerSource pointerSrc = (PointerSource)PointerSourceConverter.Convert(UserSettings.Default.PointerSource);
+            switch (pointerSrc)
+            {
+                case PointerSource.OnlineRepository:
+                    data = PointerDataRepository.OnlineRepositoryData;
+                    break;
+                case PointerSource.EmbeddedInApplication:
+                    data = PointerDataRepository.EmbeddedData;
+                    break;
+            }
+            //TODO: Find selected version in this pointer source then get data
+            var cash = CreateFloatRecord(GameIdentifiers.CashDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x228,0x1A0,0x0,0x11C");
+            var popularity = CreateIntRecord(GameIdentifiers.PopularityDisplay, "GSS2-Win64-Shipping.exe+0x04127350,0x130,0x888");
+            var moneySpentOnFuel = CreateFloatRecord(GameIdentifiers.MoneySpentOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x580,0x1A0,0xE0,0xD8");
+            var moneyEarnedOnFuel = CreateFloatRecord(GameIdentifiers.MoneyEarnedOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x04127350,0x130,0x790");
+            var currentFuelCapacity = CreateFloatRecord(GameIdentifiers.CurrentFuelDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x228,0x1A0,0x0,0x114");
             var igt = memoryHandler.ReadFloat("GSS2-Win64-Shipping.exe+0x04127350,0x130,0x2E4");
 
             var record = new Record()

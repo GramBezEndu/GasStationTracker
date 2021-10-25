@@ -26,21 +26,21 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <CheckBox Grid.Row="0" Content="Online Repository" FontSize="13" Foreground="White" FontWeight="Normal">
-                        <CheckBox.LayoutTransform>
-                            <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
-                        </CheckBox.LayoutTransform>
-                    </CheckBox>
-                    <CheckBox Grid.Row="1" Content="Embedded in application" FontSize="13" Foreground="White" FontWeight="Normal">
-                        <CheckBox.LayoutTransform>
-                            <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
-                        </CheckBox.LayoutTransform>
-                    </CheckBox>
-                    <CheckBox IsEnabled="False" Grid.Row="2" Content="Local Cheat Table" FontSize="13" Foreground="White" FontWeight="Normal">
-                        <CheckBox.LayoutTransform>
-                            <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
-                        </CheckBox.LayoutTransform>
-                    </CheckBox>
+                    <RadioButton Grid.Row="0" Content="Online Repository" FontSize="13" Foreground="White" FontWeight="Normal">
+                        <RadioButton.LayoutTransform>
+                            <ScaleTransform ScaleX="1.3" ScaleY="1.3" />
+                        </RadioButton.LayoutTransform>
+                    </RadioButton>
+                    <RadioButton IsChecked="True" Grid.Row="1" Content="Embedded in application" FontSize="13" Foreground="White" FontWeight="Normal">
+                        <RadioButton.LayoutTransform>
+                            <ScaleTransform ScaleX="1.3" ScaleY="1.3" />
+                        </RadioButton.LayoutTransform>
+                    </RadioButton>
+                    <RadioButton IsEnabled="False" Grid.Row="2" Content="Local Cheat Table" FontSize="13" Foreground="White" FontWeight="Normal">
+                        <RadioButton.LayoutTransform>
+                            <ScaleTransform ScaleX="1.3" ScaleY="1.3" />
+                        </RadioButton.LayoutTransform>
+                    </RadioButton>
                 </Grid>
             </Grid>
         </Expander>

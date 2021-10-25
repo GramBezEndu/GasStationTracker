@@ -58,5 +58,29 @@ namespace GasStationTracker {
                 this["SessionStatsPopupPlacement"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Latest")]
+        public string OnlineRepositoryVersion {
+            get {
+                return ((string)(this["OnlineRepositoryVersion"]));
+            }
+            set {
+                this["OnlineRepositoryVersion"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Latest")]
+        public string EmbeddedVersion {
+            get {
+                return ((string)(this["EmbeddedVersion"]));
+            }
+            set {
+                this["EmbeddedVersion"] = value;
+            }
+        }
     }
 }
