@@ -1,22 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows.Data;
 
 namespace GasStationTracker.GameData
 {
-    public class PointerDataRepository
+    public class PointerDataRepository : INotifyPropertyChanged
     {
-        public ObservableCollection<PointerData> OnlineRepositoryData { get; set; } = new ObservableCollection<PointerData>();
+        private ICollectionView onlineVersionsView;
+        private ObservableCollection<string> embeddedVersionCollection = new ObservableCollection<string>();
+
+        public ObservableCollection<PointerData> OnlineRepositoryData { get; private set; } = new ObservableCollection<PointerData>();
+
+        public ObservableCollection<string> OnlineVersionCollection { get; private set; } = new ObservableCollection<string>();
+
+        public ICollectionView OnlineVersionsView
+        {
+            get => onlineVersionsView;
+            set
+            {
+                if (value != onlineVersionsView)
+                {
+                    onlineVersionsView = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public ObservableCollection<PointerData> EmbeddedData { get; private set; } = new ObservableCollection<PointerData>();
 
-        public ObservableCollection<string> EmbeddedVersionCollection { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> EmbeddedVersionCollection 
+        { 
+            get => embeddedVersionCollection;
+            set
+            {
+                if (value != embeddedVersionCollection)
+                {
+                    embeddedVersionCollection = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public ICollectionView EmbeddedVersionsView { get; set; }
 
         public List<PointerData> LocalFileData { get; private set; } = new List<PointerData>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public PointerData GetLatestOnlineVersion()
         {
@@ -25,12 +60,52 @@ namespace GasStationTracker.GameData
 
         public PointerDataRepository()
         {
+            SetupEmbeddedData();
+            SetupOnlineData();
+        }
+
+        private void SetupOnlineData()
+        {
+            OnlineRepositoryData.CollectionChanged += (o, e) =>
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    foreach (object data in e.NewItems)
+                    {
+                        PointerData pointerData = (PointerData)data;
+                        OnlineVersionCollection.Add(pointerData.GameVersion.ToString());
+                    }
+                    OnlineVersionsView = CollectionViewSource.GetDefaultView(OnlineVersionCollection);
+                    if (OnlineVersionsView != null && OnlineVersionsView.CanSort == true)
+                    {
+                        OnlineVersionsView.SortDescriptions.Clear();
+                        OnlineVersionsView.SortDescriptions.Add(new SortDescription(".", ListSortDirection.Descending));
+                    }
+                }
+            };
+        }
+
+        private void SetupEmbeddedData()
+        {
+            EmbeddedData.CollectionChanged += (o, e) =>
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    foreach (object data in e.NewItems)
+                    {
+                        PointerData pointerData = (PointerData)data;
+                        EmbeddedVersionCollection.Add(pointerData.GameVersion.ToString());
+                    }
+                    EmbeddedVersionsView = CollectionViewSource.GetDefaultView(EmbeddedVersionCollection);
+                    if (EmbeddedVersionsView != null && EmbeddedVersionsView.CanSort == true)
+                    {
+                        EmbeddedVersionsView.SortDescriptions.Clear();
+                        EmbeddedVersionsView.SortDescriptions.Add(new SortDescription(".", ListSortDirection.Descending));
+                    }
+                }
+            };
             EmbeddedData.Add(CreateDataForVersion_1_0_1_37938());
             EmbeddedData.Add(CreateDataForVersion_1_0_1_38259());
-            foreach (PointerData data in EmbeddedData.OrderByDescending(x => x.GameVersion))
-            {
-                EmbeddedVersionCollection.Add(data.GameVersion.ToString());
-            }
         }
 
         private static PointerData CreateDataForVersion_1_0_1_37938()
@@ -57,6 +132,11 @@ namespace GasStationTracker.GameData
             data.Pointers.Add(GameIdentifiers.IGT, "GSS2-Win64-Shipping.exe+0x04127350,0x130,0x2E4");
             data.Pointers.Add(GameIdentifiers.InGame, "GSS2-Win64-Shipping.exe+0x3FE65C6");
             return data;
+        }
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

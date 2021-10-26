@@ -127,7 +127,8 @@ namespace GasStationTracker
 
         private void SetData()
         {
-            PointersRepository.OnlineRepositoryData = new ObservableCollection<PointerData>(cheatTableReader.Data);
+            foreach (var data in cheatTableReader.Data)
+                PointersRepository.OnlineRepositoryData.Add(data);
         }
 
         private async void CheckVersion()
