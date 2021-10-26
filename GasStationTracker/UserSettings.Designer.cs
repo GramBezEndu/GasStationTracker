@@ -73,7 +73,7 @@ namespace GasStationTracker {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Latest")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.0.1.38259")]
         public string EmbeddedVersion {
             get {
                 return ((string)(this["EmbeddedVersion"]));

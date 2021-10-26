@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace GasStationTracker.GameData
 {
     public class PointerDataRepository
     {
-        public List<PointerData> OnlineRepositoryData { get; set; } = new List<PointerData>();
+        public ObservableCollection<PointerData> OnlineRepositoryData { get; set; } = new ObservableCollection<PointerData>();
 
-        public List<PointerData> EmbeddedData { get; private set; } = new List<PointerData>();
+        public ObservableCollection<PointerData> EmbeddedData { get; private set; } = new ObservableCollection<PointerData>();
+
+        public ObservableCollection<string> EmbeddedVersionCollection { get; set; } = new ObservableCollection<string>();
 
         public List<PointerData> LocalFileData { get; private set; } = new List<PointerData>();
 
@@ -22,6 +27,10 @@ namespace GasStationTracker.GameData
         {
             EmbeddedData.Add(CreateDataForVersion_1_0_1_37938());
             EmbeddedData.Add(CreateDataForVersion_1_0_1_38259());
+            foreach (PointerData data in EmbeddedData.OrderByDescending(x => x.GameVersion))
+            {
+                EmbeddedVersionCollection.Add(data.GameVersion.ToString());
+            }
         }
 
         private static PointerData CreateDataForVersion_1_0_1_37938()

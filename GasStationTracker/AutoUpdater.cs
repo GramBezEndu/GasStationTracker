@@ -8,8 +8,6 @@ namespace GasStationTracker
 {
     public class AutoUpdater
     {
-        private const int timeoutInSeconds = 3;
-
         public async System.Threading.Tasks.Task CheckGitHubNewerVersion(Version currentVersion)
         {
             //Get all releases from GitHub
@@ -34,7 +32,7 @@ namespace GasStationTracker
                     content.AppendLine();
                     content.AppendLine("Auto update is not implemented in current version");
                     content.AppendLine();
-                    content.AppendLine("Visit github to download newest version");
+                    content.AppendLine("Visit github project to download newest version");
                     //The version on GitHub is more up to date than this local release.
                     MessageBox.Show(content.ToString(), "New version!", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -49,7 +47,7 @@ namespace GasStationTracker
             }
             catch
             {
-                MessageBox.Show("Could not get version information from github API", "Auto updater error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Could not get version information from github API", "Auto update error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

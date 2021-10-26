@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -27,7 +28,7 @@ namespace GasStationTracker
 
         public PlotModel Plot { get; private set; } = new PlotModel();
 
-        public PointerDataRepository PointerDataRepository { get; set; } = new PointerDataRepository();
+        public PointerDataRepository PointersRepository { get; set; } = new PointerDataRepository();
 
         public RecordCollection Records { get => records; private set => records = value; }
 
@@ -126,7 +127,7 @@ namespace GasStationTracker
 
         private void SetData()
         {
-            PointerDataRepository.OnlineRepositoryData = cheatTableReader.Data;
+            PointersRepository.OnlineRepositoryData = new ObservableCollection<PointerData>(cheatTableReader.Data);
         }
 
         private async void CheckVersion()
@@ -232,15 +233,15 @@ namespace GasStationTracker
 
         public void GetData()
         {
-            List<PointerData> data;
+            ObservableCollection<PointerData> data;
             PointerSource pointerSrc = (PointerSource)PointerSourceConverter.Convert(UserSettings.Default.PointerSource);
             switch (pointerSrc)
             {
                 case PointerSource.OnlineRepository:
-                    data = PointerDataRepository.OnlineRepositoryData;
+                    data = PointersRepository.OnlineRepositoryData;
                     break;
                 case PointerSource.EmbeddedInApplication:
-                    data = PointerDataRepository.EmbeddedData;
+                    data = PointersRepository.EmbeddedData;
                     break;
             }
             //TODO: Find selected version in this pointer source then get data

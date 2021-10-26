@@ -15,7 +15,7 @@
       <Value Profile="(Default)">Latest</Value>
     </Setting>
     <Setting Name="EmbeddedVersion" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Latest</Value>
+      <Value Profile="(Default)">1.0.1.38259</Value>
     </Setting>
   </Settings>
 </SettingsFile>

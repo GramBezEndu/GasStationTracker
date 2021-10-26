@@ -32,5 +32,10 @@ namespace GasStationTracker.Controls
             InitializeComponent();
             this.ResetSize();
         }
+
+        private void RadioButton_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }
