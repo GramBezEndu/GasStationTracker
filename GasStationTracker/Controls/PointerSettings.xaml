@@ -3,14 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GasStationTracker.Controls" xmlns:gasstationtracker="clr-namespace:GasStationTracker"
+             xmlns:local="clr-namespace:GasStationTracker.Controls" xmlns:gasstationtracker="clr-namespace:GasStationTracker" xmlns:converters="clr-namespace:GasStationTracker.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="300">
     <UserControl.Resources>
         <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="Background" Value="Transparent" />
         </Style>
+        <Style x:Key="BorderlessStyle" TargetType="{x:Type ListView}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ItemContainerStyle" TargetType="{x:Type ListViewItem}">
+                <Setter Property="Focusable" Value="False"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="Transparent"></Setter>
+                    </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Transparent"></Setter>
+                    <Setter Property="BorderBrush" Value="Transparent"></Setter>
+                    <Setter Property="BorderThickness" Value="0"></Setter>
+                </Trigger>
+                </Style.Triggers>
+        </Style>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"></BooleanToVisibilityConverter>
+        <converters:IsPointerSourceSelected x:Key="IsPointerSource"></converters:IsPointerSourceSelected>
     </UserControl.Resources>
     <Grid>
         <Border BorderBrush="Black" BorderThickness="2">
@@ -38,25 +58,21 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <RadioButton x:Name="OnlineButton" Grid.Row="0" Content="Online Repository" FontSize="13" Foreground="White" FontWeight="Normal" GroupName="PointerSource">
+                    <RadioButton x:Name="OnlineButton" 
+                                 IsChecked="{Binding Source={x:Static gasstationtracker:UserSettings.Default}, Path=PointerSource, Mode=OneWay, Converter={StaticResource IsPointerSource}, ConverterParameter='OnlineRepository'}"
+                                 Grid.Row="0" Content="Online Repository" FontSize="13" Foreground="White" FontWeight="Normal" GroupName="PointerSource">
                         <RadioButton.LayoutTransform>
                             <ScaleTransform ScaleX="1.3" ScaleY="1.3" />
                         </RadioButton.LayoutTransform>
                     </RadioButton>
                     <Grid Grid.Row="1">
-                        <ListView Visibility="{Binding ElementName=OnlineButton, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"
-                              ItemsSource="{Binding Path=PointersRepository.OnlineVersionsView, RelativeSource={RelativeSource AncestorType=Window}}"
-                              Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListViewItem}">
-                                    <Setter Property="Focusable" Value="False"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="Transparent"></Setter>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ListView.ItemContainerStyle>
+                        <ListView x:Name="OnlineVersionList"
+                                  Style="{StaticResource BorderlessStyle}"
+                                  ItemContainerStyle="{StaticResource ItemContainerStyle}"
+                                  Visibility="{Binding ElementName=OnlineButton, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  ItemsSource="{Binding Path=PointersRepository.OnlineVersionsView, RelativeSource={RelativeSource AncestorType=Window}}"
+                                  Background="Transparent"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                             <ListView.View>
                                 <GridView x:Name="onlineVersionsGrid">
                                     <GridView.Columns>
@@ -64,8 +80,13 @@
                                             <GridViewColumnHeader Content="Game version:" FontSize="16"></GridViewColumnHeader>
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <RadioButton Content="{Binding}" FontSize="13" Foreground="White" GroupName="OnlineVersion"
-                                                                 Width="{Binding Path=ActualWidth, ElementName=PointerDataGrid}" RequestBringIntoView="RadioButton_RequestBringIntoView">
+                                                    <RadioButton Content="{Binding}"
+                                                                 IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                                                 FontSize="13"
+                                                                 Foreground="White"
+                                                                 GroupName="OnlineVersion"
+                                                                 Width="{Binding Path=ActualWidth, ElementName=PointerDataGrid}"
+                                                                 RequestBringIntoView="RadioButton_RequestBringIntoView">
                                                         <RadioButton.LayoutTransform>
                                                             <ScaleTransform ScaleX="1.3" ScaleY="1.3" />
                                                         </RadioButton.LayoutTransform>
@@ -86,25 +107,26 @@
                             </ListView.View>
                         </ListView>
                     </Grid>
-                    <RadioButton x:Name="EmbeddedButton" IsChecked="True" Grid.Row="2" Content="Embedded in application" FontSize="13" Foreground="White" FontWeight="Normal" GroupName="PointerSource">
+                    <RadioButton x:Name="EmbeddedButton"
+                                 IsChecked="{Binding Source={x:Static gasstationtracker:UserSettings.Default}, Path=PointerSource, Mode=OneWay, Converter={StaticResource IsPointerSource}, ConverterParameter='EmbeddedInApplication'}"
+                                 Grid.Row="2"
+                                 Content="Embedded in application"
+                                 FontSize="13"
+                                 Foreground="White"
+                                 FontWeight="Normal"
+                                 GroupName="PointerSource">
                         <RadioButton.LayoutTransform>
                             <ScaleTransform ScaleX="1.3" ScaleY="1.3" />
                         </RadioButton.LayoutTransform>
                     </RadioButton>
                     <Grid Grid.Row="3">
-                        <ListView Visibility="{Binding ElementName=EmbeddedButton, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"
-                              ItemsSource="{Binding Path=PointersRepository.EmbeddedVersionsView, RelativeSource={RelativeSource AncestorType=Window}}"
-                              Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListViewItem}">
-                                    <Setter Property="Focusable" Value="False"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="Transparent"></Setter>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ListView.ItemContainerStyle>
+                        <ListView x:Name="EmbeddedVersionList"
+                                  Style="{StaticResource BorderlessStyle}"
+                                  Visibility="{Binding ElementName=EmbeddedButton, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  ItemsSource="{Binding Path=PointersRepository.EmbeddedVersionsView, RelativeSource={RelativeSource AncestorType=Window}}"
+                                  ItemContainerStyle="{StaticResource ItemContainerStyle}"
+                                  Background="Transparent"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                             <ListView.View>
                                 <GridView x:Name="onlineGrid">
                                     <GridView.Columns>
@@ -112,7 +134,10 @@
                                             <GridViewColumnHeader Content="Game version:" FontSize="16"></GridViewColumnHeader>
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <RadioButton Content="{Binding}" FontSize="13" Foreground="White" GroupName="EmbeddedVersion" Width="{Binding Path=ActualWidth, ElementName=PointerDataGrid}" RequestBringIntoView="RadioButton_RequestBringIntoView">
+                                                    <RadioButton Content="{Binding}"
+                                                                 FontSize="13" Foreground="White" GroupName="EmbeddedVersion" 
+                                                                 IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                                                 Width="{Binding Path=ActualWidth, ElementName=PointerDataGrid}" RequestBringIntoView="RadioButton_RequestBringIntoView">
                                                         <RadioButton.LayoutTransform>
                                                             <ScaleTransform ScaleX="1.3" ScaleY="1.3" />
                                                         </RadioButton.LayoutTransform>

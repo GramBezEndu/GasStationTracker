@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Shapes;
 using GasStationTracker.Controls;
 using GasStationTracker.Converters;
@@ -129,6 +130,12 @@ namespace GasStationTracker
         {
             foreach (var data in cheatTableReader.Data)
                 PointersRepository.OnlineRepositoryData.Add(data);
+            ListView onlineVersionList = Settings.PointerSettingsView.OnlineVersionList;
+            string onlineVersionSelected = onlineVersionList.Items.Cast<string>().First(x => x == UserSettings.Default.OnlineRepositoryVersion);
+            onlineVersionList.SelectedItem = onlineVersionSelected;
+            ListView embeddedVersionList = Settings.PointerSettingsView.EmbeddedVersionList;
+            string embeddedVersionSelected = embeddedVersionList.Items.Cast<string>().First(x => x == UserSettings.Default.EmbeddedVersion);
+            embeddedVersionList.SelectedItem = embeddedVersionSelected;
         }
 
         private async void CheckVersion()
@@ -164,22 +171,33 @@ namespace GasStationTracker
             {
                 if (memoryHandler.GetProcIdFromName(GameIdentifiers.ProcessName) != 0)
                 {
-                    if (IsInGame())
+                    PointerData pointerList = GetPointerList();
+                    if (pointerList != null)
                     {
-                        GetData();
-                        Plot.InvalidatePlot(true);
-                        SessionStats?.Update();
-                        Save();
+                        if (IsInGame(pointerList))
+                        {
+                            GetData(pointerList);
+                            Plot.InvalidatePlot(true);
+                            SessionStats?.Update();
+                            Save();
+                        }
+                        else
+                        {
+                            Log("In Game Flag is set to false. Load your save file to start tracking.");
+                            return;
+                        }
                     }
                     else
                     {
-                        Log("In Game Flag is set to false. Load your save file to start tracking.");
+                        Log("Could not find pointer data with selected pointer source and game version");
+                        return;
                     }
                 }
                 else
                 {
                     Log("Process with ID: " + gameProcessId + " is no longer running. Did the game crash?");
                     IsTracking = false;
+                    return;
                 }
             }
         }
@@ -205,6 +223,12 @@ namespace GasStationTracker
         private void OpenProcess()
         {
             gameProcessId = memoryHandler.GetProcIdFromName(GameIdentifiers.ProcessName);
+            PointerData pointerList = GetPointerList();
+            if (pointerList == null)
+            {
+                Log("Could not find pointer data with selected pointer source and game version");
+                return;
+            }
             if (gameProcessId != 0)
             {
                 Log("Process ID: " + gameProcessId);
@@ -213,17 +237,22 @@ namespace GasStationTracker
                 if (memoryHandler.OpenProcess(gameProcessId))
                 {
                     IsTracking = true;
-                    if (!IsInGame())
+                    if (!IsInGame(pointerList))
+                    {
                         Log("In Game Flag is set to false. Load your save file to start tracking.");
+                        return;
+                    }
                 }
                 else
                 {
                     Log("Could not attach to process " + GameIdentifiers.ProcessName);
+                    return;
                 }
             }
             else
             {
                 Log("Could not find process " + GameIdentifiers.ProcessName);
+                return;
             }
         }
 
@@ -232,32 +261,22 @@ namespace GasStationTracker
             Logs.AppendText(String.Format("{0}\t{1}\n", DateTime.Now, msg));
         }
 
-        public void GetData()
+        public void GetData(PointerData pointerList)
         {
-            ObservableCollection<PointerData> data;
-            PointerSource pointerSrc = (PointerSource)PointerSourceConverter.Convert(UserSettings.Default.PointerSource);
-            switch (pointerSrc)
+            if (pointerList != null)
             {
-                case PointerSource.OnlineRepository:
-                    data = PointersRepository.OnlineRepositoryData;
-                    break;
-                case PointerSource.EmbeddedInApplication:
-                    data = PointersRepository.EmbeddedData;
-                    break;
-            }
-            //TODO: Find selected version in this pointer source then get data
-            var cash = CreateFloatRecord(GameIdentifiers.CashDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x228,0x1A0,0x0,0x11C");
-            var popularity = CreateIntRecord(GameIdentifiers.PopularityDisplay, "GSS2-Win64-Shipping.exe+0x04127350,0x130,0x888");
-            var moneySpentOnFuel = CreateFloatRecord(GameIdentifiers.MoneySpentOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x580,0x1A0,0xE0,0xD8");
-            var moneyEarnedOnFuel = CreateFloatRecord(GameIdentifiers.MoneyEarnedOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x04127350,0x130,0x790");
-            var currentFuelCapacity = CreateFloatRecord(GameIdentifiers.CurrentFuelDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x228,0x1A0,0x0,0x114");
-            var igt = memoryHandler.ReadFloat("GSS2-Win64-Shipping.exe+0x04127350,0x130,0x2E4");
+                var cash = CreateFloatRecord(GameIdentifiers.CashDisplay, pointerList.Pointers[GameIdentifiers.CashDisplay]);
+                var popularity = CreateIntRecord(GameIdentifiers.PopularityDisplay, pointerList.Pointers[GameIdentifiers.PopularityDisplay]);
+                var moneySpentOnFuel = CreateFloatRecord(GameIdentifiers.MoneySpentOnFuelDisplay, pointerList.Pointers[GameIdentifiers.MoneySpentOnFuelDisplay]);
+                var moneyEarnedOnFuel = CreateFloatRecord(GameIdentifiers.MoneyEarnedOnFuelDisplay, pointerList.Pointers[GameIdentifiers.MoneyEarnedOnFuelDisplay]);
+                var currentFuelCapacity = CreateFloatRecord(GameIdentifiers.CurrentFuelDisplay, pointerList.Pointers[GameIdentifiers.CurrentFuelDisplay]);
+                var igt = memoryHandler.ReadFloat(pointerList.Pointers[GameIdentifiers.IGT]);
 
-            var record = new Record()
-            {
-                Date = DateTime.Now,
-                IGT = new InGameTime(igt),
-                SingleRecords = new List<SingleValue>()
+                var record = new Record()
+                {
+                    Date = DateTime.Now,
+                    IGT = new InGameTime(igt),
+                    SingleRecords = new List<SingleValue>()
                 {
                     cash,
                     popularity,
@@ -265,8 +284,28 @@ namespace GasStationTracker
                     moneySpentOnFuel,
                     currentFuelCapacity
                 }
-            };
-            Records.Add(record);
+                };
+                Records.Add(record);
+            }
+        }
+
+        private PointerData GetPointerList()
+        {
+            ObservableCollection<PointerData> data = null;
+            PointerData pointerList = null;
+            PointerSource pointerSrc = (PointerSource)PointerSourceConverter.Convert(UserSettings.Default.PointerSource);
+            switch (pointerSrc)
+            {
+                case PointerSource.OnlineRepository:
+                    data = PointersRepository.OnlineRepositoryData;
+                    pointerList = data.FirstOrDefault(x => x.GameVersion.ToString() == UserSettings.Default.OnlineRepositoryVersion);
+                    break;
+                case PointerSource.EmbeddedInApplication:
+                    data = PointersRepository.EmbeddedData;
+                    pointerList = data.FirstOrDefault(x => x.GameVersion.ToString() == UserSettings.Default.EmbeddedVersion);
+                    break;
+            }
+            return pointerList;
         }
 
         private SingleValue CreateIntRecord(string name, string pointerPath)
@@ -334,9 +373,9 @@ namespace GasStationTracker
             return true;
         }
 
-        public bool IsInGame()
+        public bool IsInGame(PointerData pointerList)
         {
-            var value = memoryHandler.ReadByte("GSS2-Win64-Shipping.exe+0x3FE65C6");
+            int value = memoryHandler.ReadByte(pointerList.Pointers[GameIdentifiers.InGame]);
             if (value == 0)
                 return false;
             else
@@ -387,7 +426,25 @@ namespace GasStationTracker
 
         private void CloseApplication(object sender, RoutedEventArgs e)
         {
+            UserSettings.Default.PointerSource = GetPointerSourceFromView();
+            string checkedOnlineVersion = Settings.PointerSettingsView.OnlineVersionList.SelectedItem.ToString();
+            UserSettings.Default.OnlineRepositoryVersion = checkedOnlineVersion;
+            string checkedEmbeddedVersion = Settings.PointerSettingsView.EmbeddedVersionList.SelectedItem.ToString();
+            UserSettings.Default.EmbeddedVersion = checkedEmbeddedVersion;
+            UserSettings.Default.Save();
             Application.Current.Shutdown();
+        }
+
+        private string GetPointerSourceFromView()
+        {
+            if (Settings.PointerSettingsView.EmbeddedButton.IsChecked == true)
+            {
+                return PointerSourceConverter.Convert(PointerSource.EmbeddedInApplication).ToString();
+            }
+            else
+            {
+                return PointerSourceConverter.Convert(PointerSource.OnlineRepository).ToString();
+            }
         }
 
         private void MinimizeWindow(object sender, RoutedEventArgs e)

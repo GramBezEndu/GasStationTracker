@@ -20,7 +20,7 @@ namespace GasStationTracker
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            UserSettings.Default.Save();
+
         }
     }
 }

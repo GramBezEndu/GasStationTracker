@@ -28,5 +28,10 @@ namespace GasStationTracker.Converters
         {
             return new PointerSourceConverter().Convert(value, null, null, CultureInfo.CurrentCulture);
         }
+
+        public static object ConvertBack(object value)
+        {
+            return new PointerSourceConverter().ConvertBack(value, null, null, CultureInfo.CurrentCulture);
+        }
     }
 }
