@@ -8,7 +8,8 @@ using System.Windows.Data;
 
 namespace GasStationTracker.Converters
 {
-    public class PopupPlacementConverter : IValueConverter
+    [ValueConversion(typeof(PopupPlacement), typeof(string))]
+    public class PopupPlacementToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -26,7 +27,7 @@ namespace GasStationTracker.Converters
 
         public static object ConvertBack(object value)
         {
-            return new PopupPlacementConverter().ConvertBack(value, null, null, CultureInfo.CurrentCulture);
+            return new PopupPlacementToStringConverter().ConvertBack(value, null, null, CultureInfo.CurrentCulture);
         }
     }
 }

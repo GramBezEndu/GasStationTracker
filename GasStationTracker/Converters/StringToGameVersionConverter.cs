@@ -4,19 +4,21 @@ using System.Globalization;
 using System.Text;
 using System.Windows.Data;
 
-namespace GasStationTracker
+namespace GasStationTracker.Converters
 {
-    public class IgtConverter : IValueConverter
+    [ValueConversion(typeof(string), typeof(Version))]
+    public class StringToGameVersionConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var igt = (InGameTime)value;
-            return string.Format("{0} days {1} hours {2} minutes", igt.Days, igt.Hours, igt.Minutes);
+            string val = value.ToString();
+            return new Version(val);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value;
+            Version version = (Version)value;
+            return (string)version.ToString();
         }
     }
 }

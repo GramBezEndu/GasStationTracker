@@ -8,7 +8,8 @@ using System.Windows.Data;
 
 namespace GasStationTracker.Converters
 {
-    public class PointerSourceConverter : IValueConverter
+    [ValueConversion(typeof(PointerSource), typeof(string))]
+    public class PointerSourceToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -27,12 +28,12 @@ namespace GasStationTracker.Converters
 
         public static object Convert(object value)
         {
-            return new PointerSourceConverter().Convert(value, null, null, CultureInfo.CurrentCulture);
+            return new PointerSourceToStringConverter().Convert(value, null, null, CultureInfo.CurrentCulture);
         }
 
         public static object ConvertBack(object value)
         {
-            return new PointerSourceConverter().ConvertBack(value, null, null, CultureInfo.CurrentCulture);
+            return new PointerSourceToStringConverter().ConvertBack(value, null, null, CultureInfo.CurrentCulture);
         }
     }
 }

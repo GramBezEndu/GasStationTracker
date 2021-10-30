@@ -77,18 +77,20 @@ namespace GasStationTracker
             }
         }
 
-        public Record FirstRecord
-        {
-            get => firstRecord;
-            private set => firstRecord = value;
-        }
+        public Record FirstRecord { get; private set; }
 
-        private Record firstRecord;
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private float cashEarned = 0.00f;
+
         private int popularityGained = 0;
+
         private bool sessionEnded = false;
+
         private DateTime startTime;
+
         private TimeSpan sessionTime = new TimeSpan(0);
+
         private InGameTime igtPassed = new InGameTime() 
         {
             Days = 0,
@@ -96,23 +98,7 @@ namespace GasStationTracker
             Minutes = 0,
         };
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public SessionStatistics() { }
-
-
-        private void UpdateFirstRecord()
-        {
-            if (Records != null)
-            {
-                firstRecord = Records.FirstOrDefault(x => x.Date >= StartTime);
-            }
-        }
-
-        private Record GetLastRecord()
-        {
-            return Records.OrderBy(x => x.Date).Last();
-        }
 
         public void Update()
         {
@@ -141,6 +127,19 @@ namespace GasStationTracker
         public void EndSession()
         {
             sessionEnded = true;
+        }
+
+        private void UpdateFirstRecord()
+        {
+            if (Records != null)
+            {
+                FirstRecord = Records.FirstOrDefault(x => x.Date >= StartTime);
+            }
+        }
+
+        private Record GetLastRecord()
+        {
+            return Records.OrderBy(x => x.Date).Last();
         }
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")

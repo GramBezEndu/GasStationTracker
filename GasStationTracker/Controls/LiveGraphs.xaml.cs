@@ -37,7 +37,7 @@ namespace GasStationTracker.Controls
 
         public int SelectedMethodIndex { get; set; } = 1;
 
-        Dictionary<string, CheckBox> checkboxes;
+        private Dictionary<string, CheckBox> checkboxes;
 
         public LiveGraphs()
         {

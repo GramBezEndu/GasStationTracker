@@ -33,7 +33,29 @@ namespace GasStationTracker
         private const string branch = "master";
 
         private const string filename = "GSS2-Win64-Shipping.CT";
-        
+
+        public CheatTableReader()
+        {
+
+        }
+
+        public async void GetPointerData()
+        {
+            using (WebClient client = new WebClient())
+            {
+                try
+                {
+                    string text = await client.DownloadStringTaskAsync(GithubFilePath);
+                    Data = ParseRawText(text);
+                    OnDataLoaded?.Invoke(this, new EventArgs());
+                }
+                catch
+                {
+                    MessageBox.Show("Could not get pointer data from online repository", "Online repository error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
         private List<PointerData> ParseRawText(string rawText)
         {
             List<PointerData> data = new List<PointerData>();
@@ -101,23 +123,6 @@ namespace GasStationTracker
             else
             {
                 return address;
-            }
-        }
-        
-        public async void GetPointerData()
-        {
-            using (WebClient client = new WebClient())
-            {
-                try
-                {
-                    string text = await client.DownloadStringTaskAsync(GithubFilePath);
-                    Data = ParseRawText(text);
-                    OnDataLoaded?.Invoke(this, new EventArgs());
-                }
-                catch
-                {
-                    MessageBox.Show("Could not get pointer data from online repository", "Online repository error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
             }
         }
     }

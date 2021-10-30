@@ -6,19 +6,18 @@ using System.Windows.Data;
 
 namespace GasStationTracker.Converters
 {
-    [ValueConversion(typeof(string), typeof(Version))]
-    public class GameVersionConverter : IValueConverter
+    [ValueConversion(typeof(InGameTime), typeof(string))]
+    public class IgtToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string val = value.ToString();
-            return new Version(val);
+            var igt = (InGameTime)value;
+            return string.Format("{0} days {1} hours {2} minutes", igt.Days, igt.Hours, igt.Minutes);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Version version = (Version)value;
-            return (string)version.ToString();
+            return value;
         }
     }
 }

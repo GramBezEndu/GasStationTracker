@@ -300,7 +300,7 @@ namespace GasStationTracker
         {
             ObservableCollection<PointerData> data = null;
             PointerData pointerList = null;
-            PointerSource pointerSrc = (PointerSource)PointerSourceConverter.ConvertBack(UserSettings.Default.PointerSource);
+            PointerSource pointerSrc = (PointerSource)PointerSourceToStringConverter.ConvertBack(UserSettings.Default.PointerSource);
             switch (pointerSrc)
             {
                 case PointerSource.OnlineRepository:
@@ -454,11 +454,11 @@ namespace GasStationTracker
         {
             if (Settings.PointerSettingsView.EmbeddedButton.IsChecked == true)
             {
-                return PointerSourceConverter.Convert(PointerSource.EmbeddedInApplication).ToString();
+                return PointerSourceToStringConverter.Convert(PointerSource.EmbeddedInApplication).ToString();
             }
             else
             {
-                return PointerSourceConverter.Convert(PointerSource.OnlineRepository).ToString();
+                return PointerSourceToStringConverter.Convert(PointerSource.OnlineRepository).ToString();
             }
         }
 

@@ -8,6 +8,11 @@ namespace GasStationTracker
 {
     public class AutoUpdater
     {
+        public AutoUpdater()
+        {
+
+        }
+
         public async System.Threading.Tasks.Task CheckGitHubNewerVersion(Version currentVersion)
         {
             //Get all releases from GitHub

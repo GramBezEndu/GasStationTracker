@@ -8,12 +8,13 @@ using System.Windows.Data;
 namespace GasStationTracker.Converters
 {
     [ValueConversion(typeof(bool), typeof(Visibility))]
-    public sealed class BooleanToVisibilityConverter : IValueConverter
+    public sealed class BoolToVisibilityConverter : IValueConverter
     {
         public Visibility TrueValue { get; set; }
+
         public Visibility FalseValue { get; set; }
 
-        public BooleanToVisibilityConverter()
+        public BoolToVisibilityConverter()
         {
             TrueValue = Visibility.Visible;
             FalseValue = Visibility.Collapsed;

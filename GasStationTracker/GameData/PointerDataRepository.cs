@@ -12,9 +12,6 @@ namespace GasStationTracker.GameData
 {
     public class PointerDataRepository : INotifyPropertyChanged
     {
-        private ICollectionView onlineVersionsView;
-        private ObservableCollection<string> embeddedVersionCollection = new ObservableCollection<string>();
-
         public ObservableCollection<PointerData> OnlineRepositoryData { get; private set; } = new ObservableCollection<PointerData>();
 
         public ObservableCollection<string> OnlineVersionCollection { get; private set; } = new ObservableCollection<string>() { new string("Latest") };
@@ -53,15 +50,19 @@ namespace GasStationTracker.GameData
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public PointerData GetLatestOnlineVersion()
-        {
-            return OnlineRepositoryData.OrderByDescending(x => x.GameVersion).First();
-        }
+        private ICollectionView onlineVersionsView;
+
+        private ObservableCollection<string> embeddedVersionCollection = new ObservableCollection<string>();
 
         public PointerDataRepository()
         {
             SetupEmbeddedData();
             SetupOnlineData();
+        }
+
+        public PointerData GetLatestOnlineVersion()
+        {
+            return OnlineRepositoryData.OrderByDescending(x => x.GameVersion).First();
         }
 
         private void SetupOnlineData()
@@ -108,7 +109,7 @@ namespace GasStationTracker.GameData
             EmbeddedData.Add(CreateDataForVersion_1_0_1_38259());
         }
 
-        private static PointerData CreateDataForVersion_1_0_1_37938()
+        private PointerData CreateDataForVersion_1_0_1_37938()
         {
             var data = new PointerData(new Version("1.0.1.37938"));
             data.Pointers.Add(GameIdentifiers.CashDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,0x11C");
@@ -121,7 +122,7 @@ namespace GasStationTracker.GameData
             return data;
         }
 
-        private static PointerData CreateDataForVersion_1_0_1_38259()
+        private PointerData CreateDataForVersion_1_0_1_38259()
         {
             var data = new PointerData(new Version("1.0.1.38259"));
             data.Pointers.Add(GameIdentifiers.CashDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x228,0x1A0,0x0,0x11C");

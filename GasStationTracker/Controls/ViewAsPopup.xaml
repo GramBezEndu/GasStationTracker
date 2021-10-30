@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="140" d:DesignWidth="150">
     <UserControl.Resources>
-        <converters:PopupPlacementConverter x:Key="PopupPlacementConverter"/>
+        <converters:PopupPlacementToStringConverter x:Key="PopupPlacementConverter"/>
         <Style TargetType="Button" x:Key="BtnStyle">
             <Setter Property="Background" Value="#1B1A59" />
             <Setter Property="Foreground" Value="White" />
