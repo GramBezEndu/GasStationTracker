@@ -23,7 +23,7 @@
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Expander x:Name="expander" Grid.ColumnSpan="2" ExpandDirection="Down" IsExpanded="{Binding IsOpen, Mode=TwoWay, ElementName=ViewSettingsPopUp}" Background="#1B1A59" HorizontalAlignment="Stretch" Loaded="expander_Loaded">
+            <Expander x:Name="expander" Grid.ColumnSpan="2" ExpandDirection="Down" IsExpanded="{Binding IsOpen, Mode=TwoWay, ElementName=ViewSettingsPopUp}" Background="#1B1A59" HorizontalAlignment="Stretch" Loaded="ExpanderLoaded">
                 <Expander.Header>
                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="White">Graph view</TextBlock>
                 </Expander.Header>

@@ -37,7 +37,7 @@ namespace GasStationTracker.Controls
 
         public int SelectedMethodIndex { get; set; } = 1;
 
-        private Dictionary<string, CheckBox> checkboxes;
+        private readonly Dictionary<string, CheckBox> checkboxes;
 
         public LiveGraphs()
         {
@@ -104,7 +104,7 @@ namespace GasStationTracker.Controls
             checkboxes[name].IsChecked = true;
         }
 
-        private void expander_Loaded(object sender, RoutedEventArgs e)
+        private void ExpanderLoaded(object sender, RoutedEventArgs e)
         {
             Expander expander = sender as Expander;
             if (expander != null)

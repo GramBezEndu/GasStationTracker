@@ -99,8 +99,10 @@ namespace GasStationTracker
                 {
                     if (!DataGridBinding.Columns.Any(x => (string)x.Header == val.Name))
                     {
-                        DataGridTextColumn textColumn = new DataGridTextColumn();
-                        textColumn.Header = val.Name;
+                        DataGridTextColumn textColumn = new DataGridTextColumn
+                        {
+                            Header = val.Name
+                        };
                         Binding newBinding = new Binding("SingleRecords[" + i + "].Value");
                         textColumn.Binding = newBinding;
                         DataGridBinding.Columns.Add(textColumn);

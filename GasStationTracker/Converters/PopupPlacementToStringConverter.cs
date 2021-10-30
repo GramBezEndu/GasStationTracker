@@ -20,8 +20,7 @@ namespace GasStationTracker.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            PopupPlacement placement;
-            Enum.TryParse(Regex.Replace(value.ToString(), @"\s", ""), out placement);
+            Enum.TryParse(Regex.Replace(value.ToString(), @"\s", ""), out PopupPlacement placement);
             return placement;
         }
 

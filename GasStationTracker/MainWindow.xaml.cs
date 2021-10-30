@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Shapes;
 using GasStationTracker.Controls;
 using GasStationTracker.Converters;
 using GasStationTracker.GameData;
@@ -16,7 +13,6 @@ using Memory;
 using Newtonsoft.Json;
 using OxyPlot;
 using OxyPlot.Axes;
-using OxyPlot.Series;
 
 namespace GasStationTracker
 {
@@ -58,7 +54,7 @@ namespace GasStationTracker
 
         private readonly string fileName = "Data.json";
 
-        private CheatTableReader cheatTableReader = new CheatTableReader();
+        private readonly CheatTableReader cheatTableReader = new CheatTableReader();
 
         private readonly JsonSerializerSettings settings = new JsonSerializerSettings
         {
@@ -159,7 +155,7 @@ namespace GasStationTracker
         private void StartTimer()
         {
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Tick += new EventHandler(DispatcherTimerTick);
             dispatcherTimer.Interval = new TimeSpan(0, intervalMinutes, intervalSeconds);
             dispatcherTimer.Start();
         }
@@ -170,7 +166,7 @@ namespace GasStationTracker
             dispatcherTimer = null;
         }
 
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        private void DispatcherTimerTick(object sender, EventArgs e)
         {
             if (IsTracking && gameProcessId != 0)
             {

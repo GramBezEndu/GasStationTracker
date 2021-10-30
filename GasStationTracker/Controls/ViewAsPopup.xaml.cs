@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Xml;
 using static GasStationTracker.DependencyObjectHelper;
 
@@ -69,9 +62,8 @@ namespace GasStationTracker.Controls
                 }
             }
         }
-        private Grid popupContent;
 
-        private Window parentWindow;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public string[] BindingListNames { get; set; } = new string[0];
 
@@ -81,13 +73,136 @@ namespace GasStationTracker.Controls
             set
             {
                 popupContent = CloneGridViaXmlSerialization(value, BindingListNames);
-                popup = new Popup();
-                popup.DataContext = this.DataContext;
-                popup.AllowsTransparency = true;
-                popup.Child = popupContent;
-                popup.Placement = PlacementMode.Custom;
-                popup.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacePopup);
+                popup = new Popup
+                {
+                    DataContext = this.DataContext,
+                    AllowsTransparency = true,
+                    Child = popupContent,
+                    Placement = PlacementMode.Custom,
+                    CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacePopup)
+                };
             }
+        }
+
+        private Grid popupContent;
+
+        private Window parentWindow;
+
+        private Popup popup;
+
+        private int selectedPlacementIndex = 0;
+
+        public ViewAsPopup()
+        {
+            InitializeComponent();
+            PlacementList.ItemsSource = PlacementMethods;
+            this.ResetSize();
+            Loaded += new RoutedEventHandler(UserControl_Loaded);
+        }
+
+        public Grid CloneGridViaXmlSerialization(Grid grid, string[] propertyNames)
+        {
+            List<BindingData> bindingList = new List<BindingData>();
+            GetBindingsDataRecursive(grid, bindingList);
+
+            StringBuilder stringBuilder = new StringBuilder();
+            XamlDesignerSerializationManager manager = CreateSerializationManager(stringBuilder);
+
+            System.Windows.Markup.XamlWriter.Save(grid, manager);
+            StringReader stringReader = new StringReader(stringBuilder.ToString());
+            XmlReader xmlReader = XmlReader.Create(stringReader);
+            object clonedGrid = (object)XamlReader.Load(xmlReader);
+            if (clonedGrid == null)
+            {
+                throw new ArgumentNullException("Grid could not be cloned via Xaml Serialization Stack.");
+            }
+
+            if (clonedGrid is Grid)
+            {
+                Grid newGrid = clonedGrid as Grid;
+                for (int i = 0; i < propertyNames.Length; i++)
+                {
+                    string currentElementName = propertyNames[i];
+                    BindingData bindingData = bindingList[i];
+                    UIElement currentElement = (UIElement)newGrid.FindName(currentElementName);
+                    if (currentElement is TextBlock)
+                    {
+                        TextBlock textBlock = currentElement as TextBlock;
+                        textBlock.SetBinding(TextBlock.TextProperty, bindingData.Binding);
+                    }
+                }
+                newGrid.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#565595");
+                return newGrid;
+            }
+
+            else
+            {
+                throw new InvalidOperationException("Grid could not be cast.");
+            }
+        }
+
+        public BindingBase CloneBindingViaXmlSerialization(BindingBase binding)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            XamlDesignerSerializationManager manager = CreateSerializationManager(stringBuilder);
+
+            System.Windows.Markup.XamlWriter.Save(binding, manager);
+            StringReader stringReader = new StringReader(stringBuilder.ToString());
+            XmlReader xmlReader = XmlReader.Create(stringReader);
+            object newBinding = (object)XamlReader.Load(xmlReader);
+            if (newBinding == null)
+            {
+                throw new ArgumentNullException("Binding could not be cloned via Xaml Serialization Stack.");
+            }
+
+            if (newBinding is Binding)
+            {
+                return (Binding)newBinding;
+            }
+            else if (newBinding is MultiBinding)
+            {
+                return (MultiBinding)newBinding;
+            }
+            else if (newBinding is PriorityBinding)
+            {
+                return (PriorityBinding)newBinding;
+            }
+            else
+            {
+                throw new InvalidOperationException("Binding could not be cast.");
+            }
+        }
+
+        private static void GetBindingsRecursive(DependencyObject dObj, List<BindingBase> bindingList)
+        {
+            bindingList.AddRange(DependencyObjectHelper.GetBindingObjects(dObj));
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(dObj);
+            if (childrenCount > 0)
+            {
+                for (int i = 0; i < childrenCount; i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(dObj, i);
+                    GetBindingsRecursive(child, bindingList);
+                }
+            }
+        }
+
+        private XamlDesignerSerializationManager CreateSerializationManager(StringBuilder stringBuilder)
+        {
+            XmlWriter writer = XmlWriter.Create(stringBuilder, new XmlWriterSettings
+            {
+                Indent = true,
+                ConformanceLevel = ConformanceLevel.Fragment,
+                OmitXmlDeclaration = true,
+                NamespaceHandling = NamespaceHandling.OmitDuplicates,
+            });
+            XamlDesignerSerializationManager manager = new XamlDesignerSerializationManager(writer)
+            {
+                //Improtant
+                XamlWriterMode = XamlWriterMode.Expression
+            };
+            return manager;
         }
 
         private CustomPopupPlacement[] PlacePopup(Size popupSize, Size targetSize, Point offset)
@@ -123,20 +238,6 @@ namespace GasStationTracker.Controls
             return positions;
         }
 
-        Popup popup;
-
-        private int selectedPlacementIndex = 0;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public ViewAsPopup()
-        {
-            InitializeComponent();
-            PlacementList.ItemsSource = PlacementMethods;
-            this.ResetSize();
-            Loaded += new RoutedEventHandler(UserControl_Loaded);
-        }
-
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             parentWindow = Window.GetWindow(this);
@@ -159,122 +260,9 @@ namespace GasStationTracker.Controls
             }
         }
 
-        public Grid CloneGridViaXmlSerialization(Grid grid, string[] propertyNames)
-        {
-            //TODO: Refactor
-            List<BindingData> bindingList = new List<BindingData>();
-            List<BindingBase> clonedBindings = new List<BindingBase>();
-            GetBindingsDataRecursive(grid, bindingList);
-            //foreach
-
-            var sb = new StringBuilder();
-            var writer = XmlWriter.Create(sb, new XmlWriterSettings
-            {
-                Indent = true,
-                ConformanceLevel = ConformanceLevel.Fragment,
-                OmitXmlDeclaration = true,
-                NamespaceHandling = NamespaceHandling.OmitDuplicates,
-            });
-            var mgr = new XamlDesignerSerializationManager(writer);
-
-            // HERE BE MAGIC!!!
-            mgr.XamlWriterMode = XamlWriterMode.Expression;
-            // THERE WERE MAGIC!!!
-
-            System.Windows.Markup.XamlWriter.Save(grid, mgr);
-            StringReader stringReader = new StringReader(sb.ToString());
-            XmlReader xmlReader = XmlReader.Create(stringReader);
-            object clonedGrid = (object)XamlReader.Load(xmlReader);
-            if (clonedGrid == null)
-            {
-                throw new ArgumentNullException("Grid could not be cloned via Xaml Serialization Stack.");
-            }
-
-            if (clonedGrid is Grid)
-            {
-                Grid newGrid = clonedGrid as Grid;
-                for (int i = 0; i < propertyNames.Length; i++)
-                {
-                    string currentElementName = propertyNames[i];
-                    BindingData bindingData = bindingList[i];
-                    UIElement currentElement = (UIElement)newGrid.FindName(currentElementName);
-                    if (currentElement is TextBlock)
-                    {
-                        TextBlock textBlock = currentElement as TextBlock;
-                        textBlock.SetBinding(TextBlock.TextProperty, bindingData.Binding);
-                    }
-                }
-                newGrid.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#565595");
-                return newGrid;
-            }
-
-            else
-            {
-                throw new InvalidOperationException("Grid could not be cast.");
-            }
-        }
-
-        public BindingBase CloneBindingViaXmlSerialization(BindingBase binding)
-        {
-            var sb = new StringBuilder();
-            var writer = XmlWriter.Create(sb, new XmlWriterSettings
-            {
-                Indent = true,
-                ConformanceLevel = ConformanceLevel.Fragment,
-                OmitXmlDeclaration = true,
-                NamespaceHandling = NamespaceHandling.OmitDuplicates,
-            });
-            var mgr = new XamlDesignerSerializationManager(writer);
-
-            // HERE BE MAGIC!!!
-            mgr.XamlWriterMode = XamlWriterMode.Expression;
-            // THERE WERE MAGIC!!!
-
-            System.Windows.Markup.XamlWriter.Save(binding, mgr);
-            StringReader stringReader = new StringReader(sb.ToString());
-            XmlReader xmlReader = XmlReader.Create(stringReader);
-            object newBinding = (object)XamlReader.Load(xmlReader);
-            if (newBinding == null)
-            {
-                throw new ArgumentNullException("Binding could not be cloned via Xaml Serialization Stack.");
-            }
-
-            if (newBinding is Binding)
-            {
-                return (Binding)newBinding;
-            }
-            else if (newBinding is MultiBinding)
-            {
-                return (MultiBinding)newBinding;
-            }
-            else if (newBinding is PriorityBinding)
-            {
-                return (PriorityBinding)newBinding;
-            }
-            else
-            {
-                throw new InvalidOperationException("Binding could not be cast.");
-            }
-        }
-
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private static void GetBindingsRecursive(DependencyObject dObj, List<BindingBase> bindingList)
-        {
-            bindingList.AddRange(DependencyObjectHelper.GetBindingObjects(dObj));
-
-            int childrenCount = VisualTreeHelper.GetChildrenCount(dObj);
-            if (childrenCount > 0)
-            {
-                for (int i = 0; i < childrenCount; i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(dObj, i);
-                    GetBindingsRecursive(child, bindingList);
-                }
-            }
         }
 
         private void GetBindingsDataRecursive(DependencyObject dObj, List<BindingData> bindingList)
