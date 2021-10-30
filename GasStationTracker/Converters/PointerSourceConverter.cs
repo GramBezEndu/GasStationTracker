@@ -12,7 +12,8 @@ namespace GasStationTracker.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            PointerSource pointerSource = (PointerSource)value;
+            PointerSource pointerSource;
+            Enum.TryParse(Regex.Replace(value.ToString(), @"\s", ""), out pointerSource);
             //Add spaces camel case
             return Regex.Replace(pointerSource.ToString(), "(\\B[A-Z0-9])", " $1");
         }

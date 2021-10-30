@@ -60,7 +60,7 @@ namespace GasStationTracker
                 foreach (XElement entry in cheatEntries)
                 {
                     versionData.Pointers.Add(
-                        Regex.Replace(entry.Element("Description").Value, "[^A-Za-z0-9. ]", ""),
+                        Regex.Replace(entry.Element("Description").Value, "[^A-Za-z0-9. +-x]", ""),
                         GetFullAddress(entry));
                 }
                 data.Add(versionData);
@@ -71,13 +71,15 @@ namespace GasStationTracker
         private XElement FindCheatEntryWithName(XElement versionEntry, string name)
         {
             var cheatEntries = versionEntry.Elements("CheatEntries").Elements("CheatEntry");
-            return cheatEntries.First(x => Regex.Replace(x.Element("Description").Value, "[^A-Za-z0-9. ]", "") == name);
+            return cheatEntries.First(x => Regex.Replace(x.Element("Description").Value, "[^A-Za-z0-9. +-x]", "") == name);
         }
 
         private string GetFullAddress(XElement cheatEntry)
         {
             XElement pointerEntry = cheatEntry.Element("CheatEntries").Element("CheatEntry");
-            string address = Regex.Replace(pointerEntry.Element("Address").Value, "[^A-Za-z0-9. +]", "");
+            string address = Regex.Replace(pointerEntry.Element("Address").Value, "[^A-Za-z0-9. +-x]", "");
+            //Add "0x" string before offset
+            address = address.Replace("+", "+0x");
             //If there are any offsets
             if (pointerEntry.Element("Offsets") != null)
             {
@@ -87,7 +89,7 @@ namespace GasStationTracker
                 for (int i = offsetsElements.Length - 1; i >= 0; i--)
                 {
                     XElement offsetElement = offsetsElements[i];
-                    string offset = String.Format("+0x{0}", offsetElement.Value);
+                    string offset = String.Format(",0x{0}", offsetElement.Value);
                     offsets.Add(offset);
                 }
                 StringBuilder fullAddressBuilder = new StringBuilder();

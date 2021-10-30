@@ -60,7 +60,7 @@ namespace GasStationTracker
 
         private CheatTableReader cheatTableReader = new CheatTableReader();
 
-        private readonly JsonSerializerSettings settings = new JsonSerializerSettings 
+        private readonly JsonSerializerSettings settings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
             DateFormatHandling = DateFormatHandling.MicrosoftDateFormat,
@@ -123,7 +123,6 @@ namespace GasStationTracker
             cheatTableReader.GetPointerData();
             if (UserSettings.Default.AutoUpdate)
                 CheckVersion();
-            InitTimer();
         }
 
         private void SetData()
@@ -157,12 +156,18 @@ namespace GasStationTracker
             });
         }
 
-        private void InitTimer()
+        private void StartTimer()
         {
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, intervalMinutes, intervalSeconds);
             dispatcherTimer.Start();
+        }
+
+        private void StopTimer()
+        {
+            dispatcherTimer.Stop();
+            dispatcherTimer = null;
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -218,17 +223,18 @@ namespace GasStationTracker
         {
             memoryHandler.CloseProcess();
             IsTracking = false;
+            StopTimer();
         }
 
         private void OpenProcess()
         {
-            gameProcessId = memoryHandler.GetProcIdFromName(GameIdentifiers.ProcessName);
             PointerData pointerList = GetPointerList();
             if (pointerList == null)
             {
                 Log("Could not find pointer data with selected pointer source and game version");
                 return;
             }
+            gameProcessId = memoryHandler.GetProcIdFromName(GameIdentifiers.ProcessName);
             if (gameProcessId != 0)
             {
                 Log("Process ID: " + gameProcessId);
@@ -237,6 +243,7 @@ namespace GasStationTracker
                 if (memoryHandler.OpenProcess(gameProcessId))
                 {
                     IsTracking = true;
+                    StartTimer();
                     if (!IsInGame(pointerList))
                     {
                         Log("In Game Flag is set to false. Load your save file to start tracking.");
@@ -293,12 +300,19 @@ namespace GasStationTracker
         {
             ObservableCollection<PointerData> data = null;
             PointerData pointerList = null;
-            PointerSource pointerSrc = (PointerSource)PointerSourceConverter.Convert(UserSettings.Default.PointerSource);
+            PointerSource pointerSrc = (PointerSource)PointerSourceConverter.ConvertBack(UserSettings.Default.PointerSource);
             switch (pointerSrc)
             {
                 case PointerSource.OnlineRepository:
                     data = PointersRepository.OnlineRepositoryData;
-                    pointerList = data.FirstOrDefault(x => x.GameVersion.ToString() == UserSettings.Default.OnlineRepositoryVersion);
+                    if (UserSettings.Default.OnlineRepositoryVersion.Contains("Latest"))
+                    {
+                        pointerList = data.OrderByDescending(x => x.GameVersion).FirstOrDefault();
+                    }
+                    else
+                    {
+                        pointerList = data.FirstOrDefault(x => x.GameVersion.ToString() == UserSettings.Default.OnlineRepositoryVersion);
+                    }
                     break;
                 case PointerSource.EmbeddedInApplication:
                     data = PointersRepository.EmbeddedData;
@@ -375,7 +389,8 @@ namespace GasStationTracker
 
         public bool IsInGame(PointerData pointerList)
         {
-            int value = memoryHandler.ReadByte(pointerList.Pointers[GameIdentifiers.InGame]);
+            string path = pointerList.Pointers[GameIdentifiers.InGame];
+            int value = memoryHandler.ReadByte(path);
             if (value == 0)
                 return false;
             else

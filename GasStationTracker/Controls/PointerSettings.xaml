@@ -59,7 +59,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <RadioButton x:Name="OnlineButton" 
-                                 IsChecked="{Binding Source={x:Static gasstationtracker:UserSettings.Default}, Path=PointerSource, Mode=OneWay, Converter={StaticResource IsPointerSource}, ConverterParameter='OnlineRepository'}"
+                                 IsChecked="{Binding Source={x:Static gasstationtracker:UserSettings.Default}, Path=PointerSource, Mode=OneWay, Converter={StaticResource IsPointerSource}, ConverterParameter='Online Repository'}"
                                  Grid.Row="0" Content="Online Repository" FontSize="13" Foreground="White" FontWeight="Normal" GroupName="PointerSource">
                         <RadioButton.LayoutTransform>
                             <ScaleTransform ScaleX="1.3" ScaleY="1.3" />
@@ -108,7 +108,7 @@
                         </ListView>
                     </Grid>
                     <RadioButton x:Name="EmbeddedButton"
-                                 IsChecked="{Binding Source={x:Static gasstationtracker:UserSettings.Default}, Path=PointerSource, Mode=OneWay, Converter={StaticResource IsPointerSource}, ConverterParameter='EmbeddedInApplication'}"
+                                 IsChecked="{Binding Source={x:Static gasstationtracker:UserSettings.Default}, Path=PointerSource, Mode=OneWay, Converter={StaticResource IsPointerSource}, ConverterParameter='Embedded In Application'}"
                                  Grid.Row="2"
                                  Content="Embedded in application"
                                  FontSize="13"

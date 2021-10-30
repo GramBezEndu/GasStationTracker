@@ -17,7 +17,7 @@ namespace GasStationTracker.GameData
 
         public ObservableCollection<PointerData> OnlineRepositoryData { get; private set; } = new ObservableCollection<PointerData>();
 
-        public ObservableCollection<string> OnlineVersionCollection { get; private set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> OnlineVersionCollection { get; private set; } = new ObservableCollection<string>() { new string("Latest") };
 
         public ICollectionView OnlineVersionsView
         {

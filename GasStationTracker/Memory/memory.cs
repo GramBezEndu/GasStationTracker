@@ -479,7 +479,7 @@ namespace Memory
                     if (oldOffsets.Contains("0x")) test = oldOffsets.Replace("0x", "");
                     Int64 preParse = 0;
                     if (!oldOffsets.Contains("-"))
-                        preParse = Int64.Parse(test, NumberStyles.AllowHexSpecifier);
+                        preParse = Int64.Parse(test, NumberStyles.HexNumber);
                     else
                     {
                         test = test.Replace("-", "");
