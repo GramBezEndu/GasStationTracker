@@ -474,5 +474,18 @@ namespace GasStationTracker
             else
                 WindowState = WindowState.Normal;
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //This work around solves window being too big issue
+            if (this.WindowState == WindowState.Maximized)
+            {
+                this.BorderThickness = new System.Windows.Thickness(6);
+            }
+            else
+            {
+                this.BorderThickness = new System.Windows.Thickness(0);
+            }
+        }
     }
 }
