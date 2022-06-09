@@ -1,12 +1,8 @@
-﻿using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System.Collections.Generic;
+    using OxyPlot;
+
     public class GraphViewModel
     {
         public Dictionary<string, IList<DataPoint>> Points { get; private set; }

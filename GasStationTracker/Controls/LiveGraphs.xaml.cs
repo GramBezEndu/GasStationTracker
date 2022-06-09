@@ -1,42 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-namespace GasStationTracker.Controls
+﻿namespace GasStationTracker.Controls
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
+    using System.Windows.Input;
+
     /// <summary>
-    /// Interaction logic for LiveGraphs.xaml
+    /// Interaction logic for LiveGraphs.xaml.
     /// </summary>
     public partial class LiveGraphs : UserControl
     {
-        public List<string> TimingMethods { get; set; } = new List<string>()
-        {
-            "IGT",
-            "Real Time",
-        };
-
-        public string CurrentMethod 
-        {
-            get
-            {
-                return TimingMethods[SelectedMethodIndex];
-            }
-        }
-
-        public int SelectedMethodIndex { get; set; } = 1;
-
         private readonly Dictionary<string, CheckBox> checkboxes;
 
         public LiveGraphs()
@@ -51,30 +26,38 @@ namespace GasStationTracker.Controls
                 { checkbox3.Name, checkbox3 },
                 { checkbox4.Name, checkbox4 },
             };
-            this.Loaded += new RoutedEventHandler(OnViewLoaded);
+            Loaded += new RoutedEventHandler(OnViewLoaded);
             this.ResetSize();
         }
 
+        public List<string> TimingMethods { get; set; } = new List<string>()
+        {
+            "IGT",
+            "Real Time",
+        };
+
+        public string CurrentMethod => TimingMethods[SelectedMethodIndex];
+
+        public int SelectedMethodIndex { get; set; } = 1;
+
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
-            Window w = Window.GetWindow(expander);
-            // w should not be Null now!
-            if (null != w)
+            Window window = Window.GetWindow(expander);
+            if (window != null)
             {
-                w.LocationChanged += delegate (object sender2, EventArgs args)
-                {
-                    var offset = ViewSettingsPopUp.HorizontalOffset;
-                    // "bump" the offset to cause the popup to reposition itself
-                    //   on its own
+                window.LocationChanged += delegate (object sender2, EventArgs args) {
+                    double offset = ViewSettingsPopUp.HorizontalOffset;
+
+                    // "bump" the offset to cause the popup to reposition itself on its own
                     ViewSettingsPopUp.HorizontalOffset = offset + 1;
                     ViewSettingsPopUp.HorizontalOffset = offset;
                 };
+
                 // Also handle the window being resized (so the popup's position stays
                 //  relative to its target element if the target element moves upon 
                 //  window resize)
-                w.SizeChanged += delegate (object sender3, SizeChangedEventArgs e2)
-                {
-                    var offset = ViewSettingsPopUp.HorizontalOffset;
+                window.SizeChanged += delegate (object sender3, SizeChangedEventArgs e2) {
+                    double offset = ViewSettingsPopUp.HorizontalOffset;
                     ViewSettingsPopUp.HorizontalOffset = offset + 1;
                     ViewSettingsPopUp.HorizontalOffset = offset;
                 };
@@ -83,7 +66,7 @@ namespace GasStationTracker.Controls
 
         private void ContextClick(object sender, RoutedEventArgs e)
         {
-            var checkbox = (CheckBox)sender as CheckBox;
+            CheckBox checkbox = (CheckBox)sender;
             if (checkbox.IsChecked == true)
             {
                 UncheckAllExcept(checkbox.Name);
@@ -91,16 +74,17 @@ namespace GasStationTracker.Controls
             }
             else
             {
-                Graph.Model.UpdateGraphLineSeries(String.Empty);
+                Graph.Model.UpdateGraphLineSeries(string.Empty);
             }
         }
 
         private void UncheckAllExcept(string name)
         {
-            foreach(var checkbox in checkboxes.Values)
+            foreach (CheckBox checkbox in checkboxes.Values)
             {
                 checkbox.IsChecked = false;
             }
+
             checkboxes[name].IsChecked = true;
         }
 
@@ -118,8 +102,8 @@ namespace GasStationTracker.Controls
                 {
                     if (expander.IsExpanded)
                     {
-                        var popup = (Popup)expander.Content;
-                        var positionRelative = ee.GetPosition(popup);
+                        Popup popup = (Popup)expander.Content;
+                        Point positionRelative = ee.GetPosition(popup);
                         double height = ViewSettings.ActualHeight;
                         bool popupClicked = positionRelative.X >= 0 &&
                             positionRelative.X <= popup.Width &&

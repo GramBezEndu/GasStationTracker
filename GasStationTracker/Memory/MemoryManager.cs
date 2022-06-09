@@ -1,23 +1,23 @@
-﻿using System;
-using System.IO;
-using System.IO.Pipes;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using System.Globalization;
-using System.Security.Principal;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using static Memory.Imps;
-
-namespace Memory
+﻿namespace Memory
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.IO.Pipes;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Security.Principal;
+    using System.Text;
+    using System.Threading.Tasks;
+    using static Memory.Imps;
+
     /// <summary>
-    /// Memory.dll class. Full documentation at https://github.com/erfg12/memory.dll/wiki
+    /// Memory.dll class. Full documentation at https://github.com/erfg12/memory.dll/wiki.
     /// </summary>
-    public partial class Mem
+    public partial class MemoryManager
     {
         public Proc mProc = new Proc();
 
@@ -42,6 +42,7 @@ namespace Memory
 
                 return retVal;
             }
+
             MEMORY_BASIC_INFORMATION32 tmp32 = new MEMORY_BASIC_INFORMATION32();
 
             retVal = Native_VirtualQueryEx(hProcess, lpAddress, out tmp32, new UIntPtr((uint)Marshal.SizeOf(tmp32)));
@@ -71,13 +72,14 @@ namespace Memory
 
             if (pid <= 0)
             {
-	            Debug.WriteLine("ERROR: OpenProcess given proc ID 0.");
+                Debug.WriteLine("ERROR: OpenProcess given proc ID 0.");
                 return false;
             }
-	            
 
             if (mProc.Process != null && mProc.Process.Id == pid)
-	            return true;
+            {
+                return true;
+            }
 
             try
             {
@@ -91,15 +93,18 @@ namespace Memory
 
                 mProc.Handle = Imps.OpenProcess(0x1F0FFF, true, pid);
 
-                try {
-                    System.Diagnostics.Process.EnterDebugMode(); 
-                } catch (Win32Exception) { 
-                    //Debug.WriteLine("WARNING: You are not running with raised privileges! Visit https://github.com/erfg12/memory.dll/wiki/Administrative-Privileges"); 
+                try
+                {
+                    System.Diagnostics.Process.EnterDebugMode();
+                }
+                catch (Win32Exception)
+                {
+                    Debug.WriteLine("WARNING: You are not running with raised privileges! Visit https://github.com/erfg12/memory.dll/wiki/Administrative-Privileges");
                 }
 
                 if (mProc.Handle == IntPtr.Zero)
                 {
-                    var eCode = Marshal.GetLastWin32Error();
+                    int eCode = Marshal.GetLastWin32Error();
                     Debug.WriteLine("ERROR: OpenProcess has failed opening a handle to the target process (GetLastWin32ErrorCode: " + eCode + ")");
                     System.Diagnostics.Process.LeaveDebugMode();
                     mProc = null;
@@ -117,13 +122,14 @@ namespace Memory
 
                 return true;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Debug.WriteLine("ERROR: OpenProcess has crashed. " + ex);
                 return false;
             }
         }
 
-       
+
         /// <summary>
         /// Open the PC game process with all security and access rights.
         /// </summary>
@@ -147,7 +153,7 @@ namespace Memory
                     WindowsPrincipal principal = new WindowsPrincipal(identity);
                     return principal.IsInRole(WindowsBuiltInRole.Administrator);
                 }
-            } 
+            }
             catch
             {
                 Debug.WriteLine("ERROR: Could not determin if program is running as admin. Is the NuGet package \"System.Security.Principal.Windows\" missing?");
@@ -161,7 +167,9 @@ namespace Memory
         public void GetModules()
         {
             if (mProc.Process == null)
+            {
                 return;
+            }
 
             if (mProc.Is64Bit && IntPtr.Size != 8)
             {
@@ -174,10 +182,12 @@ namespace Memory
 
             mProc.Modules = new Dictionary<string, IntPtr>();
 
-            foreach (ProcessModule Module in mProc.Process.Modules)
+            foreach (ProcessModule module in mProc.Process.Modules)
             {
-                if (!string.IsNullOrEmpty(Module.ModuleName) && !mProc.Modules.ContainsKey(Module.ModuleName))
-                    mProc.Modules.Add(Module.ModuleName, Module.BaseAddress);
+                if (!string.IsNullOrEmpty(module.ModuleName) && !mProc.Modules.ContainsKey(module.ModuleName))
+                {
+                    mProc.Modules.Add(module.ModuleName, module.BaseAddress);
+                }
             }
 
             Debug.WriteLine("Found " + mProc.Modules.Count() + " process modules.");
@@ -185,36 +195,38 @@ namespace Memory
 
         public void SetFocus()
         {
-            //int style = GetWindowLong(procs.MainWindowHandle, -16);
-            //if ((style & 0x20000000) == 0x20000000) //minimized
-            //    SendMessage(procs.Handle, 0x0112, (IntPtr)0xF120, IntPtr.Zero);
             SetForegroundWindow(mProc.Process.MainWindowHandle);
         }
 
         /// <summary>
         /// Get the process ID number by process name.
         /// </summary>
-        /// <param name="name">Example: "eqgame". Use task manager to find the name. Do not include .exe</param>
-        /// <returns></returns>
+        /// <param name="name">Example: "eqgame". Use task manager to find the name. Do not include ".exe".</param>
+        /// <returns>Process Id or 0 when not found.</returns>
         public int GetProcIdFromName(string name) //new 1.0.2 function
         {
             Process[] processlist = Process.GetProcesses();
 
             if (name.ToLower().Contains(".exe"))
-                name = name.Replace(".exe", "");
-            if (name.ToLower().Contains(".bin")) // test
-                name = name.Replace(".bin", "");
+            {
+                name = name.Replace(".exe", string.Empty);
+            }
+
+            if (name.ToLower().Contains(".bin"))
+            {
+                name = name.Replace(".bin", string.Empty);
+            }
 
             foreach (System.Diagnostics.Process theprocess in processlist)
             {
-                if (theprocess.ProcessName.Equals(name, StringComparison.CurrentCultureIgnoreCase)) //find (name).exe in the process list (use task manager to find the name)
+                if (theprocess.ProcessName.Equals(name, StringComparison.CurrentCultureIgnoreCase))
+                {
                     return theprocess.Id;
+                }
             }
 
-            return 0; //if we fail to find it
+            return 0;
         }
-
-
 
         /// <summary>
         /// Get code. If just the ini file name is given with no path, it will assume the file is next to the executable.
@@ -227,33 +239,29 @@ namespace Memory
             StringBuilder returnCode = new StringBuilder(1024);
             uint read_ini_result;
 
-            if (iniFile != "")
+            if (iniFile != string.Empty)
             {
                 if (File.Exists(iniFile))
-                    read_ini_result = GetPrivateProfileString("codes", name, "", returnCode, (uint)returnCode.Capacity, iniFile);
+                {
+                    read_ini_result = GetPrivateProfileString(
+                        "codes",
+                        name,
+                        string.Empty,
+                        returnCode,
+                        (uint)returnCode.Capacity,
+                        iniFile);
+                }
                 else
+                {
                     Debug.WriteLine("ERROR: ini file \"" + iniFile + "\" not found!");
+                }
             }
             else
+            {
                 returnCode.Append(name);
+            }
 
             return returnCode.ToString();
-        }
-
-        private int LoadIntCode(string name, string path)
-        {
-            try
-            {
-                int intValue = Convert.ToInt32(LoadCode(name, path), 16);
-                if (intValue >= 0)
-                    return intValue;
-                else
-                    return 0;
-            } catch
-            {
-                Debug.WriteLine("ERROR: LoadIntCode function crashed!");
-                return 0;
-            }
         }
 
         /// <summary>
@@ -267,31 +275,36 @@ namespace Memory
             using (NamedPipeClientStream pipeStream = new NamedPipeClientStream(name))
             {
                 if (!pipeStream.IsConnected)
+                {
                     pipeStream.Connect();
+                }
 
                 //MessageBox.Show("[Client] Pipe connection established");
                 using (StreamWriter sw = new StreamWriter(pipeStream))
                 {
                     if (!sw.AutoFlush)
+                    {
                         sw.AutoFlush = true;
+                    }
+
                     sw.WriteLine(func);
                 }
             }
-        }        
+        }
 
         #region protection
 
         public bool ChangeProtection(string code, MemoryProtection newProtection, out MemoryProtection oldProtection, string file = "")
         {
-	        UIntPtr theCode = GetCode(code, file);
-	        if (theCode == UIntPtr.Zero 
-	            || mProc.Handle == IntPtr.Zero)
-	        {
-		        oldProtection = default;
-		        return false;
-	        }
+            UIntPtr theCode = GetCode(code, file);
+            if (theCode == UIntPtr.Zero
+                || mProc.Handle == IntPtr.Zero)
+            {
+                oldProtection = default;
+                return false;
+            }
 
-	        return VirtualProtectEx(mProc.Handle, theCode, (IntPtr)(mProc.Is64Bit ? 8 : 4), newProtection, out oldProtection);
+            return VirtualProtectEx(mProc.Handle, theCode, (IntPtr)(mProc.Is64Bit ? 8 : 4), newProtection, out oldProtection);
         }
         #endregion
 
@@ -304,20 +317,29 @@ namespace Memory
         /// <returns></returns>
         public UIntPtr GetCode(string name, string path = "", int size = 8)
         {
-            string theCode = "";
+            string theCode = string.Empty;
             if (mProc.Is64Bit)
             {
-                //Debug.WriteLine("Changing to 64bit code...");
-                if (size == 8) size = 16; //change to 64bit
-                return Get64BitCode(name, path, size); //jump over to 64bit code grab
+                if (size == 8)
+                {
+                    // change to 64bit
+                    size = 16;
+                }
+
+                // jump over to 64bit code grab
+                return Get64BitCode(name, path, size);
             }
 
-            if (path != "")
+            if (path != string.Empty)
+            {
                 theCode = LoadCode(name, path);
+            }
             else
+            {
                 theCode = name;
+            }
 
-            if (theCode == "")
+            if (theCode == string.Empty)
             {
                 //Debug.WriteLine("ERROR: LoadCode returned blank. NAME:" + name + " PATH:" + path);
                 return UIntPtr.Zero;
@@ -329,14 +351,21 @@ namespace Memory
 
             // remove spaces
             if (theCode.Contains(" "))
-                theCode = theCode.Replace(" ", String.Empty);
+            {
+                theCode = theCode.Replace(" ", string.Empty);
+            }
 
-            if (!theCode.Contains("+") && !theCode.Contains(",")) return new UIntPtr(Convert.ToUInt32(theCode, 16));
+            if (!theCode.Contains("+") && !theCode.Contains(","))
+            {
+                return new UIntPtr(Convert.ToUInt32(theCode, 16));
+            }
 
             string newOffsets = theCode;
 
             if (theCode.Contains("+"))
+            {
                 newOffsets = theCode.Substring(theCode.IndexOf('+') + 1);
+            }
 
             byte[] memoryAddress = new byte[size];
 
@@ -348,13 +377,19 @@ namespace Memory
                 foreach (string oldOffsets in newerOffsets)
                 {
                     string test = oldOffsets;
-                    if (oldOffsets.Contains("0x")) test = oldOffsets.Replace("0x","");
+                    if (oldOffsets.Contains("0x"))
+                    {
+                        test = oldOffsets.Replace("0x", string.Empty);
+                    }
+
                     int preParse = 0;
                     if (!oldOffsets.Contains("-"))
+                    {
                         preParse = Int32.Parse(test, NumberStyles.AllowHexSpecifier);
+                    }
                     else
                     {
-                        test = test.Replace("-", "");
+                        test = test.Replace("-", string.Empty);
                         preParse = Int32.Parse(test, NumberStyles.AllowHexSpecifier);
                         preParse = preParse * -1;
                     }
@@ -363,7 +398,9 @@ namespace Memory
                 int[] offsets = offsetsList.ToArray();
 
                 if (theCode.Contains("base") || theCode.Contains("main"))
+                {
                     ReadProcessMemory(mProc.Handle, (UIntPtr)((int)mProc.MainModule.BaseAddress + offsets[0]), memoryAddress, (UIntPtr)size, IntPtr.Zero);
+                }
                 else if (!theCode.Contains("base") && !theCode.Contains("main") && theCode.Contains("+"))
                 {
                     string[] moduleName = theCode.Split('+');
@@ -371,7 +408,11 @@ namespace Memory
                     if (!moduleName[0].ToLower().Contains(".dll") && !moduleName[0].ToLower().Contains(".exe") && !moduleName[0].ToLower().Contains(".bin"))
                     {
                         string theAddr = moduleName[0];
-                        if (theAddr.Contains("0x")) theAddr = theAddr.Replace("0x", "");
+                        if (theAddr.Contains("0x"))
+                        {
+                            theAddr = theAddr.Replace("0x", string.Empty);
+                        }
+
                         altModule = (IntPtr)Int32.Parse(theAddr, NumberStyles.HexNumber);
                     }
                     else
@@ -389,7 +430,9 @@ namespace Memory
                     ReadProcessMemory(mProc.Handle, (UIntPtr)((int)altModule + offsets[0]), memoryAddress, (UIntPtr)size, IntPtr.Zero);
                 }
                 else
+                {
                     ReadProcessMemory(mProc.Handle, (UIntPtr)(offsets[0]), memoryAddress, (UIntPtr)size, IntPtr.Zero);
+                }
 
                 uint num1 = BitConverter.ToUInt32(memoryAddress, 0); //ToUInt64 causes arithmetic overflow.
 
@@ -409,14 +452,20 @@ namespace Memory
                 IntPtr altModule = IntPtr.Zero;
                 //Debug.WriteLine("newOffsets=" + newOffsets);
                 if (theCode.ToLower().Contains("base") || theCode.ToLower().Contains("main"))
+                {
                     altModule = mProc.MainModule.BaseAddress;
+                }
                 else if (!theCode.ToLower().Contains("base") && !theCode.ToLower().Contains("main") && theCode.Contains("+"))
                 {
                     string[] moduleName = theCode.Split('+');
                     if (!moduleName[0].ToLower().Contains(".dll") && !moduleName[0].ToLower().Contains(".exe") && !moduleName[0].ToLower().Contains(".bin"))
                     {
                         string theAddr = moduleName[0];
-                        if (theAddr.Contains("0x")) theAddr = theAddr.Replace("0x", "");
+                        if (theAddr.Contains("0x"))
+                        {
+                            theAddr = theAddr.Replace("0x", string.Empty);
+                        }
+
                         altModule = (IntPtr)Int32.Parse(theAddr, NumberStyles.HexNumber);
                     }
                     else
@@ -433,7 +482,10 @@ namespace Memory
                     }
                 }
                 else
+                {
                     altModule = mProc.Modules[theCode.Split('+')[0]];
+                }
+
                 return (UIntPtr)((int)altModule + trueCode);
             }
         }
@@ -447,26 +499,39 @@ namespace Memory
         /// <returns></returns>
         public UIntPtr Get64BitCode(string name, string path = "", int size = 16)
         {
-            string theCode = "";
-            if (path != "")
+            string theCode = string.Empty;
+            if (path != string.Empty)
+            {
                 theCode = LoadCode(name, path);
+            }
             else
+            {
                 theCode = name;
+            }
 
-            if (theCode == "")
+            if (theCode == string.Empty)
+            {
                 return UIntPtr.Zero;
+            }
 
             // remove spaces
             if (theCode.Contains(" "))
+            {
                 theCode.Replace(" ", String.Empty);
+            }
 
             string newOffsets = theCode;
             if (theCode.Contains("+"))
+            {
                 newOffsets = theCode.Substring(theCode.IndexOf('+') + 1);
+            }
 
             byte[] memoryAddress = new byte[size];
 
-            if (!theCode.Contains("+") && !theCode.Contains(",")) return new UIntPtr(Convert.ToUInt64(theCode, 16));
+            if (!theCode.Contains("+") && !theCode.Contains(","))
+            {
+                return new UIntPtr(Convert.ToUInt64(theCode, 16));
+            }
 
             if (newOffsets.Contains(','))
             {
@@ -476,28 +541,40 @@ namespace Memory
                 foreach (string oldOffsets in newerOffsets)
                 {
                     string test = oldOffsets;
-                    if (oldOffsets.Contains("0x")) test = oldOffsets.Replace("0x", "");
+                    if (oldOffsets.Contains("0x"))
+                    {
+                        test = oldOffsets.Replace("0x", string.Empty);
+                    }
+
                     Int64 preParse = 0;
                     if (!oldOffsets.Contains("-"))
+                    {
                         preParse = Int64.Parse(test, NumberStyles.HexNumber);
+                    }
                     else
                     {
-                        test = test.Replace("-", "");
+                        test = test.Replace("-", string.Empty);
                         preParse = Int64.Parse(test, NumberStyles.AllowHexSpecifier);
                         preParse = preParse * -1;
                     }
+
                     offsetsList.Add(preParse);
                 }
+
                 Int64[] offsets = offsetsList.ToArray();
 
                 if (theCode.Contains("base") || theCode.Contains("main"))
+                {
                     ReadProcessMemory(mProc.Handle, (UIntPtr)((Int64)mProc.MainModule.BaseAddress + offsets[0]), memoryAddress, (UIntPtr)size, IntPtr.Zero);
+                }
                 else if (!theCode.Contains("base") && !theCode.Contains("main") && theCode.Contains("+"))
                 {
                     string[] moduleName = theCode.Split('+');
                     IntPtr altModule = IntPtr.Zero;
                     if (!moduleName[0].ToLower().Contains(".dll") && !moduleName[0].ToLower().Contains(".exe") && !moduleName[0].ToLower().Contains(".bin"))
+                    {
                         altModule = (IntPtr)Int64.Parse(moduleName[0], System.Globalization.NumberStyles.HexNumber);
+                    }
                     else
                     {
                         try
@@ -510,10 +587,13 @@ namespace Memory
                             Debug.WriteLine("Modules: " + string.Join(",", mProc.Modules));
                         }
                     }
+
                     ReadProcessMemory(mProc.Handle, (UIntPtr)((Int64)altModule + offsets[0]), memoryAddress, (UIntPtr)size, IntPtr.Zero);
                 }
                 else // no offsets
-                    ReadProcessMemory(mProc.Handle, (UIntPtr)(offsets[0]), memoryAddress, (UIntPtr)size, IntPtr.Zero);
+                {
+                    ReadProcessMemory(mProc.Handle, (UIntPtr)offsets[0], memoryAddress, (UIntPtr)size, IntPtr.Zero);
+                }
 
                 Int64 num1 = BitConverter.ToInt64(memoryAddress, 0);
 
@@ -532,14 +612,20 @@ namespace Memory
                 Int64 trueCode = Convert.ToInt64(newOffsets, 16);
                 IntPtr altModule = IntPtr.Zero;
                 if (theCode.Contains("base") || theCode.Contains("main"))
+                {
                     altModule = mProc.MainModule.BaseAddress;
+                }
                 else if (!theCode.Contains("base") && !theCode.Contains("main") && theCode.Contains("+"))
                 {
                     string[] moduleName = theCode.Split('+');
                     if (!moduleName[0].ToLower().Contains(".dll") && !moduleName[0].ToLower().Contains(".exe") && !moduleName[0].ToLower().Contains(".bin"))
                     {
                         string theAddr = moduleName[0];
-                        if (theAddr.Contains("0x")) theAddr = theAddr.Replace("0x", "");
+                        if (theAddr.Contains("0x"))
+                        {
+                            theAddr = theAddr.Replace("0x", string.Empty);
+                        }
+
                         altModule = (IntPtr)Int64.Parse(theAddr, NumberStyles.HexNumber);
                     }
                     else
@@ -556,7 +642,10 @@ namespace Memory
                     }
                 }
                 else
+                {
                     altModule = mProc.Modules[theCode.Split('+')[0]];
+                }
+
                 return (UIntPtr)((Int64)altModule + trueCode);
             }
         }
@@ -567,7 +656,9 @@ namespace Memory
         public void CloseProcess()
         {
             if (mProc.Handle == null)
+            {
                 return;
+            }
 
             CloseHandle(mProc.Handle);
             mProc = null;
@@ -584,11 +675,15 @@ namespace Memory
             foreach (ProcessModule pm in mProc.Process.Modules)
             {
                 if (pm.ModuleName.StartsWith("inject", StringComparison.InvariantCultureIgnoreCase))
+                {
                     return false;
+                }
             }
 
             if (!mProc.Process.Responding)
+            {
                 return false;
+            }
 
             int lenWrite = strDllName.Length + 1;
             UIntPtr allocMem = VirtualAllocEx(mProc.Handle, (UIntPtr)null, (uint)lenWrite, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -597,23 +692,32 @@ namespace Memory
             UIntPtr injector = GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
 
             if (injector == null)
+            {
                 return false;
+            }
 
             IntPtr hThread = CreateRemoteThread(mProc.Handle, (IntPtr)null, 0, injector, allocMem, 0, out bytesout);
             if (hThread == null)
+            {
                 return false;
+            }
 
             int Result = WaitForSingleObject(hThread, 10 * 1000);
             if (Result == 0x00000080L || Result == 0x00000102L)
             {
                 if (hThread != null)
+                {
                     CloseHandle(hThread);
+                }
+
                 return false;
             }
             VirtualFreeEx(mProc.Handle, allocMem, (UIntPtr)0, 0x8000);
 
             if (hThread != null)
+            {
                 CloseHandle(hThread);
+            }
 
             return true;
         }
@@ -634,8 +738,10 @@ namespace Memory
         public UIntPtr CreateCodeCave(string code, byte[] newBytes, int replaceCount, int size = 0x1000, string file = "")
         {
             if (replaceCount < 5)
+            {
                 return UIntPtr.Zero; // returning UIntPtr.Zero instead of throwing an exception
-                                     // to better match existing code
+            }
+            // to better match existing code
 
             UIntPtr theCode;
             theCode = GetCode(code, file);
@@ -646,18 +752,22 @@ namespace Memory
             UIntPtr caveAddress = UIntPtr.Zero;
             UIntPtr prefered = address;
 
-            for(var i = 0; i < 10 && caveAddress == UIntPtr.Zero; i++)
+            for (int i = 0; i < 10 && caveAddress == UIntPtr.Zero; i++)
             {
                 caveAddress = VirtualAllocEx(mProc.Handle, FindFreeBlockForRegion(prefered, (uint)size), (uint)size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
                 if (caveAddress == UIntPtr.Zero)
+                {
                     prefered = UIntPtr.Add(prefered, 0x10000);
+                }
             }
 
             // Failed to allocate memory around the address we wanted let windows handle it and hope for the best?
             if (caveAddress == UIntPtr.Zero)
+            {
                 caveAddress = VirtualAllocEx(mProc.Handle, UIntPtr.Zero, (uint)size, MEM_COMMIT | MEM_RESERVE,
                                              PAGE_EXECUTE_READWRITE);
+            }
 
             int nopsNeeded = replaceCount > 5 ? replaceCount - 5 : 0;
 
@@ -668,7 +778,7 @@ namespace Memory
             jmpBytes[0] = 0xE9;
             BitConverter.GetBytes(offset).CopyTo(jmpBytes, 1);
 
-            for(var i = 5; i < jmpBytes.Length; i++)
+            for (int i = 5; i < jmpBytes.Length; i++)
             {
                 jmpBytes[i] = 0x90;
             }
@@ -685,7 +795,7 @@ namespace Memory
 
             return caveAddress;
         }
-        
+
         private UIntPtr FindFreeBlockForRegion(UIntPtr baseAddress, uint size)
         {
             UIntPtr minAddress = UIntPtr.Subtract(baseAddress, 0x70000000);
@@ -700,11 +810,15 @@ namespace Memory
             {
                 if ((long)minAddress > (long)si.maximumApplicationAddress ||
                     (long)minAddress < (long)si.minimumApplicationAddress)
+                {
                     minAddress = si.minimumApplicationAddress;
+                }
 
                 if ((long)maxAddress < (long)si.minimumApplicationAddress ||
                     (long)maxAddress > (long)si.maximumApplicationAddress)
+                {
                     maxAddress = si.maximumApplicationAddress;
+                }
             }
             else
             {
@@ -720,7 +834,9 @@ namespace Memory
             while (VirtualQueryEx(mProc.Handle, current, out mbi).ToUInt64() != 0)
             {
                 if ((long)mbi.BaseAddress > (long)maxAddress)
+                {
                     return UIntPtr.Zero;  // No memory found, let windows handle
+                }
 
                 if (mbi.State == MEM_FREE && mbi.RegionSize > size)
                 {
@@ -732,17 +848,19 @@ namespace Memory
                                            ((long)tmpAddress % si.allocationGranularity));
 
                         // Check if there is enough left
-                        if((mbi.RegionSize - offset) >= size)
+                        if ((mbi.RegionSize - offset) >= size)
                         {
                             // yup there is enough
                             tmpAddress = UIntPtr.Add(tmpAddress, offset);
 
-                            if((long)tmpAddress < (long)baseAddress)
+                            if ((long)tmpAddress < (long)baseAddress)
                             {
                                 tmpAddress = UIntPtr.Add(tmpAddress, (int)(mbi.RegionSize - offset - size));
 
                                 if ((long)tmpAddress > (long)baseAddress)
+                                {
                                     tmpAddress = baseAddress;
+                                }
 
                                 // decrease tmpAddress until its alligned properly
                                 tmpAddress = UIntPtr.Subtract(tmpAddress, (int)((long)tmpAddress % si.allocationGranularity));
@@ -750,21 +868,25 @@ namespace Memory
 
                             // if the difference is closer then use that
                             if (Math.Abs((long)tmpAddress - (long)baseAddress) < Math.Abs((long)ret - (long)baseAddress))
+                            {
                                 ret = tmpAddress;
+                            }
                         }
                     }
                     else
                     {
                         tmpAddress = mbi.BaseAddress;
 
-                        if((long)tmpAddress < (long)baseAddress) // try to get it the cloest possible 
-                                                                 // (so to the end of the region - size and
-                                                                 // aligned by system allocation granularity)
+                        if ((long)tmpAddress < (long)baseAddress) // try to get it the cloest possible 
+                                                                  // (so to the end of the region - size and
+                                                                  // aligned by system allocation granularity)
                         {
                             tmpAddress = UIntPtr.Add(tmpAddress, (int)(mbi.RegionSize - size));
 
                             if ((long)tmpAddress > (long)baseAddress)
+                            {
                                 tmpAddress = baseAddress;
+                            }
 
                             // decrease until aligned properly
                             tmpAddress =
@@ -772,21 +894,29 @@ namespace Memory
                         }
 
                         if (Math.Abs((long)tmpAddress - (long)baseAddress) < Math.Abs((long)ret - (long)baseAddress))
+                        {
                             ret = tmpAddress;
+                        }
                     }
                 }
 
                 if (mbi.RegionSize % si.allocationGranularity > 0)
+                {
                     mbi.RegionSize += si.allocationGranularity - (mbi.RegionSize % si.allocationGranularity);
+                }
 
                 previous = current;
                 current = UIntPtr.Add(mbi.BaseAddress, (int)mbi.RegionSize);
 
                 if ((long)current >= (long)maxAddress)
+                {
                     return ret;
+                }
 
                 if ((long)previous >= (long)current)
+                {
                     return ret; // Overflow
+                }
             }
 
             return ret;
@@ -795,16 +925,20 @@ namespace Memory
 
         public static void SuspendProcess(int pid)
         {
-            var process = System.Diagnostics.Process.GetProcessById(pid);
+            Process process = System.Diagnostics.Process.GetProcessById(pid);
 
             if (process.ProcessName == string.Empty)
+            {
                 return;
+            }
 
             foreach (ProcessThread pT in process.Threads)
             {
                 IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
                 if (pOpenThread == IntPtr.Zero)
+                {
                     continue;
+                }
 
                 SuspendThread(pOpenThread);
                 CloseHandle(pOpenThread);
@@ -813,54 +947,67 @@ namespace Memory
 
         public static void ResumeProcess(int pid)
         {
-            var process = System.Diagnostics.Process.GetProcessById(pid);
+            Process process = System.Diagnostics.Process.GetProcessById(pid);
             if (process.ProcessName == string.Empty)
+            {
                 return;
+            }
 
             foreach (ProcessThread pT in process.Threads)
             {
                 IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
                 if (pOpenThread == IntPtr.Zero)
+                {
                     continue;
+                }
 
-                var suspendCount = 0;
+                int suspendCount = 0;
                 do
                 {
                     suspendCount = ResumeThread(pOpenThread);
-                } while (suspendCount > 0);
+                }
+                while (suspendCount > 0);
                 CloseHandle(pOpenThread);
             }
         }
 
 #if WINXP
 #else
-        async Task PutTaskDelay(int delay)
+        private async Task PutTaskDelay(int delay)
         {
             await Task.Delay(delay);
         }
 #endif
 
-        void AppendAllBytes(string path, byte[] bytes)
+        private void AppendAllBytes(string path, byte[] bytes)
         {
-            using (var stream = new FileStream(path, FileMode.Append))
+            using (FileStream stream = new FileStream(path, FileMode.Append))
             {
                 stream.Write(bytes, 0, bytes.Length);
             }
         }
 
-        public byte[] FileToBytes(string path, bool dontDelete = false) {
+        public byte[] FileToBytes(string path, bool dontDelete = false)
+        {
             byte[] newArray = File.ReadAllBytes(path);
             if (!dontDelete)
+            {
                 File.Delete(path);
+            }
+
             return newArray;
         }
 
         public string MSize()
         {
             if (mProc.Is64Bit)
+            {
                 return ("x16");
+            }
             else
+            {
                 return ("x8");
+            }
         }
 
         /// <summary>
@@ -880,7 +1027,10 @@ namespace Memory
                     i = 0;
                 }
                 else
+                {
                     hex.AppendFormat("{0:x2} ", b);
+                }
+
                 i++;
             }
             return hex.ToString().ToUpper();
@@ -917,36 +1067,54 @@ namespace Memory
 
             // saving the values as long ints so I won't have to do a lot of casts later
             Int64 proc_min_address_l = (Int64)proc_min_address; //(Int64)procs.MainModule.BaseAddress;
-            Int64 proc_max_address_l = (Int64)mProc.Process.VirtualMemorySize64 + proc_min_address_l;
+            Int64 proc_max_address_l = mProc.Process.VirtualMemorySize64 + proc_min_address_l;
 
             //int arrLength = 0;
             if (File.Exists(file))
+            {
                 File.Delete(file);
-
+            }
 
             MEMORY_BASIC_INFORMATION memInfo = new MEMORY_BASIC_INFORMATION();
             while (proc_min_address_l < proc_max_address_l)
             {
                 VirtualQueryEx(mProc.Handle, proc_min_address, out memInfo);
-                byte[] buffer = new byte[(Int64)memInfo.RegionSize];
-                UIntPtr test = (UIntPtr)((Int64)memInfo.RegionSize);
+                byte[] buffer = new byte[memInfo.RegionSize];
+                UIntPtr test = (UIntPtr)memInfo.RegionSize;
                 UIntPtr test2 = (UIntPtr)((Int64)memInfo.BaseAddress);
 
                 ReadProcessMemory(mProc.Handle, test2, buffer, test, IntPtr.Zero);
 
-                AppendAllBytes(file, buffer); //due to memory limits, we have to dump it then store it in an array.
-                //arrLength += buffer.Length;
+                // Due to memory limits, we have to dump it then store it in an array
+                AppendAllBytes(file, buffer);
 
-                proc_min_address_l += (Int64)memInfo.RegionSize;
+                proc_min_address_l += memInfo.RegionSize;
                 proc_min_address = new UIntPtr((ulong)proc_min_address_l);
             }
-
 
             Debug.Write("[DEBUG] memory dump completed. Saving dump file to " + file + ". (" + DateTime.Now.ToString("h:mm:ss tt") + ")" + Environment.NewLine);
             return true;
         }
 
-        
-
+        private int LoadIntCode(string name, string path)
+        {
+            try
+            {
+                int intValue = Convert.ToInt32(LoadCode(name, path), 16);
+                if (intValue >= 0)
+                {
+                    return intValue;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch
+            {
+                Debug.WriteLine("ERROR: LoadIntCode function crashed!");
+                return 0;
+            }
+        }
     }
 }

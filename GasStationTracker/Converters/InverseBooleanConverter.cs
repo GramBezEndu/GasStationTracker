@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Data;
-
-namespace GasStationTracker.Converters
+﻿namespace GasStationTracker.Converters
 {
+    using System;
+    using System.Windows.Data;
+
     [ValueConversion(typeof(bool), typeof(bool))]
     public class InverseBooleanConverter : IValueConverter
     {

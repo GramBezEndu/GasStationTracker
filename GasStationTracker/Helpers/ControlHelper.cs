@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Windows.Controls;
-
-namespace GasStationTracker.Controls
+﻿namespace GasStationTracker.Controls
 {
+    using System.ComponentModel;
+    using System.Windows.Controls;
+
     public static class ControlHelper
     {
         public static void ResetSize(this UserControl userControl)

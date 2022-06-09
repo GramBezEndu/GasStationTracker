@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Xml;
-using static GasStationTracker.DependencyObjectHelper;
-
-namespace GasStationTracker.Controls
+﻿namespace GasStationTracker.Controls
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.IO;
+    using System.Runtime.CompilerServices;
+    using System.Text;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
+    using System.Windows.Data;
+    using System.Windows.Markup;
+    using System.Windows.Media;
+    using System.Xml;
+    using static GasStationTracker.DependencyObjectHelper;
+
     public enum PopupPlacement
     {
         TopLeft = 0,
@@ -38,14 +38,11 @@ namespace GasStationTracker.Controls
         public PopupPlacement CurrentPlacement
         {
             get => PlacementMethods[SelectedPlacementIndex];
-            set
-            {
-                SelectedPlacementIndex = PlacementMethods.IndexOf(value);
-            }
+            set => SelectedPlacementIndex = PlacementMethods.IndexOf(value);
         }
 
-        public int SelectedPlacementIndex 
-        { 
+        public int SelectedPlacementIndex
+        {
             get => selectedPlacementIndex;
             set
             {
@@ -75,11 +72,11 @@ namespace GasStationTracker.Controls
                 popupContent = CloneGridViaXmlSerialization(value, BindingListNames);
                 popup = new Popup
                 {
-                    DataContext = this.DataContext,
+                    DataContext = DataContext,
                     AllowsTransparency = true,
                     Child = popupContent,
                     Placement = PlacementMode.Custom,
-                    CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacePopup)
+                    CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacePopup),
                 };
             }
         }
@@ -111,7 +108,7 @@ namespace GasStationTracker.Controls
             System.Windows.Markup.XamlWriter.Save(grid, manager);
             StringReader stringReader = new StringReader(stringBuilder.ToString());
             XmlReader xmlReader = XmlReader.Create(stringReader);
-            object clonedGrid = (object)XamlReader.Load(xmlReader);
+            object clonedGrid = XamlReader.Load(xmlReader);
             if (clonedGrid == null)
             {
                 throw new ArgumentNullException("Grid could not be cloned via Xaml Serialization Stack.");
@@ -131,10 +128,10 @@ namespace GasStationTracker.Controls
                         textBlock.SetBinding(TextBlock.TextProperty, bindingData.Binding);
                     }
                 }
+
                 newGrid.Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#565595");
                 return newGrid;
             }
-
             else
             {
                 throw new InvalidOperationException("Grid could not be cast.");
@@ -149,15 +146,15 @@ namespace GasStationTracker.Controls
             System.Windows.Markup.XamlWriter.Save(binding, manager);
             StringReader stringReader = new StringReader(stringBuilder.ToString());
             XmlReader xmlReader = XmlReader.Create(stringReader);
-            object newBinding = (object)XamlReader.Load(xmlReader);
+            object newBinding = XamlReader.Load(xmlReader);
             if (newBinding == null)
             {
                 throw new ArgumentNullException("Binding could not be cloned via Xaml Serialization Stack.");
             }
 
-            if (newBinding is Binding)
+            if (newBinding is Binding binding1)
             {
-                return (Binding)newBinding;
+                return binding1;
             }
             else if (newBinding is MultiBinding)
             {
@@ -200,7 +197,7 @@ namespace GasStationTracker.Controls
             XamlDesignerSerializationManager manager = new XamlDesignerSerializationManager(writer)
             {
                 //Improtant
-                XamlWriterMode = XamlWriterMode.Expression
+                XamlWriterMode = XamlWriterMode.Expression,
             };
             return manager;
         }
@@ -221,17 +218,30 @@ namespace GasStationTracker.Controls
                 switch (CurrentPlacement)
                 {
                     case PopupPlacement.TopLeft:
-                        positions[0] = new CustomPopupPlacement(new Point(0, 0), PopupPrimaryAxis.None);
+                        positions[0] = new CustomPopupPlacement(
+                            new Point(0, 0),
+                            PopupPrimaryAxis.None);
                         break;
                     case PopupPlacement.TopRight:
-                        positions[0] = new CustomPopupPlacement(new Point(WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Width - PopupContent.ActualWidth - horizontalSafePixels, 0), PopupPrimaryAxis.None);
+                        positions[0] = new CustomPopupPlacement(
+                            new Point(
+                                WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Width - PopupContent.ActualWidth - horizontalSafePixels,
+                                0),
+                            PopupPrimaryAxis.None);
                         break;
                     case PopupPlacement.BottomLeft:
-                        positions[0] = new CustomPopupPlacement(new Point(0, WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Height - PopupContent.ActualHeight - verticalSafePixels), PopupPrimaryAxis.None);
+                        positions[0] = new CustomPopupPlacement(
+                            new Point(
+                                0,
+                                WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Height - PopupContent.ActualHeight - verticalSafePixels),
+                            PopupPrimaryAxis.None);
                         break;
                     case PopupPlacement.BottomRight:
-                        positions[0] = new CustomPopupPlacement(new Point(WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Width - PopupContent.ActualWidth - horizontalSafePixels,
-                            WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Height - PopupContent.ActualHeight - verticalSafePixels), PopupPrimaryAxis.None);
+                        positions[0] = new CustomPopupPlacement(
+                            new Point(
+                                WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Width - PopupContent.ActualWidth - horizontalSafePixels,
+                                WpfScreen.GetScreenFrom(parentWindow).WorkingArea.Height - PopupContent.ActualHeight - verticalSafePixels),
+                            PopupPrimaryAxis.None);
                         break;
                 }
             }
@@ -260,7 +270,7 @@ namespace GasStationTracker.Controls
             }
         }
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

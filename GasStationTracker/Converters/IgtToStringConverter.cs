@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Windows.Data;
-
-namespace GasStationTracker.Converters
+﻿namespace GasStationTracker.Converters
 {
+    using System;
+    using System.Globalization;
+    using System.Windows.Data;
+
     [ValueConversion(typeof(InGameTime), typeof(string))]
     public class IgtToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var igt = (InGameTime)value;
+            InGameTime igt = (InGameTime)value;
             return string.Format("{0} days {1} hours {2} minutes", igt.Days, igt.Hours, igt.Minutes);
         }
 

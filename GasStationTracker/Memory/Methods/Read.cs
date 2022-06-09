@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using static Memory.Imps;
-
-namespace Memory
+﻿namespace Memory
 {
-    public partial class Mem
+    using System;
+    using System.Text;
+    using static Memory.Imps;
+
+    public partial class MemoryManager
     {
         /// <summary>
         /// Cut a string that goes on for too long or one that is possibly merged with another string.
@@ -23,10 +17,15 @@ namespace Memory
             foreach (char c in str)
             {
                 if (c >= ' ' && c <= '~')
+                {
                     sb.Append(c);
+                }
                 else
+                {
                     break;
+                }
             }
+
             return sb.ToString();
         }
 
@@ -43,7 +42,9 @@ namespace Memory
             UIntPtr theCode = GetCode(code, file);
 
             if (!ReadProcessMemory(mProc.Handle, theCode, memory, (UIntPtr)length, IntPtr.Zero))
+            {
                 return null;
+            }
 
             return memory;
         }
@@ -68,11 +69,16 @@ namespace Memory
                     float address = BitConverter.ToSingle(memory, 0);
                     float returnValue = (float)address;
                     if (round)
+                    {
                         returnValue = (float)Math.Round(address, 2);
+                    }
+
                     return returnValue;
                 }
                 else
+                {
                     return 0;
+                }
             }
             catch
             {
@@ -92,16 +98,22 @@ namespace Memory
         public string ReadString(string code, string file = "", int length = 32, bool zeroTerminated = true, System.Text.Encoding stringEncoding = null)
         {
             if (stringEncoding == null)
+            {
                 stringEncoding = System.Text.Encoding.UTF8;
+            }
 
             byte[] memoryNormal = new byte[length];
             UIntPtr theCode;
             theCode = GetCode(code, file);
 
             if (ReadProcessMemory(mProc.Handle, theCode, memoryNormal, (UIntPtr)length, IntPtr.Zero))
+            {
                 return (zeroTerminated) ? stringEncoding.GetString(memoryNormal).Split('\0')[0] : stringEncoding.GetString(memoryNormal);
+            }
             else
-                return "";
+            {
+                return string.Empty;
+            }
         }
 
         /// <summary>
@@ -124,11 +136,16 @@ namespace Memory
                     double address = BitConverter.ToDouble(memory, 0);
                     double returnValue = (double)address;
                     if (round)
+                    {
                         returnValue = (double)Math.Round(address, 2);
+                    }
+
                     return returnValue;
                 }
                 else
+                {
                     return 0;
+                }
             }
             catch
             {
@@ -140,9 +157,13 @@ namespace Memory
         {
             byte[] memory = new byte[4];
             if (ReadProcessMemory(mProc.Handle, code, memory, (UIntPtr)4, IntPtr.Zero))
+            {
                 return BitConverter.ToInt32(memory, 0);
+            }
             else
+            {
                 return 0;
+            }
         }
 
         /// <summary>
@@ -157,9 +178,13 @@ namespace Memory
             UIntPtr theCode;
             theCode = GetCode(code, file);
             if (ReadProcessMemory(mProc.Handle, theCode, memory, (UIntPtr)4, IntPtr.Zero))
+            {
                 return BitConverter.ToInt32(memory, 0);
+            }
             else
+            {
                 return 0;
+            }
         }
 
         /// <summary>
@@ -176,9 +201,13 @@ namespace Memory
             theCode = GetCode(code, file);
 
             if (ReadProcessMemory(mProc.Handle, theCode, memory, (UIntPtr)8, IntPtr.Zero))
+            {
                 return BitConverter.ToInt64(memory, 0);
+            }
             else
+            {
                 return 0;
+            }
         }
 
         /// <summary>
@@ -194,9 +223,13 @@ namespace Memory
             theCode = GetCode(code, file);
 
             if (ReadProcessMemory(mProc.Handle, theCode, memory, (UIntPtr)4, IntPtr.Zero))
+            {
                 return BitConverter.ToUInt32(memory, 0);
+            }
             else
+            {
                 return 0;
+            }
         }
 
         /// <summary>
@@ -215,9 +248,13 @@ namespace Memory
             UIntPtr newCode = UIntPtr.Add(theCode, moveQty);
 
             if (ReadProcessMemory(mProc.Handle, newCode, memory, (UIntPtr)2, IntPtr.Zero))
+            {
                 return BitConverter.ToInt32(memory, 0);
+            }
             else
+            {
                 return 0;
+            }
         }
 
         /// <summary>
@@ -236,9 +273,13 @@ namespace Memory
             UIntPtr newCode = UIntPtr.Add(theCode, moveQty);
 
             if (ReadProcessMemory(mProc.Handle, newCode, memory, (UIntPtr)4, IntPtr.Zero))
+            {
                 return BitConverter.ToInt32(memory, 0);
+            }
             else
+            {
                 return 0;
+            }
         }
 
         /// <summary>
@@ -257,9 +298,13 @@ namespace Memory
             UIntPtr newCode = UIntPtr.Add(theCode, moveQty);
 
             if (ReadProcessMemory(mProc.Handle, newCode, memory, (UIntPtr)8, IntPtr.Zero))
+            {
                 return BitConverter.ToUInt64(memory, 0);
+            }
             else
+            {
                 return 0;
+            }
         }
 
         /// <summary>
@@ -276,9 +321,13 @@ namespace Memory
             theCode = GetCode(code, file);
 
             if (ReadProcessMemory(mProc.Handle, theCode, memoryTiny, (UIntPtr)2, IntPtr.Zero))
+            {
                 return BitConverter.ToInt32(memoryTiny, 0);
+            }
             else
+            {
                 return 0;
+            }
         }
 
         /// <summary>
@@ -294,7 +343,9 @@ namespace Memory
             UIntPtr theCode = GetCode(code, file);
 
             if (ReadProcessMemory(mProc.Handle, theCode, memoryTiny, (UIntPtr)1, IntPtr.Zero))
+            {
                 return memoryTiny[0];
+            }
 
             return 0;
         }
@@ -314,26 +365,34 @@ namespace Memory
             bool[] ret = new bool[8];
 
             if (!ReadProcessMemory(mProc.Handle, theCode, buf, (UIntPtr)1, IntPtr.Zero))
+            {
                 return ret;
-
+            }
 
             if (!BitConverter.IsLittleEndian)
+            {
                 throw new Exception("Should be little endian");
+            }
 
-            for (var i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
+            {
                 ret[i] = Convert.ToBoolean(buf[0] & (1 << i));
+            }
 
             return ret;
-
         }
 
         public int ReadPByte(UIntPtr address, string code, string file = "")
         {
             byte[] memory = new byte[4];
             if (ReadProcessMemory(mProc.Handle, address + LoadIntCode(code, file), memory, (UIntPtr)1, IntPtr.Zero))
+            {
                 return BitConverter.ToInt32(memory, 0);
+            }
             else
+            {
                 return 0;
+            }
         }
 
         public float ReadPFloat(UIntPtr address, string code, string file = "")
@@ -345,25 +404,35 @@ namespace Memory
                 return (float)Math.Round(spawn, 2);
             }
             else
+            {
                 return 0;
+            }
         }
 
         public int ReadPInt(UIntPtr address, string code, string file = "")
         {
             byte[] memory = new byte[4];
             if (ReadProcessMemory(mProc.Handle, address + LoadIntCode(code, file), memory, (UIntPtr)4, IntPtr.Zero))
+            {
                 return BitConverter.ToInt32(memory, 0);
+            }
             else
+            {
                 return 0;
+            }
         }
 
         public string ReadPString(UIntPtr address, string code, string file = "")
         {
             byte[] memoryNormal = new byte[32];
             if (ReadProcessMemory(mProc.Handle, address + LoadIntCode(code, file), memoryNormal, (UIntPtr)32, IntPtr.Zero))
+            {
                 return CutString(System.Text.Encoding.ASCII.GetString(memoryNormal));
+            }
             else
-                return "";
+            {
+                return string.Empty;
+            }
         }
     }
 }

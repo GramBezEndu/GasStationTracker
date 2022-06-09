@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows.Data;
-
-namespace GasStationTracker.GameData
+﻿namespace GasStationTracker.GameData
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Windows.Data;
+
     public class PointerDataRepository : INotifyPropertyChanged
     {
-        public ObservableCollection<PointerData> OnlineRepositoryData { get; private set; } = new ObservableCollection<PointerData>();
+        public ObservableCollection<PointerData> OnlineRepositoryData { get; private set; } =
+            new ObservableCollection<PointerData>();
 
-        public ObservableCollection<string> OnlineVersionCollection { get; private set; } = new ObservableCollection<string>() { new string("Latest") };
+        public ObservableCollection<string> OnlineVersionCollection { get; private set; } =
+            new ObservableCollection<string>() { new string("Latest") };
 
         public ICollectionView OnlineVersionsView
         {
@@ -31,8 +32,8 @@ namespace GasStationTracker.GameData
 
         public ObservableCollection<PointerData> EmbeddedData { get; private set; } = new ObservableCollection<PointerData>();
 
-        public ObservableCollection<string> EmbeddedVersionCollection 
-        { 
+        public ObservableCollection<string> EmbeddedVersionCollection
+        {
             get => embeddedVersionCollection;
             set
             {
@@ -76,6 +77,7 @@ namespace GasStationTracker.GameData
                         PointerData pointerData = (PointerData)data;
                         OnlineVersionCollection.Add(pointerData.GameVersion.ToString());
                     }
+
                     OnlineVersionsView = CollectionViewSource.GetDefaultView(OnlineVersionCollection);
                     if (OnlineVersionsView != null && OnlineVersionsView.CanSort == true)
                     {
@@ -111,7 +113,7 @@ namespace GasStationTracker.GameData
 
         private PointerData CreateDataForVersion_1_0_1_37938()
         {
-            var data = new PointerData(new Version("1.0.1.37938"));
+            PointerData data = new PointerData(new Version("1.0.1.37938"));
             data.Pointers.Add(GameIdentifiers.CashDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x228,0x1A0,0x0,0x11C");
             data.Pointers.Add(GameIdentifiers.PopularityDisplay, "GSS2-Win64-Shipping.exe+0x04115790,0x130,0x888");
             data.Pointers.Add(GameIdentifiers.MoneySpentOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x040FF6F0,0x30,0x580,0x1A0,0xE0,0xD8");
@@ -124,7 +126,7 @@ namespace GasStationTracker.GameData
 
         private PointerData CreateDataForVersion_1_0_1_38259()
         {
-            var data = new PointerData(new Version("1.0.1.38259"));
+            PointerData data = new PointerData(new Version("1.0.1.38259"));
             data.Pointers.Add(GameIdentifiers.CashDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x228,0x1A0,0x0,0x11C");
             data.Pointers.Add(GameIdentifiers.PopularityDisplay, "GSS2-Win64-Shipping.exe+0x04127350,0x130,0x888");
             data.Pointers.Add(GameIdentifiers.MoneySpentOnFuelDisplay, "GSS2-Win64-Shipping.exe+0x041112B0,0x30,0x580,0x1A0,0xE0,0xD8");
@@ -135,7 +137,7 @@ namespace GasStationTracker.GameData
             return data;
         }
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

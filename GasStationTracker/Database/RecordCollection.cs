@@ -1,29 +1,20 @@
-﻿using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Media;
-using System.Windows.Threading;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Windows.Controls;
+    using System.Windows.Data;
+    using OxyPlot;
+    using OxyPlot.Axes;
+    using OxyPlot.Series;
+
     public class RecordCollection : ObservableCollection<Record>
     {
         private DataGrid dataGridBinding;
 
-        public DataGrid DataGridBinding 
-        { 
+        public DataGrid DataGridBinding
+        {
             get => dataGridBinding;
             private set
             {
@@ -48,7 +39,10 @@ namespace GasStationTracker
         protected override void InsertItem(int index, Record item)
         {
             if (DataGridBinding != null)
+            {
                 PrepareDataGrid(item);
+            }
+
             if (Plot != null)
             {
                 UpdateGraphs(item);
@@ -71,7 +65,7 @@ namespace GasStationTracker
                             Plot.Series.Add(new LineSeries()
                             {
                                 Title = singleValue.Name,
-                                Color = OxyColors.Blue,                             
+                                Color = OxyColors.Blue,
                             });
                         }
                         else
@@ -84,7 +78,7 @@ namespace GasStationTracker
                             });
                         }
                     }
-                    var series = Plot.Series.First(x => x.Title == singleValue.Name);
+                    Series series = Plot.Series.First(x => x.Title == singleValue.Name);
                     (series as LineSeries).Points.Add(new DataPoint(DateTimeAxis.ToDouble(record.Date), Convert.ToDouble(singleValue.Value)));
                 }
             }
@@ -101,7 +95,7 @@ namespace GasStationTracker
                     {
                         DataGridTextColumn textColumn = new DataGridTextColumn
                         {
-                            Header = val.Name
+                            Header = val.Name,
                         };
                         Binding newBinding = new Binding("SingleRecords[" + i + "].Value");
                         textColumn.Binding = newBinding;

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using static Memory.Imps;
-
-namespace Memory
+﻿namespace Memory
 {
-    public partial class Mem
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Threading.Tasks;
+    using static Memory.Imps;
+
+    public partial class MemoryManager
     {
         /// <summary>
         /// Array of byte scan.
@@ -71,7 +70,7 @@ namespace Memory
         {
             return Task.Run(() =>
             {
-                var memRegionList = new List<MemoryRegionResult>();
+                List<MemoryRegionResult> memRegionList = new List<MemoryRegionResult>();
 
                 string memCode = LoadCode(search, file);
 
@@ -80,7 +79,7 @@ namespace Memory
                 byte[] aobPattern = new byte[stringByteArray.Length];
                 byte[] mask = new byte[stringByteArray.Length];
 
-                for (var i = 0; i < stringByteArray.Length; i++)
+                for (int i = 0; i < stringByteArray.Length; i++)
                 {
                     string ba = stringByteArray[i];
 
@@ -100,12 +99,15 @@ namespace Memory
                         stringByteArray[i] = "0" + ba[1];
                     }
                     else
+                    {
                         mask[i] = 0xFF;
+                    }
                 }
 
-
                 for (int i = 0; i < stringByteArray.Length; i++)
+                {
                     aobPattern[i] = (byte)(Convert.ToByte(stringByteArray[i], 16) & mask[i]);
+                }
 
                 SYSTEM_INFO sys_info = new SYSTEM_INFO();
                 GetSystemInfo(out sys_info);
@@ -114,25 +116,29 @@ namespace Memory
                 UIntPtr proc_max_address = sys_info.maximumApplicationAddress;
 
                 if (start < (long)proc_min_address.ToUInt64())
+                {
                     start = (long)proc_min_address.ToUInt64();
+                }
 
                 if (end > (long)proc_max_address.ToUInt64())
+                {
                     end = (long)proc_max_address.ToUInt64();
+                }
 
                 Debug.WriteLine("[DEBUG] memory scan starting... (start:0x" + start.ToString(MSize()) + " end:0x" + end.ToString(MSize()) + " time:" + DateTime.Now.ToString("h:mm:ss tt") + ")");
                 UIntPtr currentBaseAddress = new UIntPtr((ulong)start);
 
                 MEMORY_BASIC_INFORMATION memInfo = new MEMORY_BASIC_INFORMATION();
 
-            //Debug.WriteLine("[DEBUG] start:0x" + start.ToString("X8") + " curBase:0x" + currentBaseAddress.ToUInt64().ToString("X8") + " end:0x" + end.ToString("X8") + " size:0x" + memInfo.RegionSize.ToString("X8") + " vAloc:" + VirtualQueryEx(mProc.Handle, currentBaseAddress, out memInfo).ToUInt64().ToString());
+                //Debug.WriteLine("[DEBUG] start:0x" + start.ToString("X8") + " curBase:0x" + currentBaseAddress.ToUInt64().ToString("X8") + " end:0x" + end.ToString("X8") + " size:0x" + memInfo.RegionSize.ToString("X8") + " vAloc:" + VirtualQueryEx(mProc.Handle, currentBaseAddress, out memInfo).ToUInt64().ToString());
 
-            while (VirtualQueryEx(mProc.Handle, currentBaseAddress, out memInfo).ToUInt64() != 0 &&
-                       currentBaseAddress.ToUInt64() < (ulong)end &&
-                       currentBaseAddress.ToUInt64() + (ulong)memInfo.RegionSize >
-                       currentBaseAddress.ToUInt64())
+                while (VirtualQueryEx(mProc.Handle, currentBaseAddress, out memInfo).ToUInt64() != 0 &&
+                           currentBaseAddress.ToUInt64() < (ulong)end &&
+                           currentBaseAddress.ToUInt64() + (ulong)memInfo.RegionSize >
+                           currentBaseAddress.ToUInt64())
                 {
                     bool isValid = memInfo.State == MEM_COMMIT;
-                    isValid &= memInfo.BaseAddress.ToUInt64() < (ulong)proc_max_address.ToUInt64();
+                    isValid &= memInfo.BaseAddress.ToUInt64() < proc_max_address.ToUInt64();
                     isValid &= ((memInfo.Protect & PAGE_GUARD) == 0);
                     isValid &= ((memInfo.Protect & PAGE_NOACCESS) == 0);
                     isValid &= (memInfo.Type == MEM_PRIVATE) || (memInfo.Type == MEM_IMAGE);
@@ -168,16 +174,14 @@ namespace Memory
                     {
                         CurrentBaseAddress = currentBaseAddress,
                         RegionSize = memInfo.RegionSize,
-                        RegionBase = memInfo.BaseAddress
+                        RegionBase = memInfo.BaseAddress,
                     };
 
                     currentBaseAddress = new UIntPtr(memInfo.BaseAddress.ToUInt64() + (ulong)memInfo.RegionSize);
 
-                //Console.WriteLine("SCAN start:" + memRegion.RegionBase.ToString() + " end:" + currentBaseAddress.ToString());
-
-                if (memRegionList.Count > 0)
+                    if (memRegionList.Count > 0)
                     {
-                        var previousRegion = memRegionList[memRegionList.Count - 1];
+                        MemoryRegionResult previousRegion = memRegionList[memRegionList.Count - 1];
 
                         if ((long)previousRegion.RegionBase + previousRegion.RegionSize == (long)memInfo.BaseAddress)
                         {
@@ -185,7 +189,7 @@ namespace Memory
                             {
                                 CurrentBaseAddress = previousRegion.CurrentBaseAddress,
                                 RegionBase = previousRegion.RegionBase,
-                                RegionSize = previousRegion.RegionSize + memInfo.RegionSize
+                                RegionSize = previousRegion.RegionSize + memInfo.RegionSize,
                             };
 
                             continue;
@@ -203,7 +207,9 @@ namespace Memory
                                      long[] compareResults = CompareScan(item, aobPattern, mask);
 
                                      foreach (long result in compareResults)
+                                     {
                                          bagResult.Add(result);
+                                     }
                                  });
 
                 Debug.WriteLine("[DEBUG] memory scan completed. (time:" + DateTime.Now.ToString("h:mm:ss tt") + ")");
@@ -230,7 +236,9 @@ namespace Memory
         private long[] CompareScan(MemoryRegionResult item, byte[] aobPattern, byte[] mask)
         {
             if (mask.Length != aobPattern.Length)
+            {
                 throw new ArgumentException($"{nameof(aobPattern)}.Length != {nameof(mask)}.Length");
+            }
 
             IntPtr buffer = Marshal.AllocHGlobal((int)item.RegionSize);
 
@@ -242,13 +250,14 @@ namespace Memory
             {
                 do
                 {
-
                     result = FindPattern((byte*)buffer.ToPointer(), (int)bytesRead, aobPattern, mask, result + aobPattern.Length);
 
                     if (result >= 0)
+                    {
                         ret.Add((long)item.CurrentBaseAddress + result);
-
-                } while (result != -1);
+                    }
+                }
+                while (result != -1);
             }
 
             Marshal.FreeHGlobal(buffer);
@@ -261,22 +270,31 @@ namespace Memory
             int foundIndex = -1;
 
             if (body.Length <= 0 || pattern.Length <= 0 || start > body.Length - pattern.Length ||
-                pattern.Length > body.Length) return foundIndex;
+                pattern.Length > body.Length)
+            {
+                return foundIndex;
+            }
 
             for (int index = start; index <= body.Length - pattern.Length; index++)
             {
-                if (((body[index] & masks[0]) == (pattern[0] & masks[0])))
+                if ((body[index] & masks[0]) == (pattern[0] & masks[0]))
                 {
-                    var match = true;
+                    bool match = true;
                     for (int index2 = 1; index2 <= pattern.Length - 1; index2++)
                     {
-                        if ((body[index + index2] & masks[index2]) == (pattern[index2] & masks[index2])) continue;
+                        if ((body[index + index2] & masks[index2]) == (pattern[index2] & masks[index2]))
+                        {
+                            continue;
+                        }
+
                         match = false;
                         break;
-
                     }
 
-                    if (!match) continue;
+                    if (!match)
+                    {
+                        continue;
+                    }
 
                     foundIndex = index;
                     break;
@@ -290,23 +308,35 @@ namespace Memory
         {
             int foundIndex = -1;
 
-            if (bodyLength <= 0 || pattern.Length <= 0 || start > bodyLength - pattern.Length ||
-                pattern.Length > bodyLength) return foundIndex;
+            if (
+                bodyLength <= 0 ||
+                pattern.Length <= 0 ||
+                start > bodyLength - pattern.Length ||
+                pattern.Length > bodyLength)
+            {
+                return foundIndex;
+            }
 
             for (int index = start; index <= bodyLength - pattern.Length; index++)
             {
-                if (((body[index] & masks[0]) == (pattern[0] & masks[0])))
+                if ((body[index] & masks[0]) == (pattern[0] & masks[0]))
                 {
-                    var match = true;
+                    bool match = true;
                     for (int index2 = 1; index2 <= pattern.Length - 1; index2++)
                     {
-                        if ((body[index + index2] & masks[index2]) == (pattern[index2] & masks[index2])) continue;
+                        if ((body[index + index2] & masks[index2]) == (pattern[index2] & masks[index2]))
+                        {
+                            continue;
+                        }
+
                         match = false;
                         break;
-
                     }
 
-                    if (!match) continue;
+                    if (!match)
+                    {
+                        continue;
+                    }
 
                     foundIndex = index;
                     break;

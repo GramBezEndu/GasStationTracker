@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GasStationTracker.GameData
+﻿namespace GasStationTracker.GameData
 {
+    using System;
+    using System.Collections.Generic;
+
     public class PointerData
     {
         public Version GameVersion { get; private set; }

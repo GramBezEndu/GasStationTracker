@@ -1,20 +1,9 @@
-﻿using GasStationTracker.Converters;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-namespace GasStationTracker.Controls
+﻿namespace GasStationTracker.Controls
 {
+    using System.Windows;
+    using System.Windows.Controls;
+    using GasStationTracker.Converters;
+
     /// <summary>
     /// Interaction logic for SessionStatistics.xaml
     /// </summary>
@@ -29,8 +18,8 @@ namespace GasStationTracker.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             PopupView.PopupExpander.IsExpanded = false;
-            PopupView.BindingListNames = new string[] 
-            { 
+            PopupView.BindingListNames = new string[]
+            {
                 SessionTimeDisplay.Name,
                 IgtPassedDisplay.Name,
                 CashEarnedDisplay.Name,

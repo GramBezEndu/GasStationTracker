@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Markup.Primitives;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Windows;
+    using System.Windows.Data;
+    using System.Windows.Markup.Primitives;
+
     public static class DependencyObjectHelper
     {
-        public static List<BindingBase> GetBindingObjects(Object element)
+        public static List<BindingBase> GetBindingObjects(object element)
         {
             List<BindingBase> bindings = new List<BindingBase>();
             List<DependencyProperty> dpList = new List<DependencyProperty>();
@@ -28,7 +27,7 @@ namespace GasStationTracker
             return bindings;
         }
 
-        public static List<BindingData> GetBindingData(Object element)
+        public static List<BindingData> GetBindingData(object element)
         {
             List<BindingData> data = new List<BindingData>();
             //List<BindingBase> bindings = new List<BindingBase>();
@@ -49,7 +48,7 @@ namespace GasStationTracker
             return data;
         }
 
-        public static List<DependencyProperty> GetDependencyProperties(Object element)
+        public static List<DependencyProperty> GetDependencyProperties(object element)
         {
             List<DependencyProperty> properties = new List<DependencyProperty>();
             MarkupObject markupObject = MarkupWriter.GetMarkupObjectFor(element);
@@ -67,7 +66,7 @@ namespace GasStationTracker
             return properties;
         }
 
-        public static List<DependencyProperty> GetAttachedProperties(Object element)
+        public static List<DependencyProperty> GetAttachedProperties(object element)
         {
             List<DependencyProperty> attachedProperties = new List<DependencyProperty>();
             MarkupObject markupObject = MarkupWriter.GetMarkupObjectFor(element);
@@ -87,14 +86,15 @@ namespace GasStationTracker
 
         public class BindingData
         {
-            public DependencyProperty Dp { get; private set; }
-            public BindingBase Binding { get; private set; }
-
-            public BindingData(DependencyProperty _dp, BindingBase _binding)
+            public BindingData(DependencyProperty dp, BindingBase binding)
             {
-                Dp = _dp;
-                Binding = _binding;
+                DependecyProperty = dp;
+                Binding = binding;
             }
+
+            public DependencyProperty DependecyProperty { get; private set; }
+
+            public BindingBase Binding { get; private set; }
         }
     }
 }

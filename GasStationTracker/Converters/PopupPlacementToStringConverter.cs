@@ -1,13 +1,11 @@
-﻿using GasStationTracker.Controls;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Data;
-
-namespace GasStationTracker.Converters
+﻿namespace GasStationTracker.Converters
 {
+    using System;
+    using System.Globalization;
+    using System.Text.RegularExpressions;
+    using System.Windows.Data;
+    using GasStationTracker.Controls;
+
     [ValueConversion(typeof(PopupPlacement), typeof(string))]
     public class PopupPlacementToStringConverter : IValueConverter
     {
@@ -20,7 +18,7 @@ namespace GasStationTracker.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Enum.TryParse(Regex.Replace(value.ToString(), @"\s", ""), out PopupPlacement placement);
+            Enum.TryParse(Regex.Replace(value.ToString(), @"\s", string.Empty), out PopupPlacement placement);
             return placement;
         }
 

@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System;
+    using System.Collections.Generic;
+
     public class Record
     {
+        public Record()
+        {
+        }
+
         public DateTime Date { get; set; }
 
         public InGameTime IGT { get; set; }
 
         public List<SingleValue> SingleRecords { get; set; } = new List<SingleValue>();
-
-        public Record()
-        {
-
-        }
 
         public object GetValue(string name)
         {

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using System.Windows.Data;
-
-namespace GasStationTracker.Converters
+﻿namespace GasStationTracker.Converters
 {
+    using System;
+    using System.Globalization;
+    using System.Windows.Data;
+
     [ValueConversion(typeof(string), typeof(Version))]
     public class StringToGameVersionConverter : IValueConverter
     {
@@ -18,7 +16,7 @@ namespace GasStationTracker.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Version version = (Version)value;
-            return (string)version.ToString();
+            return version.ToString();
         }
     }
 }

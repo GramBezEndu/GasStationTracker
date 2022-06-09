@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-
-namespace Memory
+﻿namespace Memory
 {
+    using System;
+    using System.Runtime.InteropServices;
+    using System.Text;
+
     public class Imps
     {
         [DllImport("kernel32.dll")]
@@ -25,9 +24,7 @@ namespace Memory
             out MEMORY_BASIC_INFORMATION64 lpBuffer, UIntPtr dwLength);
 
         [DllImport("kernel32.dll")]
-        static extern uint GetLastError();
-
-            
+        private static extern uint GetLastError();
 
         [DllImport("kernel32.dll")]
         public static extern void GetSystemInfo(out SYSTEM_INFO lpSystemInfo);
@@ -35,13 +32,15 @@ namespace Memory
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+
         [DllImport("kernel32.dll")]
         public static extern uint SuspendThread(IntPtr hThread);
+
         [DllImport("kernel32.dll")]
         public static extern int ResumeThread(IntPtr hThread);
 
         [DllImport("dbghelp.dll")]
-        static extern bool MiniDumpWriteDump(
+        private static extern bool MiniDumpWriteDump(
             IntPtr hProcess,
             Int32 ProcessId,
             IntPtr hFile,
@@ -62,8 +61,7 @@ namespace Memory
             UIntPtr lpBaseAddress,
             string lpBuffer,
             UIntPtr nSize,
-            out IntPtr lpNumberOfBytesWritten
-        );
+            out IntPtr lpNumberOfBytesWritten);
 
         [DllImport("kernel32.dll")]
         public static extern int GetProcessId(IntPtr handle);
@@ -82,25 +80,45 @@ namespace Memory
             IntPtr hProcess,
             UIntPtr lpAddress,
             UIntPtr dwSize,
-            uint dwFreeType
-            );
+            uint dwFreeType);
 
         [DllImport("psapi.dll")]
-        static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In][MarshalAs(UnmanagedType.U4)] int nSize);
+        private static extern uint GetModuleFileNameEx(
+            IntPtr hProcess,
+            IntPtr hModule,
+            [Out] StringBuilder lpBaseName,
+            [In][MarshalAs(UnmanagedType.U4)] int nSize);
+
         [DllImport("psapi.dll", SetLastError = true)]
-        public static extern bool EnumProcessModules(IntPtr hProcess,
-        [Out] IntPtr lphModule,
-        uint cb,
-        [MarshalAs(UnmanagedType.U4)] out uint lpcbNeeded);
+        public static extern bool EnumProcessModules(
+            IntPtr hProcess,
+            [Out] IntPtr lphModule,
+            uint cb,
+            [MarshalAs(UnmanagedType.U4)] out uint lpcbNeeded);
 
         [DllImport("kernel32.dll")]
-        public static extern bool ReadProcessMemory(IntPtr hProcess, UIntPtr lpBaseAddress, [Out] byte[] lpBuffer, UIntPtr nSize, IntPtr lpNumberOfBytesRead);
+        public static extern bool ReadProcessMemory(
+            IntPtr hProcess,
+            UIntPtr lpBaseAddress,
+            [Out] byte[] lpBuffer,
+            UIntPtr nSize,
+            IntPtr lpNumberOfBytesRead);
 
         [DllImport("kernel32.dll")]
-        public static extern bool ReadProcessMemory(IntPtr hProcess, UIntPtr lpBaseAddress, [Out] byte[] lpBuffer, UIntPtr nSize, out ulong lpNumberOfBytesRead);
+        public static extern bool ReadProcessMemory(
+            IntPtr hProcess,
+            UIntPtr lpBaseAddress,
+            [Out] byte[] lpBuffer,
+            UIntPtr nSize,
+            out ulong lpNumberOfBytesRead);
 
         [DllImport("kernel32.dll")]
-        public static extern bool ReadProcessMemory(IntPtr hProcess, UIntPtr lpBaseAddress, [Out] IntPtr lpBuffer, UIntPtr nSize, out ulong lpNumberOfBytesRead);
+        public static extern bool ReadProcessMemory(
+            IntPtr hProcess,
+            UIntPtr lpBaseAddress,
+            [Out] IntPtr lpBuffer,
+            UIntPtr nSize,
+            out ulong lpNumberOfBytesRead);
 
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         public static extern UIntPtr VirtualAllocEx(
@@ -112,8 +130,12 @@ namespace Memory
         );
 
         [DllImport("kernel32.dll")]
-        public static extern bool VirtualProtectEx(IntPtr hProcess, UIntPtr lpAddress,
-            IntPtr dwSize, MemoryProtection flNewProtect, out MemoryProtection lpflOldProtect);
+        public static extern bool VirtualProtectEx(
+            IntPtr hProcess,
+            UIntPtr lpAddress,
+            IntPtr dwSize,
+            MemoryProtection flNewProtect,
+            out MemoryProtection lpflOldProtect);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true)]
         public static extern UIntPtr GetProcAddress(
@@ -152,7 +174,7 @@ namespace Memory
           IntPtr hProcess,
           IntPtr lpThreadAttributes,
           uint dwStackSize,
-          UIntPtr lpStartAddress, // raw Pointer into remote process  
+          UIntPtr lpStartAddress, // raw Pointer into remote process.
           UIntPtr lpParameter,
           uint dwCreationFlags,
           out IntPtr lpThreadId
@@ -168,14 +190,16 @@ namespace Memory
         public static extern IntPtr CreateToolhelp32Snapshot([In] UInt32 dwFlags, [In] UInt32 th32ProcessID);
 
         [DllImport("kernel32", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
-        static extern bool Process32First([In] IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
+        private static extern bool Process32First([In] IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
+
         [DllImport("kernel32.dll")]
         public static extern bool Module32First(IntPtr hSnapshot, ref MODULEENTRY32 lpme);
+
         [DllImport("kernel32.dll")]
         public static extern bool Module32Next(IntPtr hSnapshot, ref MODULEENTRY32 lpme);
 
         [DllImport("kernel32", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
-        static extern bool Process32Next([In] IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
+        private static extern bool Process32Next([In] IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
 
         // privileges
         public const int PROCESS_CREATE_THREAD = 0x0002;
@@ -219,13 +243,13 @@ namespace Memory
             MiniDumpWithoutOptionalData = 0x00000400,
             MiniDumpWithFullMemoryInfo = 0x00000800,
             MiniDumpWithThreadInfo = 0x00001000,
-            MiniDumpWithCodeSegs = 0x00002000
+            MiniDumpWithCodeSegs = 0x00002000,
         }
 
         public struct SYSTEM_INFO
         {
             public ushort processorArchitecture;
-            ushort reserved;
+            private readonly ushort reserved;
             public uint pageSize;
             public UIntPtr minimumApplicationAddress;
             public UIntPtr maximumApplicationAddress;
@@ -281,21 +305,21 @@ namespace Memory
             Module32 = 0x00000010,
             Inherit = 0x80000000,
             All = 0x0000001F,
-            NoHeaps = 0x40000000
+            NoHeaps = 0x40000000,
         }
 
         [Flags]
         public enum ThreadAccess : int
         {
-            TERMINATE = (0x0001),
-            SUSPEND_RESUME = (0x0002),
-            GET_CONTEXT = (0x0008),
-            SET_CONTEXT = (0x0010),
-            SET_INFORMATION = (0x0020),
-            QUERY_INFORMATION = (0x0040),
-            SET_THREAD_TOKEN = (0x0080),
-            IMPERSONATE = (0x0100),
-            DIRECT_IMPERSONATION = (0x0200)
+            TERMINATE = 0x0001,
+            SUSPEND_RESUME = 0x0002,
+            GET_CONTEXT = 0x0008,
+            SET_CONTEXT = 0x0010,
+            SET_INFORMATION = 0x0020,
+            QUERY_INFORMATION = 0x0040,
+            SET_THREAD_TOKEN = 0x0080,
+            IMPERSONATE = 0x0100,
+            DIRECT_IMPERSONATION = 0x0200,
         }
 
         [Flags]
@@ -311,25 +335,7 @@ namespace Memory
             WriteCopy = 0x08,
             GuardModifierflag = 0x100,
             NoCacheModifierflag = 0x200,
-            WriteCombineModifierflag = 0x400
-        }
-
-        //inner struct used only internally
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        private struct PROCESSENTRY32
-        {
-            const int MAX_PATH = 260;
-            internal UInt32 dwSize;
-            internal UInt32 cntUsage;
-            internal UInt32 th32ProcessID;
-            internal IntPtr th32DefaultHeapID;
-            internal UInt32 th32ModuleID;
-            internal UInt32 cntThreads;
-            internal UInt32 th32ParentProcessID;
-            internal Int32 pcPriClassBase;
-            internal UInt32 dwFlags;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
-            internal string szExeFile;
+            WriteCombineModifierflag = 0x400,
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
@@ -349,6 +355,22 @@ namespace Memory
             internal string szExePath;
         }
 
-        
+        // inner struct used only internally
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private struct PROCESSENTRY32
+        {
+            private const int MAX_PATH = 260;
+            internal UInt32 dwSize;
+            internal UInt32 cntUsage;
+            internal UInt32 th32ProcessID;
+            internal IntPtr th32DefaultHeapID;
+            internal UInt32 th32ModuleID;
+            internal UInt32 cntThreads;
+            internal UInt32 th32ParentProcessID;
+            internal Int32 pcPriClassBase;
+            internal UInt32 dwFlags;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+            internal string szExeFile;
+        }
     }
 }

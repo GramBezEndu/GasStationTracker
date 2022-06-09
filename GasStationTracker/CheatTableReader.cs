@@ -1,24 +1,18 @@
-﻿using GasStationTracker.GameData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows;
-using System.Xml.Linq;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Windows;
+    using System.Xml.Linq;
+    using GasStationTracker.GameData;
+
     public class CheatTableReader
     {
-        public string GithubFilePath
-        {
-            get
-            {
-                return String.Format("https://raw.githubusercontent.com/{0}/{1}/{2}/{3}", githubUser, repositoryName, branch, filename);
-            }
-        }
+        public string GithubFilePath => string.Format("https://raw.githubusercontent.com/{0}/{1}/{2}/{3}", githubUser, repositoryName, branch, filename);
 
         public List<PointerData> Data { get; set; }
 
@@ -34,7 +28,6 @@ namespace GasStationTracker
 
         public CheatTableReader()
         {
-
         }
 
         public async void GetPointerData()
@@ -63,8 +56,8 @@ namespace GasStationTracker
 
             foreach (XElement versionEntry in versionEntries)
             {
-                string currentVersion = versionEntry.Elements("Description").First().Value.Replace("Version: ", String.Empty);
-                string cleanedVersionTag = Regex.Replace(currentVersion, "[^0-9. ]", "");
+                string currentVersion = versionEntry.Elements("Description").First().Value.Replace("Version: ", string.Empty);
+                string cleanedVersionTag = Regex.Replace(currentVersion, "[^0-9. ]", string.Empty);
                 PointerData versionData = new PointerData(new Version(cleanedVersionTag));
 
                 List<XElement> cheatEntries = new List<XElement>()
@@ -80,7 +73,7 @@ namespace GasStationTracker
                 foreach (XElement entry in cheatEntries)
                 {
                     versionData.Pointers.Add(
-                        Regex.Replace(entry.Element("Description").Value, "[^A-Za-z0-9. +-x]", ""),
+                        Regex.Replace(entry.Element("Description").Value, "[^A-Za-z0-9. +-x]", string.Empty),
                         GetFullAddress(entry));
                 }
                 data.Add(versionData);
@@ -90,17 +83,19 @@ namespace GasStationTracker
 
         private XElement FindCheatEntryWithName(XElement versionEntry, string name)
         {
-            var cheatEntries = versionEntry.Elements("CheatEntries").Elements("CheatEntry");
-            return cheatEntries.First(x => Regex.Replace(x.Element("Description").Value, "[^A-Za-z0-9. +-x]", "") == name);
+            IEnumerable<XElement> cheatEntries = versionEntry.Elements("CheatEntries").Elements("CheatEntry");
+            return cheatEntries.First(x => Regex.Replace(x.Element("Description").Value, "[^A-Za-z0-9. +-x]", string.Empty) == name);
         }
 
         private string GetFullAddress(XElement cheatEntry)
         {
             XElement pointerEntry = cheatEntry.Element("CheatEntries").Element("CheatEntry");
-            string address = Regex.Replace(pointerEntry.Element("Address").Value, "[^A-Za-z0-9. +-x]", "");
-            //Add "0x" string before offset
+            string address = Regex.Replace(pointerEntry.Element("Address").Value, "[^A-Za-z0-9. +-x]", string.Empty);
+
+            // Add "0x" string before offset
             address = address.Replace("+", "+0x");
-            //If there are any offsets
+
+            // If there are any offsets
             if (pointerEntry.Element("Offsets") != null)
             {
                 XElement[] offsetsElements = pointerEntry.Element("Offsets").Elements("Offset").ToArray();
@@ -112,10 +107,14 @@ namespace GasStationTracker
                     string offset = String.Format(",0x{0}", offsetElement.Value);
                     offsets.Add(offset);
                 }
+
                 StringBuilder fullAddressBuilder = new StringBuilder();
                 fullAddressBuilder.Append(address);
-                foreach (var offset in offsets)
+                foreach (string offset in offsets)
+                {
                     fullAddressBuilder.Append(offset);
+                }
+
                 return fullAddressBuilder.ToString();
             }
             else

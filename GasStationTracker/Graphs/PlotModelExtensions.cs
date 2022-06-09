@@ -1,25 +1,24 @@
-﻿using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System;
+    using System.Linq;
+    using OxyPlot;
+    using OxyPlot.Axes;
+    using OxyPlot.Series;
+
     public static class PlotModelExtensions
     {
         public static void UpdateGraphLineSeries(this PlotModel plot, string currentFilter)
         {
             ElementCollection<Series> series = plot.Series;
-            foreach (var serie in series)
+            foreach (Series serie in series)
             {
                 serie.IsVisible = false;
             }
-            if (currentFilter != String.Empty)
+
+            if (currentFilter != string.Empty)
             {
-                var currentSeries = series.FirstOrDefault(x => x.Title == currentFilter);
+                Series currentSeries = series.FirstOrDefault(x => x.Title == currentFilter);
                 if (currentSeries != null)
                 {
                     if (currentSeries.IsVisible == false)
@@ -29,12 +28,13 @@ namespace GasStationTracker
                     }
                 }
             }
+
             plot.InvalidatePlot(true);
         }
 
         public static void AutoScaleGraph(this PlotModel model)
         {
-            var firstSeries = (LineSeries)model.Series.FirstOrDefault();
+            LineSeries firstSeries = (LineSeries)model.Series.FirstOrDefault();
             if (firstSeries != null)
             {
                 AutoScaleGraph(model, firstSeries);
@@ -43,12 +43,14 @@ namespace GasStationTracker
 
         private static void AutoScaleGraph(this PlotModel model, LineSeries currentSeries)
         {
-            var points = (currentSeries as LineSeries).Points.OrderBy(x => x.X);
+            IOrderedEnumerable<DataPoint> points = currentSeries.Points.OrderBy(x => x.X);
             if (points.Count() >= 1 && model.Axes.Count() >= 1)
             {
                 model.Axes[0].Reset();
                 model.Axes[0].Minimum = DateTimeAxis.ToDouble(points.FirstOrDefault().X);
-                model.Axes[0].Maximum = DateTimeAxis.ToDouble(DateTimeAxis.ToDateTime(points.LastOrDefault().X) + new TimeSpan(0, 0, 60));
+                model.Axes[0].Maximum = DateTimeAxis.ToDouble(
+                    DateTimeAxis.ToDateTime(points.LastOrDefault().X) +
+                    new TimeSpan(0, 0, 60));
                 model.Axes[1].Reset();
             }
         }

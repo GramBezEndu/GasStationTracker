@@ -1,20 +1,11 @@
-﻿using System;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System;
+
     public class InGameTime
     {
-        public int Days { get; set; }
-
-        public int Hours { get; set; }
-
-        public int Minutes { get; set; }
-
-        public int Seconds { get; set; }
-
         public InGameTime()
         {
-
         }
 
         public InGameTime(float time)
@@ -24,6 +15,14 @@ namespace GasStationTracker
             Hours = timeSpan.Hours;
             Minutes = timeSpan.Minutes;
         }
+
+        public int Days { get; set; }
+
+        public int Hours { get; set; }
+
+        public int Minutes { get; set; }
+
+        public int Seconds { get; set; }
 
         public override string ToString()
         {

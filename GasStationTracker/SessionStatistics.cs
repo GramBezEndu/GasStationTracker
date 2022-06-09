@@ -1,13 +1,11 @@
-﻿using GasStationTracker.GameData;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using GasStationTracker.GameData;
+
     public class SessionStatistics : INotifyPropertyChanged
     {
         public RecordCollection Records { get; set; }
@@ -64,9 +62,9 @@ namespace GasStationTracker
             }
         }
 
-        public InGameTime IgtPassed 
-        { 
-            get => igtPassed; 
+        public InGameTime IgtPassed
+        {
+            get => igtPassed;
             private set
             {
                 if (value != igtPassed)
@@ -91,7 +89,7 @@ namespace GasStationTracker
 
         private TimeSpan sessionTime = new TimeSpan(0);
 
-        private InGameTime igtPassed = new InGameTime() 
+        private InGameTime igtPassed = new InGameTime()
         {
             Days = 0,
             Hours = 0,
@@ -109,6 +107,7 @@ namespace GasStationTracker
                 {
                     return;
                 }
+
                 Record lastRecord = GetLastRecord();
                 CashEarned = (float)(Convert.ToDouble(lastRecord.GetValue(GameIdentifiers.CashDisplay)) - Convert.ToDouble(FirstRecord.GetValue(GameIdentifiers.CashDisplay)));
                 PopularityGained = (int)lastRecord.GetValue(GameIdentifiers.PopularityDisplay) - (int)FirstRecord.GetValue(GameIdentifiers.PopularityDisplay);
@@ -142,7 +141,7 @@ namespace GasStationTracker
             return Records.OrderBy(x => x.Date).Last();
         }
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

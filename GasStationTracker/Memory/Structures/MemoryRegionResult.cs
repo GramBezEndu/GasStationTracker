@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Memory
+﻿namespace Memory
 {
+    using System;
+
     /// <summary>
     /// AoB scan information.
     /// </summary>
-    struct MemoryRegionResult
+    internal struct MemoryRegionResult
     {
         public UIntPtr CurrentBaseAddress { get; set; }
-        public long RegionSize { get; set; }
-        public UIntPtr RegionBase { get; set; }
 
+        public long RegionSize { get; set; }
+
+        public UIntPtr RegionBase { get; set; }
     }
 }

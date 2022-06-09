@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System.Windows;
+    using System.Windows.Controls;
+
     // The GridLayout is a special Panel that can be used exactly like the Grid Panel, except that it
     // defines a new property ChildMargin. ChildMargin's left, top, right and bottom margins will be applied
     // to all children in a way that the children will have a vertical space of ChildMargin.Top+ChildMargin.Bottom
@@ -15,14 +12,14 @@ namespace GasStationTracker
     // It's best to have a look at TestWindow, which effectively tests all possible alignments of children.
     public class GridLayout : Grid
     {
-        public static readonly DependencyProperty ChildMarginProperty = DependencyProperty.Register(
+        public readonly static DependencyProperty ChildMarginProperty = DependencyProperty.Register(
             "ChildMargin",
             typeof(Thickness),
             typeof(GridLayout),
             new FrameworkPropertyMetadata(new Thickness(5))
             {
                 AffectsArrange = true,
-                AffectsMeasure = true
+                AffectsMeasure = true,
             });
         // The child margin defines a margin that will be automatically applied to all children of this Grid.
         // However, the children at the edges will have the respective margins remove. E.g. the leftmost children will have
@@ -32,7 +29,7 @@ namespace GasStationTracker
 
         public Thickness ChildMargin
         {
-            get { return (Thickness)GetValue(ChildMarginProperty); }
+            get => (Thickness)GetValue(ChildMarginProperty);
             set
             {
                 SetValue(ChildMarginProperty, value);
@@ -52,14 +49,20 @@ namespace GasStationTracker
                 int row = GetRow(element);
                 int column = GetColumn(element);
                 if (row > maxRow)
+                {
                     maxRow = row;
+                }
+
                 if (column > maxColumn)
+                {
                     maxColumn = column;
+                }
             }
+
             foreach (UIElement element in InternalChildren)
             {
                 FrameworkElement fe = element as FrameworkElement;
-                if (null != fe)
+                if (fe != null)
                 {
                     int row = GetRow(fe);
                     int column = GetColumn(fe);
@@ -69,20 +72,30 @@ namespace GasStationTracker
                     double factorBottom = 0.5;
                     // Top row - no top margin
                     if (row == 0)
+                    {
                         factorTop = 0;
+                    }
                     // Bottom row - no bottom margin
                     if (row == maxRow)
+                    {
                         factorBottom = 0;
+                    }
                     // Leftmost column = no left margin
                     if (column == 0)
+                    {
                         factorLeft = 0;
+                    }
                     // Rightmost column - no right margin
                     if (column == maxColumn)
+                    {
                         factorRight = 0;
-                    fe.Margin = new Thickness(ChildMargin.Left * factorLeft,
-                                               ChildMargin.Top * factorTop,
-                                               ChildMargin.Right * factorRight,
-                                               ChildMargin.Bottom * factorBottom);
+                    }
+
+                    fe.Margin = new Thickness(
+                        ChildMargin.Left * factorLeft,
+                        ChildMargin.Top * factorTop,
+                        ChildMargin.Right * factorRight,
+                        ChildMargin.Bottom * factorBottom);
                 }
             }
         }

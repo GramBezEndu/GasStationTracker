@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using GasStationTracker.Controls;
-using GasStationTracker.Converters;
-using GasStationTracker.GameData;
-using Memory;
-using Newtonsoft.Json;
-using OxyPlot;
-using OxyPlot.Axes;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
+    using GasStationTracker.Controls;
+    using GasStationTracker.Converters;
+    using GasStationTracker.GameData;
+    using Memory;
+    using Newtonsoft.Json;
+    using OxyPlot;
+    using OxyPlot.Axes;
+
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainWindow.xaml.
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -34,17 +34,11 @@ namespace GasStationTracker
             get
             {
                 Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                return new Version(String.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build));
+                return new Version(string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build));
             }
         }
 
-        public string VersionDisplay
-        {
-            get
-            {
-                return CurrentVersion.ToString();
-            }
-        }
+        public string VersionDisplay => CurrentVersion.ToString();
 
         private RecordCollection records;
 
@@ -66,7 +60,7 @@ namespace GasStationTracker
 
         private System.Windows.Threading.DispatcherTimer dispatcherTimer;
 
-        private readonly Mem memoryHandler;
+        private readonly MemoryManager memoryHandler;
 
         #region GameHandling
         public bool IsTracking
@@ -105,26 +99,31 @@ namespace GasStationTracker
 
             Records = new RecordCollection(RawData.DataTable, Plot);
             SessionStats.Records = Records;
-            memoryHandler = new Mem();
+            memoryHandler = new MemoryManager();
             Load();
             AddPlotAxes();
             Plot.TextColor = OxyColors.Black;
             Plot.LegendTextColor = OxyColors.Black;
             Plot.LegendFontSize = 14;
-            var legendBackground = System.Drawing.ColorTranslator.FromHtml("#B9A8CE");
+            System.Drawing.Color legendBackground = System.Drawing.ColorTranslator.FromHtml("#B9A8CE");
             Plot.LegendBackground = OxyColor.FromArgb(legendBackground.A, legendBackground.R, legendBackground.G, legendBackground.B);
             Plot.LegendPlacement = LegendPlacement.Inside;
             LiveGraphs.Graph.Model = Plot;
             cheatTableReader.OnDataLoaded += (o, e) => SetData();
             cheatTableReader.GetPointerData();
             if (UserSettings.Default.AutoUpdate)
+            {
                 CheckVersion();
+            }
         }
 
         private void SetData()
         {
-            foreach (var data in cheatTableReader.Data)
+            foreach (PointerData data in cheatTableReader.Data)
+            {
                 PointersRepository.OnlineRepositoryData.Add(data);
+            }
+
             ListView onlineVersionList = Settings.PointerSettingsView.OnlineVersionList;
             string onlineVersionSelected = onlineVersionList.Items.Cast<string>().First(x => x == UserSettings.Default.OnlineRepositoryVersion);
             onlineVersionList.SelectedItem = onlineVersionSelected;
@@ -230,11 +229,13 @@ namespace GasStationTracker
                 Log("Could not find pointer data with selected pointer source and game version");
                 return;
             }
+
             gameProcessId = memoryHandler.GetProcIdFromName(GameIdentifiers.ProcessName);
             if (gameProcessId != 0)
             {
                 Log("Process ID: " + gameProcessId);
-                //Need to recreate process (required by library code)
+
+                // Need to recreate process (required by library code)
                 memoryHandler.mProc = new Proc();
                 if (memoryHandler.OpenProcess(gameProcessId))
                 {
@@ -261,32 +262,32 @@ namespace GasStationTracker
 
         public void Log(string msg)
         {
-            Logs.AppendText(String.Format("{0}\t{1}\n", DateTime.Now, msg));
+            Logs.AppendText(string.Format("{0}\t{1}\n", DateTime.Now, msg));
         }
 
         public void GetData(PointerData pointerList)
         {
             if (pointerList != null)
             {
-                var cash = CreateFloatRecord(GameIdentifiers.CashDisplay, pointerList.Pointers[GameIdentifiers.CashDisplay]);
-                var popularity = CreateIntRecord(GameIdentifiers.PopularityDisplay, pointerList.Pointers[GameIdentifiers.PopularityDisplay]);
-                var moneySpentOnFuel = CreateFloatRecord(GameIdentifiers.MoneySpentOnFuelDisplay, pointerList.Pointers[GameIdentifiers.MoneySpentOnFuelDisplay]);
-                var moneyEarnedOnFuel = CreateFloatRecord(GameIdentifiers.MoneyEarnedOnFuelDisplay, pointerList.Pointers[GameIdentifiers.MoneyEarnedOnFuelDisplay]);
-                var currentFuelCapacity = CreateFloatRecord(GameIdentifiers.CurrentFuelDisplay, pointerList.Pointers[GameIdentifiers.CurrentFuelDisplay]);
-                var igt = memoryHandler.ReadFloat(pointerList.Pointers[GameIdentifiers.IGT]);
+                SingleValue cash = CreateFloatRecord(GameIdentifiers.CashDisplay, pointerList.Pointers[GameIdentifiers.CashDisplay]);
+                SingleValue popularity = CreateIntRecord(GameIdentifiers.PopularityDisplay, pointerList.Pointers[GameIdentifiers.PopularityDisplay]);
+                SingleValue moneySpentOnFuel = CreateFloatRecord(GameIdentifiers.MoneySpentOnFuelDisplay, pointerList.Pointers[GameIdentifiers.MoneySpentOnFuelDisplay]);
+                SingleValue moneyEarnedOnFuel = CreateFloatRecord(GameIdentifiers.MoneyEarnedOnFuelDisplay, pointerList.Pointers[GameIdentifiers.MoneyEarnedOnFuelDisplay]);
+                SingleValue currentFuelCapacity = CreateFloatRecord(GameIdentifiers.CurrentFuelDisplay, pointerList.Pointers[GameIdentifiers.CurrentFuelDisplay]);
+                float igt = memoryHandler.ReadFloat(pointerList.Pointers[GameIdentifiers.IGT]);
 
-                var record = new Record()
+                Record record = new Record()
                 {
                     Date = DateTime.Now,
                     IGT = new InGameTime(igt),
                     SingleRecords = new List<SingleValue>()
-                {
-                    cash,
-                    popularity,
-                    moneyEarnedOnFuel,
-                    moneySpentOnFuel,
-                    currentFuelCapacity
-                }
+                    {
+                        cash,
+                        popularity,
+                        moneyEarnedOnFuel,
+                        moneySpentOnFuel,
+                        currentFuelCapacity,
+                    },
                 };
                 Records.Add(record);
             }
@@ -321,7 +322,7 @@ namespace GasStationTracker
         private SingleValue CreateIntRecord(string name, string pointerPath)
         {
             int value = memoryHandler.ReadInt(pointerPath);
-            var valueRecord = new SingleValue()
+            SingleValue valueRecord = new SingleValue()
             {
                 Name = name,
                 Value = value,
@@ -332,7 +333,7 @@ namespace GasStationTracker
         private SingleValue CreateFloatRecord(string name, string pointerPath)
         {
             float value = memoryHandler.ReadFloat(pointerPath);
-            var valueRecord = new SingleValue()
+            SingleValue valueRecord = new SingleValue()
             {
                 Name = name,
                 Value = value,
@@ -345,10 +346,10 @@ namespace GasStationTracker
             if (File.Exists(fileName))
             {
                 string content = File.ReadAllText(fileName);
-                var records = JsonConvert.DeserializeObject<RecordCollection>(content, settings);
+                RecordCollection records = JsonConvert.DeserializeObject<RecordCollection>(content, settings);
                 if (records != null)
                 {
-                    foreach (var rec in records)
+                    foreach (Record rec in records)
                     {
                         Records.Add(rec);
                     }
@@ -368,17 +369,17 @@ namespace GasStationTracker
 
         public static bool IsRunning(int id)
         {
-            try 
+            try
             {
                 Process.GetProcessById(id);
             }
-            catch (InvalidOperationException) 
-            { 
-                return false; 
+            catch (InvalidOperationException)
+            {
+                return false;
             }
-            catch (ArgumentException) 
-            { 
-                return false; 
+            catch (ArgumentException)
+            {
+                return false;
             }
             return true;
         }
@@ -388,9 +389,13 @@ namespace GasStationTracker
             string path = pointerList.Pointers[GameIdentifiers.InGame];
             int value = memoryHandler.ReadByte(path);
             if (value == 0)
+            {
                 return false;
+            }
             else
+            {
                 return true;
+            }
         }
 
         #region Buttons
@@ -466,21 +471,25 @@ namespace GasStationTracker
         private void MaximuzeWindow(object sender, RoutedEventArgs e)
         {
             if (WindowState == WindowState.Normal)
+            {
                 WindowState = WindowState.Maximized;
+            }
             else
+            {
                 WindowState = WindowState.Normal;
+            }
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //This work around solves window being too big issue
-            if (this.WindowState == WindowState.Maximized)
+            // This work around solves window being too big issue
+            if (WindowState == WindowState.Maximized)
             {
-                this.BorderThickness = new System.Windows.Thickness(6);
+                BorderThickness = new System.Windows.Thickness(6);
             }
             else
             {
-                this.BorderThickness = new System.Windows.Thickness(0);
+                BorderThickness = new System.Windows.Thickness(0);
             }
         }
     }

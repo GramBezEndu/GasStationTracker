@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Interop;
-
-namespace GasStationTracker
+﻿namespace GasStationTracker
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Windows;
+    using System.Windows.Forms;
+    using System.Windows.Interop;
+
     public class WpfScreen
     {
         public static IEnumerable<WpfScreen> AllScreens()
@@ -38,10 +38,7 @@ namespace GasStationTracker
             return wpfScreen;
         }
 
-        public static WpfScreen Primary
-        {
-            get { return new WpfScreen(System.Windows.Forms.Screen.PrimaryScreen); }
-        }
+        public static WpfScreen Primary => new WpfScreen(System.Windows.Forms.Screen.PrimaryScreen);
 
         private readonly Screen screen;
 
@@ -50,15 +47,9 @@ namespace GasStationTracker
             this.screen = screen;
         }
 
-        public Rect DeviceBounds
-        {
-            get { return this.GetRect(this.screen.Bounds); }
-        }
+        public Rect DeviceBounds => GetRect(screen.Bounds);
 
-        public Rect WorkingArea
-        {
-            get { return this.GetRect(this.screen.WorkingArea); }
-        }
+        public Rect WorkingArea => GetRect(screen.WorkingArea);
 
         private Rect GetRect(Rectangle value)
         {
@@ -68,18 +59,12 @@ namespace GasStationTracker
                 X = value.X,
                 Y = value.Y,
                 Width = value.Width,
-                Height = value.Height
+                Height = value.Height,
             };
         }
 
-        public bool IsPrimary
-        {
-            get { return this.screen.Primary; }
-        }
+        public bool IsPrimary => screen.Primary;
 
-        public string DeviceName
-        {
-            get { return this.screen.DeviceName; }
-        }
+        public string DeviceName => screen.DeviceName;
     }
 }

@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using static Memory.Imps;
-
-namespace Memory
+﻿namespace Memory
 {
-    public partial class Mem
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using static Memory.Imps;
+
+    public partial class MemoryManager
     {
-        Dictionary<string, CancellationTokenSource> FreezeTokenSrcs = new Dictionary<string, CancellationTokenSource>();
+        private readonly Dictionary<string, CancellationTokenSource> FreezeTokenSrcs = new Dictionary<string, CancellationTokenSource>();
 
         /// <summary>
         /// Freeze a value to an address.
@@ -41,7 +40,9 @@ namespace Memory
                     }
                 }
                 else
+                {
                     Debug.WriteLine("Adding Freezing Address " + address + " Value " + value);
+                }
 
                 FreezeTokenSrcs.Add(address, cts);
             }
@@ -125,10 +126,13 @@ namespace Memory
                 {
                     string[] stringBytes;
                     if (write.Contains(","))
+                    {
                         stringBytes = write.Split(',');
+                    }
                     else
+                    {
                         stringBytes = write.Split(' ');
-                    //Debug.WriteLine("write:" + write + " stringBytes:" + stringBytes);
+                    }
 
                     int c = stringBytes.Count();
                     memory = new byte[c];
@@ -136,9 +140,10 @@ namespace Memory
                     {
                         memory[i] = Convert.ToByte(stringBytes[i], 16);
                     }
+
                     size = stringBytes.Count();
                 }
-                else //wasnt array, only 1 byte
+                else // wasn't array, only 1 byte
                 {
                     memory = new byte[1];
                     memory[0] = Convert.ToByte(write, 16);
@@ -158,20 +163,30 @@ namespace Memory
             else if (type.ToLower() == "string")
             {
                 if (stringEncoding == null)
+                {
                     memory = System.Text.Encoding.UTF8.GetBytes(write);
+                }
                 else
+                {
                     memory = stringEncoding.GetBytes(write);
+                }
+
                 size = memory.Length;
             }
 
-            //Debug.Write("DEBUG: Writing bytes [TYPE:" + type + " ADDR:" + theCode + "] " + String.Join(",", memory) + Environment.NewLine);
             MemoryProtection OldMemProt = 0x00;
             bool WriteProcMem = false;
             if (RemoveWriteProtection)
+            {
                 ChangeProtection(code, MemoryProtection.ExecuteReadWrite, out OldMemProt); // change protection
+            }
+
             WriteProcMem = WriteProcessMemory(mProc.Handle, theCode, memory, (UIntPtr)size, IntPtr.Zero);
             if (RemoveWriteProtection)
+            {
                 ChangeProtection(code, OldMemProt, out _); // restore
+            }
+
             return WriteProcMem;
         }
 
@@ -256,16 +271,20 @@ namespace Memory
         public void WriteBits(string code, bool[] bits, string file = "")
         {
             if (bits.Length != 8)
+            {
                 throw new ArgumentException("Not enough bits for a whole byte", nameof(bits));
+            }
 
             byte[] buf = new byte[1];
 
             UIntPtr theCode = GetCode(code, file);
 
-            for (var i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
             {
                 if (bits[i])
+                {
                     buf[0] |= (byte)(1 << i);
+                }
             }
 
             WriteProcessMemory(mProc.Handle, theCode, buf, (UIntPtr)1, IntPtr.Zero);
