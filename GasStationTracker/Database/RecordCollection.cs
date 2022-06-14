@@ -13,6 +13,17 @@
     {
         private DataGrid dataGridBinding;
 
+        public RecordCollection()
+        {
+        }
+
+        public RecordCollection(DataGrid binding, PlotModel plot)
+            : base()
+        {
+            DataGridBinding = binding;
+            Plot = plot;
+        }
+
         public DataGrid DataGridBinding
         {
             get => dataGridBinding;
@@ -27,15 +38,6 @@
 
         public PlotModel Plot { get; private set; }
 
-        public RecordCollection() { }
-
-        public RecordCollection(DataGrid binding, PlotModel plot)
-            : base()
-        {
-            DataGridBinding = binding;
-            Plot = plot;
-        }
-
         protected override void InsertItem(int index, Record item)
         {
             if (DataGridBinding != null)
@@ -48,6 +50,7 @@
                 UpdateGraphs(item);
                 Plot.AutoScaleGraph();
             }
+
             base.InsertItem(index, item);
         }
 
@@ -78,6 +81,7 @@
                             });
                         }
                     }
+
                     Series series = Plot.Series.First(x => x.Title == singleValue.Name);
                     (series as LineSeries).Points.Add(new DataPoint(DateTimeAxis.ToDouble(record.Date), Convert.ToDouble(singleValue.Value)));
                 }

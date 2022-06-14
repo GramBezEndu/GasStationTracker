@@ -12,7 +12,7 @@
     // It's best to have a look at TestWindow, which effectively tests all possible alignments of children.
     public class GridLayout : Grid
     {
-        public readonly static DependencyProperty ChildMarginProperty = DependencyProperty.Register(
+        public static readonly DependencyProperty ChildMarginProperty = DependencyProperty.Register(
             "ChildMargin",
             typeof(Thickness),
             typeof(GridLayout),
@@ -21,12 +21,12 @@
                 AffectsArrange = true,
                 AffectsMeasure = true,
             });
+
         // The child margin defines a margin that will be automatically applied to all children of this Grid.
         // However, the children at the edges will have the respective margins remove. E.g. the leftmost children will have
         // a Margin.Left of 0 and the children in the first row will have a Margin.Top of 0.
         // The margins that are not set to 0 are set to half the ChildMargin's value, since it's neighbour will also apply it,
         // effectively doubling it.
-
         public Thickness ChildMargin
         {
             get => (Thickness)GetValue(ChildMarginProperty);
@@ -39,7 +39,6 @@
 
         // UpdateChildMargin first finds out what's the rightmost column and bottom row and then applies
         // the correct margins to all children.
-
         public void UpdateChildMargins()
         {
             int maxColumn = 0;
@@ -70,21 +69,25 @@
                     double factorTop = 0.5;
                     double factorRight = 0.5;
                     double factorBottom = 0.5;
+
                     // Top row - no top margin
                     if (row == 0)
                     {
                         factorTop = 0;
                     }
+
                     // Bottom row - no bottom margin
                     if (row == maxRow)
                     {
                         factorBottom = 0;
                     }
+
                     // Leftmost column = no left margin
                     if (column == 0)
                     {
                         factorLeft = 0;
                     }
+
                     // Rightmost column - no right margin
                     if (column == maxColumn)
                     {
@@ -104,7 +107,6 @@
         // the layouting takes place. I was first skeptical to do this here, because I thought changing
         // the margin will trigger a LayoutUpdate, which in turn would lead to an endless recursion,
         // but apparantly WPF takes care of this.
-
         protected override Size MeasureOverride(Size availableSize)
         {
             UpdateChildMargins();

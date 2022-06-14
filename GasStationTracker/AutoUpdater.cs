@@ -37,6 +37,7 @@
                     content.AppendLine("Auto update is not implemented in current version");
                     content.AppendLine();
                     content.AppendLine("Visit github project to download newest version");
+
                     // The version on GitHub is more up to date than this local release.
                     MessageBox.Show(content.ToString(), "New version!", MessageBoxButton.OK, MessageBoxImage.Information);
                 }

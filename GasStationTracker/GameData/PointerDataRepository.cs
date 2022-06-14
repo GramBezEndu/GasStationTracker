@@ -11,6 +11,18 @@
 
     public class PointerDataRepository : INotifyPropertyChanged
     {
+        private ICollectionView onlineVersionsView;
+
+        private ObservableCollection<string> embeddedVersionCollection = new ObservableCollection<string>();
+
+        public PointerDataRepository()
+        {
+            SetupEmbeddedData();
+            SetupOnlineData();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public ObservableCollection<PointerData> OnlineRepositoryData { get; private set; } =
             new ObservableCollection<PointerData>();
 
@@ -30,7 +42,8 @@
             }
         }
 
-        public ObservableCollection<PointerData> EmbeddedData { get; private set; } = new ObservableCollection<PointerData>();
+        public ObservableCollection<PointerData> EmbeddedData { get; private set; } =
+            new ObservableCollection<PointerData>();
 
         public ObservableCollection<string> EmbeddedVersionCollection
         {
@@ -48,18 +61,6 @@
         public ICollectionView EmbeddedVersionsView { get; set; }
 
         public List<PointerData> LocalFileData { get; private set; } = new List<PointerData>();
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private ICollectionView onlineVersionsView;
-
-        private ObservableCollection<string> embeddedVersionCollection = new ObservableCollection<string>();
-
-        public PointerDataRepository()
-        {
-            SetupEmbeddedData();
-            SetupOnlineData();
-        }
 
         public PointerData GetLatestOnlineVersion()
         {
@@ -99,6 +100,7 @@
                         PointerData pointerData = (PointerData)data;
                         EmbeddedVersionCollection.Add(pointerData.GameVersion.ToString());
                     }
+
                     EmbeddedVersionsView = CollectionViewSource.GetDefaultView(EmbeddedVersionCollection);
                     if (EmbeddedVersionsView != null && EmbeddedVersionsView.CanSort == true)
                     {

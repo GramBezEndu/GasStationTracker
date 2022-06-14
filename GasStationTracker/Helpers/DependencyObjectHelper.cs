@@ -1,6 +1,5 @@
 ﻿namespace GasStationTracker
 {
-    using System;
     using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Data;
@@ -30,7 +29,6 @@
         public static List<BindingData> GetBindingData(object element)
         {
             List<BindingData> data = new List<BindingData>();
-            //List<BindingBase> bindings = new List<BindingBase>();
             List<DependencyProperty> dpList = new List<DependencyProperty>();
             dpList.AddRange(GetDependencyProperties(element));
             dpList.AddRange(GetAttachedProperties(element));
@@ -40,7 +38,6 @@
                 BindingBase b = BindingOperations.GetBindingBase(element as DependencyObject, dp);
                 if (b != null)
                 {
-                    //bindings.Add(b);
                     data.Add(new BindingData(dp, b));
                 }
             }

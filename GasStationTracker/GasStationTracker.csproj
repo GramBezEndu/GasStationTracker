@@ -31,6 +31,8 @@
   <ItemGroup>
     <Compile Remove="AttachedProperties\ButtonAttachedProperties.cs" />
     <Compile Remove="Memory.cs" />
+    <Compile Remove="Memory\Methods\AoB.cs" />
+    <Compile Remove="Memory\Methods\Write.cs" />
   </ItemGroup>
 
   <ItemGroup>

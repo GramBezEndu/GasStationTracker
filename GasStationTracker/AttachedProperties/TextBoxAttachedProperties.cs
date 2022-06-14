@@ -5,6 +5,11 @@
 
     public class TextBoxAttachedProperties
     {
+        // Using a DependencyProperty as the backing store for AutoScrollToEnd.
+        // This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AutoScrollToEndProperty =
+        DependencyProperty.RegisterAttached("AutoScrollToEnd", typeof(bool), typeof(TextBoxAttachedProperties), new PropertyMetadata(false, AutoScrollToEndPropertyChanged));
+
         public static bool GetAutoScrollToEnd(DependencyObject obj)
         {
             return (bool)obj.GetValue(AutoScrollToEndProperty);
@@ -14,10 +19,6 @@
         {
             obj.SetValue(AutoScrollToEndProperty, value);
         }
-
-        // Using a DependencyProperty as the backing store for AutoScrollToEnd. This enables animation, styling, binding, etc...
-        public readonly static DependencyProperty AutoScrollToEndProperty =
-        DependencyProperty.RegisterAttached("AutoScrollToEnd", typeof(bool), typeof(TextBoxAttachedProperties), new PropertyMetadata(false, AutoScrollToEndPropertyChanged));
 
         private static void AutoScrollToEndPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

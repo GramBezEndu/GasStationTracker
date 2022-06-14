@@ -8,6 +8,29 @@
 
     public class SessionStatistics : INotifyPropertyChanged
     {
+        private float cashEarned = 0.00f;
+
+        private int popularityGained = 0;
+
+        private bool sessionEnded = false;
+
+        private DateTime startTime;
+
+        private TimeSpan sessionTime = new TimeSpan(0);
+
+        private InGameTime igtPassed = new InGameTime()
+        {
+            Days = 0,
+            Hours = 0,
+            Minutes = 0,
+        };
+
+        public SessionStatistics()
+        {
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public RecordCollection Records { get; set; }
 
         public DateTime StartTime
@@ -76,27 +99,6 @@
         }
 
         public Record FirstRecord { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private float cashEarned = 0.00f;
-
-        private int popularityGained = 0;
-
-        private bool sessionEnded = false;
-
-        private DateTime startTime;
-
-        private TimeSpan sessionTime = new TimeSpan(0);
-
-        private InGameTime igtPassed = new InGameTime()
-        {
-            Days = 0,
-            Hours = 0,
-            Minutes = 0,
-        };
-
-        public SessionStatistics() { }
 
         public void Update()
         {

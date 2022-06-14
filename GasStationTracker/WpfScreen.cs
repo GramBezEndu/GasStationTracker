@@ -9,6 +9,23 @@
 
     public class WpfScreen
     {
+        private readonly Screen screen;
+
+        internal WpfScreen(System.Windows.Forms.Screen screen)
+        {
+            this.screen = screen;
+        }
+
+        public static WpfScreen Primary => new WpfScreen(System.Windows.Forms.Screen.PrimaryScreen);
+
+        public Rect DeviceBounds => GetRect(screen.Bounds);
+
+        public Rect WorkingArea => GetRect(screen.WorkingArea);
+
+        public bool IsPrimary => screen.Primary;
+
+        public string DeviceName => screen.DeviceName;
+
         public static IEnumerable<WpfScreen> AllScreens()
         {
             foreach (Screen screen in System.Windows.Forms.Screen.AllScreens)
@@ -38,19 +55,6 @@
             return wpfScreen;
         }
 
-        public static WpfScreen Primary => new WpfScreen(System.Windows.Forms.Screen.PrimaryScreen);
-
-        private readonly Screen screen;
-
-        internal WpfScreen(System.Windows.Forms.Screen screen)
-        {
-            this.screen = screen;
-        }
-
-        public Rect DeviceBounds => GetRect(screen.Bounds);
-
-        public Rect WorkingArea => GetRect(screen.WorkingArea);
-
         private Rect GetRect(Rectangle value)
         {
             // should x, y, width, height be device-independent-pixels ??
@@ -62,9 +66,5 @@
                 Height = value.Height,
             };
         }
-
-        public bool IsPrimary => screen.Primary;
-
-        public string DeviceName => screen.DeviceName;
     }
 }

@@ -45,7 +45,8 @@
             Window window = Window.GetWindow(expander);
             if (window != null)
             {
-                window.LocationChanged += delegate (object sender2, EventArgs args) {
+                window.LocationChanged += (sender2, args) =>
+                {
                     double offset = ViewSettingsPopUp.HorizontalOffset;
 
                     // "bump" the offset to cause the popup to reposition itself on its own
@@ -54,9 +55,10 @@
                 };
 
                 // Also handle the window being resized (so the popup's position stays
-                //  relative to its target element if the target element moves upon 
+                //  relative to its target element if the target element moves upon
                 //  window resize)
-                window.SizeChanged += delegate (object sender3, SizeChangedEventArgs e2) {
+                window.SizeChanged += (sender3, e2) =>
+                {
                     double offset = ViewSettingsPopUp.HorizontalOffset;
                     ViewSettingsPopUp.HorizontalOffset = offset + 1;
                     ViewSettingsPopUp.HorizontalOffset = offset;

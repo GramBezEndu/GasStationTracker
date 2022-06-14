@@ -21,12 +21,31 @@
         TopRight = 1,
         BottomLeft = 2,
         BottomRight = 3,
-    };
+    }
+
     /// <summary>
-    /// Interaction logic for ViewAsPopup.xaml
+    /// Interaction logic for ViewAsPopup.xaml.
     /// </summary>
     public partial class ViewAsPopup : UserControl, INotifyPropertyChanged
     {
+        private Grid popupContent;
+
+        private Window parentWindow;
+
+        private Popup popup;
+
+        private int selectedPlacementIndex = 0;
+
+        public ViewAsPopup()
+        {
+            InitializeComponent();
+            PlacementList.ItemsSource = PlacementMethods;
+            this.ResetSize();
+            Loaded += new RoutedEventHandler(UserControl_Loaded);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public List<PopupPlacement> PlacementMethods { get; set; } = new List<PopupPlacement>()
         {
             PopupPlacement.TopLeft,
@@ -52,15 +71,13 @@
                     NotifyPropertyChanged();
                     if (popup != null)
                     {
-                        //This forces placement callback call
+                        // This forces placement callback call
                         popup.Placement = PlacementMode.Center;
                         popup.Placement = PlacementMode.Custom;
                     }
                 }
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public string[] BindingListNames { get; set; } = new string[0];
 
@@ -79,22 +96,6 @@
                     CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacePopup),
                 };
             }
-        }
-
-        private Grid popupContent;
-
-        private Window parentWindow;
-
-        private Popup popup;
-
-        private int selectedPlacementIndex = 0;
-
-        public ViewAsPopup()
-        {
-            InitializeComponent();
-            PlacementList.ItemsSource = PlacementMethods;
-            this.ResetSize();
-            Loaded += new RoutedEventHandler(UserControl_Loaded);
         }
 
         public Grid CloneGridViaXmlSerialization(Grid grid, string[] propertyNames)
@@ -196,7 +197,7 @@
             });
             XamlDesignerSerializationManager manager = new XamlDesignerSerializationManager(writer)
             {
-                //Improtant
+                // Improtant
                 XamlWriterMode = XamlWriterMode.Expression,
             };
             return manager;
@@ -245,6 +246,7 @@
                         break;
                 }
             }
+
             return positions;
         }
 

@@ -12,23 +12,28 @@
 
     public class CheatTableReader
     {
-        public string GithubFilePath => string.Format("https://raw.githubusercontent.com/{0}/{1}/{2}/{3}", githubUser, repositoryName, branch, filename);
+        private const string GithubUser = "GramBezEndu";
 
-        public List<PointerData> Data { get; set; }
+        private const string RepositoryName = "GasStationSimulatorCheatTable";
 
-        public event EventHandler OnDataLoaded;
+        private const string Branch = "master";
 
-        private const string githubUser = "GramBezEndu";
-
-        private const string repositoryName = "GasStationSimulatorCheatTable";
-
-        private const string branch = "master";
-
-        private const string filename = "GSS2-Win64-Shipping.CT";
+        private const string FileName = "GSS2-Win64-Shipping.CT";
 
         public CheatTableReader()
         {
         }
+
+        public event EventHandler OnDataLoaded;
+
+        public string GithubFilePath => string.Format(
+            "https://raw.githubusercontent.com/{0}/{1}/{2}/{3}",
+            GithubUser,
+            RepositoryName,
+            Branch,
+            FileName);
+
+        public List<PointerData> Data { get; set; }
 
         public async void GetPointerData()
         {
@@ -76,8 +81,10 @@
                         Regex.Replace(entry.Element("Description").Value, "[^A-Za-z0-9. +-x]", string.Empty),
                         GetFullAddress(entry));
                 }
+
                 data.Add(versionData);
             }
+
             return data;
         }
 
@@ -100,11 +107,12 @@
             {
                 XElement[] offsetsElements = pointerEntry.Element("Offsets").Elements("Offset").ToArray();
                 List<string> offsets = new List<string>();
-                //Reverse loop due to cheat table structure
+
+                // Reverse loop due to cheat table structure
                 for (int i = offsetsElements.Length - 1; i >= 0; i--)
                 {
                     XElement offsetElement = offsetsElements[i];
-                    string offset = String.Format(",0x{0}", offsetElement.Value);
+                    string offset = string.Format(",0x{0}", offsetElement.Value);
                     offsets.Add(offset);
                 }
 

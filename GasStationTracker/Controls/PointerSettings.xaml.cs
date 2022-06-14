@@ -11,17 +11,17 @@
     }
 
     /// <summary>
-    /// Interaction logic for PointerSettings.xaml
+    /// Interaction logic for PointerSettings.xaml.
     /// </summary>
     public partial class PointerSettings : UserControl
     {
-        public PointerSource CurrentPointerSource { get; set; }
-
         public PointerSettings()
         {
             InitializeComponent();
             this.ResetSize();
         }
+
+        public PointerSource CurrentPointerSource { get; set; }
 
         private void RadioButton_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
         {

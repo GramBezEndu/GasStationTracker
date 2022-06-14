@@ -21,26 +21,7 @@
     /// </summary>
     public partial class MainWindow : Window
     {
-        public SessionStatistics SessionStats { get; private set; } = new SessionStatistics();
-
-        public PlotModel Plot { get; private set; } = new PlotModel();
-
-        public PointerDataRepository PointersRepository { get; set; } = new PointerDataRepository();
-
-        public RecordCollection Records { get => records; private set => records = value; }
-
-        public Version CurrentVersion
-        {
-            get
-            {
-                Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                return new Version(string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build));
-            }
-        }
-
-        public string VersionDisplay => CurrentVersion.ToString();
-
-        private RecordCollection records;
+        private readonly MemoryManager memoryHandler;
 
         private readonly int intervalMinutes = 0;
 
@@ -58,39 +39,13 @@
             TypeNameHandling = TypeNameHandling.Auto,
         };
 
-        private System.Windows.Threading.DispatcherTimer dispatcherTimer;
-
-        private readonly MemoryManager memoryHandler;
-
-        #region GameHandling
-        public bool IsTracking
-        {
-            get => isTracking;
-            set
-            {
-                if (isTracking != value)
-                {
-                    if (value == true)
-                    {
-                        StartStop.Content = "Stop tracking";
-                        Log("Attatched to process " + GameIdentifiers.ProcessName);
-                        SessionStats.StartTime = DateTime.Now;
-                    }
-                    else
-                    {
-                        StartStop.Content = "Start tracking";
-                        Log("Process was closed " + GameIdentifiers.ProcessName);
-                        SessionStats.EndSession();
-                    }
-                    isTracking = value;
-                }
-            }
-        }
+        private RecordCollection records;
 
         private int gameProcessId;
 
         private bool isTracking = false;
-        #endregion
+
+        private System.Windows.Threading.DispatcherTimer dispatcherTimer;
 
         public MainWindow()
         {
@@ -114,6 +69,234 @@
             if (UserSettings.Default.AutoUpdate)
             {
                 CheckVersion();
+            }
+        }
+
+        public SessionStatistics SessionStats { get; private set; } = new SessionStatistics();
+
+        public PlotModel Plot { get; private set; } = new PlotModel();
+
+        public PointerDataRepository PointersRepository { get; set; } = new PointerDataRepository();
+
+        public RecordCollection Records { get => records; private set => records = value; }
+
+        public Version CurrentVersion
+        {
+            get
+            {
+                Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                return new Version(string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build));
+            }
+        }
+
+        public string VersionDisplay => CurrentVersion.ToString();
+
+        public bool IsTracking
+        {
+            get => isTracking;
+            set
+            {
+                if (isTracking != value)
+                {
+                    if (value == true)
+                    {
+                        StartStop.Content = "Stop tracking";
+                        Log("Attatched to process " + GameIdentifiers.ProcessName);
+                        SessionStats.StartTime = DateTime.Now;
+                    }
+                    else
+                    {
+                        StartStop.Content = "Start tracking";
+                        Log("Process was closed " + GameIdentifiers.ProcessName);
+                        SessionStats.EndSession();
+                    }
+
+                    isTracking = value;
+                }
+            }
+        }
+
+        public static bool IsRunning(int id)
+        {
+            try
+            {
+                System.Diagnostics.Process.GetProcessById(id);
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public void Log(string msg)
+        {
+            Logs.AppendText(string.Format("{0}\t{1}\n", DateTime.Now, msg));
+        }
+
+        public void GetData(PointerData pointerList)
+        {
+            if (pointerList != null)
+            {
+                SingleValue cash = CreateFloatRecord(GameIdentifiers.CashDisplay, pointerList.Pointers[GameIdentifiers.CashDisplay]);
+                SingleValue popularity = CreateIntRecord(GameIdentifiers.PopularityDisplay, pointerList.Pointers[GameIdentifiers.PopularityDisplay]);
+                SingleValue moneySpentOnFuel = CreateFloatRecord(GameIdentifiers.MoneySpentOnFuelDisplay, pointerList.Pointers[GameIdentifiers.MoneySpentOnFuelDisplay]);
+                SingleValue moneyEarnedOnFuel = CreateFloatRecord(GameIdentifiers.MoneyEarnedOnFuelDisplay, pointerList.Pointers[GameIdentifiers.MoneyEarnedOnFuelDisplay]);
+                SingleValue currentFuelCapacity = CreateFloatRecord(GameIdentifiers.CurrentFuelDisplay, pointerList.Pointers[GameIdentifiers.CurrentFuelDisplay]);
+                float igt = memoryHandler.ReadFloat(pointerList.Pointers[GameIdentifiers.IGT]);
+
+                Record record = new Record()
+                {
+                    Date = DateTime.Now,
+                    IGT = new InGameTime(igt),
+                    SingleRecords = new List<SingleValue>()
+                    {
+                        cash,
+                        popularity,
+                        moneyEarnedOnFuel,
+                        moneySpentOnFuel,
+                        currentFuelCapacity,
+                    },
+                };
+                Records.Add(record);
+            }
+        }
+
+        public void Load()
+        {
+            if (File.Exists(fileName))
+            {
+                string content = File.ReadAllText(fileName);
+                RecordCollection records = JsonConvert.DeserializeObject<RecordCollection>(content, settings);
+                if (records != null)
+                {
+                    foreach (Record rec in records)
+                    {
+                        Records.Add(rec);
+                    }
+                }
+            }
+        }
+
+        public void Save()
+        {
+            using (StreamWriter sw = new StreamWriter(fileName, false))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                string result = JsonConvert.SerializeObject(Records, settings);
+                sw.Write(result);
+            }
+        }
+
+        public bool IsInGame(PointerData pointerList)
+        {
+            string path = pointerList.Pointers[GameIdentifiers.InGame];
+            int value = memoryHandler.ReadByte(path);
+            if (value == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private void SessionStatsClick(object sender, RoutedEventArgs e)
+        {
+            SessionStatistics.Visibility = Visibility.Visible;
+            RawData.Visibility = Visibility.Collapsed;
+            LiveGraphs.Visibility = Visibility.Collapsed;
+            Settings.Visibility = Visibility.Collapsed;
+        }
+
+        private void RawDataClick(object sender, RoutedEventArgs e)
+        {
+            RawData.Visibility = Visibility.Visible;
+            LiveGraphs.Visibility = Visibility.Collapsed;
+            Settings.Visibility = Visibility.Collapsed;
+            SessionStatistics.Visibility = Visibility.Collapsed;
+        }
+
+        private void LiveGraphsClick(object sender, RoutedEventArgs e)
+        {
+            LiveGraphs.Visibility = Visibility.Visible;
+            RawData.Visibility = Visibility.Collapsed;
+            Settings.Visibility = Visibility.Collapsed;
+            SessionStatistics.Visibility = Visibility.Collapsed;
+        }
+
+        private void SettingsClick(object sender, RoutedEventArgs e)
+        {
+            Settings.Visibility = Visibility.Visible;
+            LiveGraphs.Visibility = Visibility.Collapsed;
+            RawData.Visibility = Visibility.Collapsed;
+            SessionStatistics.Visibility = Visibility.Collapsed;
+        }
+
+        private void DragWindow(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+
+        private void CloseApplication(object sender, RoutedEventArgs e)
+        {
+            UserSettings.Default.PointerSource = GetPointerSourceFromView();
+            string checkedOnlineVersion = Settings.PointerSettingsView.OnlineVersionList.SelectedItem.ToString();
+            UserSettings.Default.OnlineRepositoryVersion = checkedOnlineVersion;
+            string checkedEmbeddedVersion = Settings.PointerSettingsView.EmbeddedVersionList.SelectedItem.ToString();
+            UserSettings.Default.EmbeddedVersion = checkedEmbeddedVersion;
+            UserSettings.Default.Save();
+            Application.Current.Shutdown();
+        }
+
+        private string GetPointerSourceFromView()
+        {
+            if (Settings.PointerSettingsView.EmbeddedButton.IsChecked == true)
+            {
+                return PointerSourceToStringConverter.Convert(PointerSource.EmbeddedInApplication).ToString();
+            }
+            else
+            {
+                return PointerSourceToStringConverter.Convert(PointerSource.OnlineRepository).ToString();
+            }
+        }
+
+        private void MinimizeWindow(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void MaximuzeWindow(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Normal)
+            {
+                WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                WindowState = WindowState.Normal;
+            }
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // This work around solves window being too big issue
+            if (WindowState == WindowState.Maximized)
+            {
+                BorderThickness = new System.Windows.Thickness(6);
+            }
+            else
+            {
+                BorderThickness = new System.Windows.Thickness(0);
             }
         }
 
@@ -234,9 +417,6 @@
             if (gameProcessId != 0)
             {
                 Log("Process ID: " + gameProcessId);
-
-                // Need to recreate process (required by library code)
-                memoryHandler.mProc = new Proc();
                 if (memoryHandler.OpenProcess(gameProcessId))
                 {
                     IsTracking = true;
@@ -260,39 +440,6 @@
             }
         }
 
-        public void Log(string msg)
-        {
-            Logs.AppendText(string.Format("{0}\t{1}\n", DateTime.Now, msg));
-        }
-
-        public void GetData(PointerData pointerList)
-        {
-            if (pointerList != null)
-            {
-                SingleValue cash = CreateFloatRecord(GameIdentifiers.CashDisplay, pointerList.Pointers[GameIdentifiers.CashDisplay]);
-                SingleValue popularity = CreateIntRecord(GameIdentifiers.PopularityDisplay, pointerList.Pointers[GameIdentifiers.PopularityDisplay]);
-                SingleValue moneySpentOnFuel = CreateFloatRecord(GameIdentifiers.MoneySpentOnFuelDisplay, pointerList.Pointers[GameIdentifiers.MoneySpentOnFuelDisplay]);
-                SingleValue moneyEarnedOnFuel = CreateFloatRecord(GameIdentifiers.MoneyEarnedOnFuelDisplay, pointerList.Pointers[GameIdentifiers.MoneyEarnedOnFuelDisplay]);
-                SingleValue currentFuelCapacity = CreateFloatRecord(GameIdentifiers.CurrentFuelDisplay, pointerList.Pointers[GameIdentifiers.CurrentFuelDisplay]);
-                float igt = memoryHandler.ReadFloat(pointerList.Pointers[GameIdentifiers.IGT]);
-
-                Record record = new Record()
-                {
-                    Date = DateTime.Now,
-                    IGT = new InGameTime(igt),
-                    SingleRecords = new List<SingleValue>()
-                    {
-                        cash,
-                        popularity,
-                        moneyEarnedOnFuel,
-                        moneySpentOnFuel,
-                        currentFuelCapacity,
-                    },
-                };
-                Records.Add(record);
-            }
-        }
-
         private PointerData GetPointerList()
         {
             ObservableCollection<PointerData> data = null;
@@ -310,12 +457,14 @@
                     {
                         pointerList = data.FirstOrDefault(x => x.GameVersion.ToString() == UserSettings.Default.OnlineRepositoryVersion);
                     }
+
                     break;
                 case PointerSource.EmbeddedInApplication:
                     data = PointersRepository.EmbeddedData;
                     pointerList = data.FirstOrDefault(x => x.GameVersion.ToString() == UserSettings.Default.EmbeddedVersion);
                     break;
             }
+
             return pointerList;
         }
 
@@ -339,158 +488,6 @@
                 Value = value,
             };
             return valueRecord;
-        }
-
-        public void Load()
-        {
-            if (File.Exists(fileName))
-            {
-                string content = File.ReadAllText(fileName);
-                RecordCollection records = JsonConvert.DeserializeObject<RecordCollection>(content, settings);
-                if (records != null)
-                {
-                    foreach (Record rec in records)
-                    {
-                        Records.Add(rec);
-                    }
-                }
-            }
-        }
-
-        public void Save()
-        {
-            using (StreamWriter sw = new StreamWriter(fileName, false))
-            using (JsonWriter writer = new JsonTextWriter(sw))
-            {
-                string result = JsonConvert.SerializeObject(Records, settings);
-                sw.Write(result);
-            }
-        }
-
-        public static bool IsRunning(int id)
-        {
-            try
-            {
-                Process.GetProcessById(id);
-            }
-            catch (InvalidOperationException)
-            {
-                return false;
-            }
-            catch (ArgumentException)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public bool IsInGame(PointerData pointerList)
-        {
-            string path = pointerList.Pointers[GameIdentifiers.InGame];
-            int value = memoryHandler.ReadByte(path);
-            if (value == 0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        #region Buttons
-        private void SessionStatsClick(object sender, RoutedEventArgs e)
-        {
-            SessionStatistics.Visibility = Visibility.Visible;
-            RawData.Visibility = Visibility.Collapsed;
-            LiveGraphs.Visibility = Visibility.Collapsed;
-            Settings.Visibility = Visibility.Collapsed;
-        }
-
-        private void RawDataClick(object sender, RoutedEventArgs e)
-        {
-            RawData.Visibility = Visibility.Visible;
-            LiveGraphs.Visibility = Visibility.Collapsed;
-            Settings.Visibility = Visibility.Collapsed;
-            SessionStatistics.Visibility = Visibility.Collapsed;
-        }
-
-        private void LiveGraphsClick(object sender, RoutedEventArgs e)
-        {
-            LiveGraphs.Visibility = Visibility.Visible;
-            RawData.Visibility = Visibility.Collapsed;
-            Settings.Visibility = Visibility.Collapsed;
-            SessionStatistics.Visibility = Visibility.Collapsed;
-        }
-
-        private void SettingsClick(object sender, RoutedEventArgs e)
-        {
-            Settings.Visibility = Visibility.Visible;
-            LiveGraphs.Visibility = Visibility.Collapsed;
-            RawData.Visibility = Visibility.Collapsed;
-            SessionStatistics.Visibility = Visibility.Collapsed;
-        }
-        #endregion
-
-        private void DragWindow(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
-            {
-                DragMove();
-            }
-        }
-
-        private void CloseApplication(object sender, RoutedEventArgs e)
-        {
-            UserSettings.Default.PointerSource = GetPointerSourceFromView();
-            string checkedOnlineVersion = Settings.PointerSettingsView.OnlineVersionList.SelectedItem.ToString();
-            UserSettings.Default.OnlineRepositoryVersion = checkedOnlineVersion;
-            string checkedEmbeddedVersion = Settings.PointerSettingsView.EmbeddedVersionList.SelectedItem.ToString();
-            UserSettings.Default.EmbeddedVersion = checkedEmbeddedVersion;
-            UserSettings.Default.Save();
-            Application.Current.Shutdown();
-        }
-
-        private string GetPointerSourceFromView()
-        {
-            if (Settings.PointerSettingsView.EmbeddedButton.IsChecked == true)
-            {
-                return PointerSourceToStringConverter.Convert(PointerSource.EmbeddedInApplication).ToString();
-            }
-            else
-            {
-                return PointerSourceToStringConverter.Convert(PointerSource.OnlineRepository).ToString();
-            }
-        }
-
-        private void MinimizeWindow(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void MaximuzeWindow(object sender, RoutedEventArgs e)
-        {
-            if (WindowState == WindowState.Normal)
-            {
-                WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                WindowState = WindowState.Normal;
-            }
-        }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            // This work around solves window being too big issue
-            if (WindowState == WindowState.Maximized)
-            {
-                BorderThickness = new System.Windows.Thickness(6);
-            }
-            else
-            {
-                BorderThickness = new System.Windows.Thickness(0);
-            }
         }
     }
 }
