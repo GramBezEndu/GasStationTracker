@@ -47,7 +47,11 @@
                 }
                 catch
                 {
-                    MessageBox.Show("Could not get pointer data from online repository", "Online repository error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(
+                        "Could not get pointer data from online repository",
+                        "Online repository error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
                 }
             }
         }

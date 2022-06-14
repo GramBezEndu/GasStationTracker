@@ -5,6 +5,7 @@
     using System.Text.RegularExpressions;
     using System.Windows.Data;
     using GasStationTracker.Controls;
+    using GasStationTracker.Helpers;
 
     [ValueConversion(typeof(PopupPlacement), typeof(string))]
     public class PopupPlacementToStringConverter : IValueConverter
@@ -17,9 +18,7 @@
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             PopupPlacement popupPlacement = (PopupPlacement)value;
-
-            // Add spaces camel case
-            return Regex.Replace(popupPlacement.ToString(), "(\\B[A-Z0-9])", " $1");
+            return popupPlacement.ToString().AddSpacesToCamelCase();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

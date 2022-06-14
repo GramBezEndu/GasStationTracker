@@ -3,7 +3,7 @@
     using System.Windows.Controls;
 
     /// <summary>
-    /// Interaction logic for DataTable.xaml
+    /// Interaction logic for DataTable.xaml.
     /// </summary>
     public partial class RawData : UserControl
     {

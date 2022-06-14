@@ -60,8 +60,7 @@
 
             foreach (UIElement element in InternalChildren)
             {
-                FrameworkElement fe = element as FrameworkElement;
-                if (fe != null)
+                if (element is FrameworkElement fe)
                 {
                     int row = GetRow(fe);
                     int column = GetColumn(fe);

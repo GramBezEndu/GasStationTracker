@@ -5,7 +5,7 @@
     using GasStationTracker.Converters;
 
     /// <summary>
-    /// Interaction logic for SessionStatistics.xaml
+    /// Interaction logic for SessionStatistics.xaml.
     /// </summary>
     public partial class SessionStatistics : UserControl
     {

@@ -1,6 +1,5 @@
 ﻿namespace GasStationTracker.Controls
 {
-    using System;
     using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Controls;
@@ -92,8 +91,7 @@
 
         private void ExpanderLoaded(object sender, RoutedEventArgs e)
         {
-            Expander expander = sender as Expander;
-            if (expander != null)
+            if (sender is Expander expander)
             {
                 expander.PreviewMouseLeftButtonDown += (ss, ee) =>
                 {

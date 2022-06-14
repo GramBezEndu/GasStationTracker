@@ -1,7 +1,6 @@
 ﻿namespace Memory
 {
     using System;
-    using System.Text;
     using static Memory.Imports;
 
     public partial class MemoryManager
@@ -328,7 +327,7 @@
         }
 
         /// <summary>
-        /// Reads a byte from memory and splits it into bits
+        /// Reads a byte from memory and splits it into bits.
         /// </summary>
         /// <param name="code">address, module + pointer + offset, module + offset OR label in .ini file.</param>
         /// <param name="file">path and file name of ini file. (OPTIONAL).</param>

@@ -46,8 +46,6 @@
         {
             int x = (int)Math.Round(point.X);
             int y = (int)Math.Round(point.Y);
-
-            // are x,y device-independent-pixels ??
             System.Drawing.Point drawingPoint = new System.Drawing.Point(x, y);
             Screen screen = System.Windows.Forms.Screen.FromPoint(drawingPoint);
             WpfScreen wpfScreen = new WpfScreen(screen);
@@ -57,7 +55,6 @@
 
         private Rect GetRect(Rectangle value)
         {
-            // should x, y, width, height be device-independent-pixels ??
             return new Rect
             {
                 X = value.X,
