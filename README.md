@@ -30,5 +30,8 @@ That's it! Click "Stop Tracking" once you're done playing.
 
 List of supported game versions can be found [here](https://github.com/GramBezEndu/GasStationSimulatorCheatTable/blob/main/README.md).
 
+# Example database:
+Example database [file](Data.json). Should be placed in the same directory as executable.
+
 ## Application icon:
 <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
