@@ -250,10 +250,20 @@
         private void CloseApplication(object sender, RoutedEventArgs e)
         {
             UserSettings.Default.PointerSource = GetPointerSourceFromView();
-            string checkedOnlineVersion = Settings.PointerSettingsView.OnlineVersionList.SelectedItem.ToString();
-            UserSettings.Default.OnlineRepositoryVersion = checkedOnlineVersion;
-            string checkedEmbeddedVersion = Settings.PointerSettingsView.EmbeddedVersionList.SelectedItem.ToString();
-            UserSettings.Default.EmbeddedVersion = checkedEmbeddedVersion;
+            object selectedOnlineVersion = Settings.PointerSettingsView.OnlineVersionList.SelectedItem;
+            if (selectedOnlineVersion != null)
+            {
+                string checkedOnlineVersion = selectedOnlineVersion.ToString();
+                UserSettings.Default.OnlineRepositoryVersion = checkedOnlineVersion;
+            }
+
+            object selectedEmbeddedVersion = Settings.PointerSettingsView.EmbeddedVersionList.SelectedItem;
+            if (selectedEmbeddedVersion != null)
+            {
+                string checkedEmbeddedVersion = selectedEmbeddedVersion.ToString();
+                UserSettings.Default.EmbeddedVersion = checkedEmbeddedVersion;
+            }
+
             UserSettings.Default.Save();
             Application.Current.Shutdown();
         }
